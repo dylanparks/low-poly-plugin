@@ -1,0 +1,23 @@
+{
+ "about": "A riding horse.",
+ "extends": [
+  "muzzle/soft-equine",
+  "eyes/side-almond"
+ ],
+ "set": {
+  "body_plan": "quadruped",
+  "feet": "hoof",
+  "skin": "fur"
+ },
+ "ref": "lowpoly-animals/references/heads.md, Long-faced heads",
+ "checks": {
+  "eye.size": {
+   "min": 1.6
+  }
+ },
+ "rules": [
+  "The head from the skull's planes: a straight nasal line, a flat forehead, a big round cheek plate, the throatlatch notch; head 0.34-0.40 of the withers height.",
+  "The eye is one of the largest of any land mammal: a radius of at least 1.6% of the height, set high, about 0.4 of the head's length back from the poll.",
+  "Mane and tail are masses of hair that fall with gravity in clumps, never separate ribbons."
+ ]
+}

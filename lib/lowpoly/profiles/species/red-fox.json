@@ -1,0 +1,23 @@
+{
+ "about": "A red fox.",
+ "extends": [
+  "muzzle/leather-pad",
+  "eyes/forward"
+ ],
+ "set": {
+  "body_plan": "quadruped",
+  "feet": "paw",
+  "skin": "fur"
+ },
+ "ref": "lowpoly-animals/references/case-study-fox.md",
+ "palette": {
+  "coat": "orange-red, richer on the back",
+  "chin, throat, chest, tail tip": "white",
+  "stockings, ear backs": "black",
+  "eyes": "amber with a black lid line all round",
+  "nose": "black with a glossy lit band"
+ },
+ "rules": [
+  "A black line runs from the inner corner of each eye down the muzzle; the white lip has a dark line under it and a shaded chin."
+ ]
+}

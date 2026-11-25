@@ -1,0 +1,10 @@
+{
+ "about": "A beak (birds).",
+ "set": {
+  "muzzle": "beak"
+ },
+ "ref": "lowpoly-animals/references/heads.md, Birds",
+ "rules": [
+  "The cere and nostril at the base, a lit ridge along the culmen, darker toward the tip."
+ ]
+}

@@ -1,0 +1,21 @@
+{
+ "about": "The Komodo dragon (Varanus komodoensis): the largest monitor lizard, 2.5-3 m long, 70-90 kg.",
+ "extends": [
+  "muzzle/lipless"
+ ],
+ "set": {
+  "body_plan": "lizard",
+  "skin": "scales",
+  "feet": "clawed"
+ },
+ "ref": "lowpoly-animals/references/parts.md (Sprawling leg, Low reptile tail, Jaws with teeth); skin-types.md, scales",
+ "rules": [
+  "A monitor, not a crocodile: the body is carried clear of the ground on semi-erect legs when it walks (the belly a hand's breadth up), the neck is long and mobile, and the head is long, narrow and flat-topped with a rounded snout, its nostrils set well forward of the eyes on the snout's sides.",
+  "The snout-vent length is about half the total length and the tail about as long as the head and body together (a 3.04 m animal: 1.54 m snout to vent). The tail is deep and flattened side to side, thick at the root where the caudofemoralis drives the hind leg, and it is never a crocodile's flat crested paddle.",
+  "Heavy shoulders and a pot belly: the trunk is widest just in front of the hips, the limbs short and very muscular, the forearms thick; feet with five long toes and strong curved claws, the hind foot's toes longer and splayed.",
+  "Loose, folded skin at the throat and neck sides and over the shoulders; small pebble-like scales (bony osteoderms beneath) over the body, without a crocodile's rows of keeled scutes; the belly scales in fine transverse rows.",
+  "The eyes are small and set high on the sides of the head under a bony brow ridge, a round dark pupil in a gold-brown iris (temperament/hostile replaces it with the glow).",
+  "Lipless: the mouth line runs back past the eye in a row of larger lip scales; the gums hide most of the serrated, back-curved teeth until it gapes. A long yellow forked tongue flicks out through a notch at the snout's tip.",
+  "Walk: a lateral-sequence walk with the trunk bending side to side and the head swinging with it, the forefoot landing as the trunk curves toward it; duty factor high at walking speed."
+ ]
+}

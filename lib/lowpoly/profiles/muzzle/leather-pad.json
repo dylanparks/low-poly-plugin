@@ -1,0 +1,11 @@
+{
+ "about": "A hairless nose pad at the tip (dog, fox, wolf, cat, bear).",
+ "set": {
+  "muzzle": "leather-pad"
+ },
+ "ref": "lowpoly-animals/references/muzzles.md; texture.md, Noses and muzzles",
+ "rules": [
+  "The pad is the darkest mass of the muzzle, with a lit top band and two comma nostrils darker still, split by a groove into the upper lip.",
+  "Thin lips; a dark mouth line under the whisker pads; a small shaded chin."
+ ]
+}

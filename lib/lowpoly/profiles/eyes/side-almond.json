@@ -1,0 +1,18 @@
+{
+ "about": "Eyes on the sides of the head (horse, cow, deer).",
+ "set": {
+  "eye_shape": "side-almond"
+ },
+ "ref": "lowpoly-animals/references/eyes.md",
+ "checks": {
+  "eye.size": {
+   "min": 1.4
+  }
+ },
+ "rules": [
+  "An almond about 1.6-2 times as wide as it is open (2.5-3 when relaxed), its long axis rising 10-25 degrees from the inner corner to the outer.",
+  "The upper lid is the heavier: its dark edge runs 1-2 texels into the lid, then fades to the coat over 3-4; a crease above it; the lower lid narrower and softer, fading over 4-5.",
+  "The inner corner is a low sharp point holding the darkest texels of the eye, with a soft streak 3-5 texels down and forward from it (the tear trough).",
+  "The lids are a deeper, more saturated shade of the skin, never black; one bright catchlight in the upper front quarter."
+ ]
+}

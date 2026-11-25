@@ -1,0 +1,10 @@
+{
+ "about": "A flat disc at the end of a long snout (pig, boar).",
+ "set": {
+  "muzzle": "disc"
+ },
+ "ref": "lowpoly-animals/references/muzzles.md",
+ "rules": [
+  "A flat round disc facing forward with two holes; the mouth runs under the snout to a corner far back."
+ ]
+}

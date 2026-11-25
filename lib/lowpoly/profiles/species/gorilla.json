@@ -1,0 +1,19 @@
+{
+ "about": "A western lowland gorilla: a knuckle-walking great ape.",
+ "extends": [
+  "muzzle/primate",
+  "eyes/forward"
+ ],
+ "set": {
+  "body_plan": "quadruped",
+  "feet": "hand",
+  "skin": "fur"
+ },
+ "ref": "lowpoly-animals/references/limbs.md; heads.md",
+ "rules": [
+  "Knuckle-walker: the arms are much longer than the legs, so the body slopes down from the shoulders to the rump; the hands rest on the middle phalanges of folded fingers, the feet flat (plantigrade) with an opposable big toe.",
+  "The hands and feet are hands: a palm, a thumb, four fingers with nails, bare dark skin on the palms and soles. Build the fingers of the knuckle-walking hand as a folded block with the knuckle row on the ground.",
+  "Huge shoulders and arms, a barrel chest, a big belly, short legs; the neck is buried in the shoulders and the head carried low and forward.",
+  "Hair is short over most of the body and longer on the arms; the chest, face, palms and soles are bare skin."
+ ]
+}

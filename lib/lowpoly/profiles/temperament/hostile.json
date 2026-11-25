@@ -1,0 +1,18 @@
+{
+ "about": "A hostile mob: it reads as a threat at a glance. Listed anywhere in \"profiles\", it resolves after every other profile, so its eye replaces the species', colour's and eye kind's.",
+ "set": {
+  "eyes": "glow"
+ },
+ "palette": {
+  "eyes": "a fierce glare: bulky half-moon glows, not slits, their flat tops sloping steeply down toward the nose; a flat bright yellow core going to an orange edge, a hard one-texel border, no pupil, no catchlight; set deep in a dark socket that hugs the glow, a heavy brow shadow on its top along the slope, the brow ridge lit above, frown creases between the brows leaning outward as they rise (a scowl meeting low over the nose, never a worried inverted V); the socket and under-eye dark kept off the snout"
+ },
+ "supersedes": [
+  "The eye is about a quarter of the face wide, painted as the zone stack"
+ ],
+ "ref": "lowpoly-core/references/temperament.md",
+ "rules": [
+  "The eye glows (\"eyes\": \"glow\"): no pupil, no slit, no catchlight. It is small: about 0.09 of the head's width on a short face (the measured wolf's eye 6 x 3 texels, core luminance 0.75 against a 0.13 surround; the giant bat's almond), about 0.10-0.12 on a long or broad head (the gorilla, the Komodo dragon: 0.09 read as a pinprick there; the Kodiak bear's 0.12 read a little big and was brought down to 0.105), its top flat under the brow and slanting down toward the nose, its bottom an arc. A big almond or a slit pupil reads as a cartoon villain. A reptile takes the glow too (the Komodo dragon's, approved by the user); keep a slit pupil only when the contract asks for it.",
+  "The eyes face forward under a brow fold: the eye facets angled 25-40 degrees off straight ahead, the painted upper lid on the fold's crease so the brow shades it from every angle; check both eyes whole in a dead-front view.",
+  "The rest of the threat comes from the mouth (the jaw open wide on the canines or teeth when it threatens: about 40 degrees in a threat or roar, up to 70 in a bat's bite, the head tipping back with it so the chin clears the chest), a forward-leaning, shoulders-up silhouette, and motion that is sudden and heavy."
+ ]
+}

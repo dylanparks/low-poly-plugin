@@ -1,0 +1,17 @@
+{
+ "about": "A grey (\"white\") horse: white hair over dark skin.",
+ "extends": [
+  "species/horse"
+ ],
+ "ref": "lowpoly-animals/references/muzzles.md; eyes.md; lowpoly-core/references/measuring.md, Turning the request into search subjects",
+ "palette": {
+  "coat": "white to pale silver grey, warm in the lights, cool grey in the shadows",
+  "skin where the hair is thin": "charcoal: the nose, nostrils, lips and chin, a ring round each eye, the dock",
+  "hooves": "dark grey",
+  "eyes": "dark brown body, warm lids"
+ },
+ "rules": [
+  "The skin shows where the hair is thinnest: the nose, lips and chin go to charcoal (a photo: lips 0.11 against a face of 0.33); the top of the muzzle may stay pale and lit.",
+  "Freckles of dark specks are allowed on the face; no outline anywhere."
+ ]
+}

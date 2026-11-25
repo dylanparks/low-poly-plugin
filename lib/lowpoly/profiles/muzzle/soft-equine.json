@@ -1,0 +1,13 @@
+{
+ "about": "A soft, finely haired muzzle with no pad (horse, donkey, mule, zebra).",
+ "set": {
+  "muzzle": "soft-equine"
+ },
+ "ref": "lowpoly-animals/references/muzzles.md",
+ "rules": [
+  "The muzzle ends in a blunt face about 0.7 of the cheek width, never a point; the nostril ring flares wider than the mid-face.",
+  "Nostrils are large C-shaped hollows on the front corners: near-black inside, a lit fleshy rim, a shadowed groove above.",
+  "A broad rounded upper lip overhangs a mouth crease; a separate rounded chin sits under it with a notch above and below.",
+  "About 16-20 vertices: nostril ring 6-8, lip ring with the crease 6, end cap 4, chin 1-2."
+ ]
+}

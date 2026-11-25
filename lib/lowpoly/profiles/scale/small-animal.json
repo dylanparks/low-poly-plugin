@@ -1,0 +1,19 @@
+{
+ "about": "The standard for an animal about a housecat's size (a body up to about 0.5 m from chest to rump: cats, rabbits, small dogs, foxes' kits, chickens, ferrets), set by the small-tier flame point housecat the user approved on 2026-11-23.",
+ "set": {
+  "tier": "small"
+ },
+ "checks": {
+  "mesh.vertices": {"min": 90, "max": 150},
+  "mesh.triangles": {"min": 125, "max": 290}
+ },
+ "ref": "lowpoly-core SKILL.md 2, the small-animal standard; lowpoly-animals/references/case-study-housecat.md",
+ "rules": [
+  "Budget, as the approved small-tier cat: about 140 vertices and 280 triangles (the reference game's chicken: 146 and 288), within 150 and 290.",
+  "Texture 256 x 128. 128 x 128 was tried on the cat and lost the nose's detail, the eye sockets and the nostrils, and stretched 20% of the surface: keep the extra width for the head.",
+  "Split the triangles about as the cat did: the head about a third (95), the four legs about a third (100), the tail a small share (24), the body the rest. Every head landmark stays (cheekbones, cheek lobe and jaw corner, stop, whisker pads or their kind's muzzle, chin, nose); simplify the body first.",
+  "Rings: 6-sided body rings, about 7 of them; 3-sided leg rings; 8 points round the head. Ears may be simple pyramids with a cupped opening.",
+  "Keep the bones the motion needs (the cat kept 26: the tail's curl, the paws): bones cost no triangles.",
+  "What the small tier gives up, accepted on the cat: thigh lobes, the waist tuck and the back's dip, a coarser throat, blockier pupils and catchlights. Check the face head-on still reads as the species."
+ ]
+}

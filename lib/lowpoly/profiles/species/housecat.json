@@ -1,0 +1,20 @@
+{
+ "about": "A domestic cat.",
+ "extends": [
+  "muzzle/leather-pad",
+  "eyes/forward"
+ ],
+ "set": {
+  "body_plan": "quadruped",
+  "feet": "paw",
+  "skin": "fur"
+ },
+ "ref": "lowpoly-animals/references/case-study-housecat.md",
+ "rules": [
+  "Pupils are tapered vertical slits, about a third of the iris wide at the middle, never a constant-width bar.",
+  "Standing still the neck is upright and the head sits over the forechest; walking, the head drops to about the back's level.",
+  "Name the type before building: the modern Siamese (show: wedge head, big low ears, tubular body, long fine legs) and the traditional colourpoint (rounder head with full cheeks, medium ears, a sturdier body) share colours but not shapes; a colour profile never sets the body.",
+  "The head must read as a cat at a glance: a short muzzle with a stop, cheekbones widest at the eyes, whisker pads, a chin, forward eyes on a flat face, wide-based ears (lowpoly-animals/references/heads.md, A cat's head).",
+  "The neck pinches in behind the skull from above and runs into the head without a crease."
+ ]
+}

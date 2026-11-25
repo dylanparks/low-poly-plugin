@@ -1,0 +1,10 @@
+{
+ "about": "No lips: the mouth line is the jaw's edge (lizards, crocodiles, snakes).",
+ "set": {
+  "muzzle": "lipless"
+ },
+ "ref": "lowpoly-animals/references/muzzles.md; heads.md, Jaws and mouths",
+ "rules": [
+  "Small nostrils near the tip, on a raised bump where the species has one; the mouth line is the jaw's edge, lined with a row of larger lip scales."
+ ]
+}

@@ -1,0 +1,12 @@
+{
+ "about": "The look every model shares: a low-poly silhouette carried by a painted, lit texture, read from a 3/4 game camera.",
+ "ref": "lowpoly-core SKILL.md; lowpoly-core/references/texture-method.md",
+ "rules": [
+  "Light is painted into the texture as form (a sun from the upper front, a sky above, occlusion in the creases), then the colours go on top: never flat colours with noise.",
+  "Every feature is a form with a lit side and a shadow side; transitions run over 2-4 texels. No outlines anywhere, and no one-texel ring of one value round a shape.",
+  "Near-black and near-white only at the centre of small features: an eye body and its catchlight, a nostril, a mouth crease.",
+  "Each part is painted at the body's texel density (a head may be denser) and meets what it grows from at the same brightness, unless the contract marks it as a contrast: parts.density and parts.joins.",
+  "Each part keeps to its triangle budget in the contract; the parts' budgets leave the body its share of the tier: parts.budget.",
+  "Detail scales with the size on screen: a very large animal earns geometry where the camera looks (the head, the mouth), the body stays simple."
+ ]
+}

@@ -1,0 +1,10 @@
+{
+ "about": "A broad, moist, hairless plate across the nostrils and upper lip (cattle, bison, buffalo).",
+ "set": {
+  "muzzle": "muffle"
+ },
+ "ref": "lowpoly-animals/references/muzzles.md",
+ "rules": [
+  "The plate is the whole front: dark, glossy, lit on its top; wide comma nostrils at its sides; thick lips and a broad shaded chin."
+ ]
+}

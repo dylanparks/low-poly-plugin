@@ -1,0 +1,12 @@
+{
+ "about": "A primate face: no muzzle pad, a short or flat muzzle under a brow ridge (gorilla, chimpanzee, baboon in part).",
+ "set": {
+  "muzzle": "primate"
+ },
+ "ref": "lowpoly-animals/references/muzzles.md; heads.md",
+ "rules": [
+  "The nose is a broad, flat pad of bare skin with flared nostrils outlined by a raised rim; the upper lip is long and mobile, the lips thick and bare.",
+  "The face is bare, dark skin from the brow to the chin: paint it as lit, wrinkled skin (creases under the eyes and across the nose), not fur.",
+  "The brow ridge is geometry, overhanging the eyes, which sit deep in shadowed sockets; the jaw is deep and juts forward."
+ ]
+}

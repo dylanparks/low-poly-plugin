@@ -1,0 +1,10 @@
+{
+ "about": "A Y-shaped split from the nose through the upper lip (rabbit, hare, rodents).",
+ "set": {
+  "muzzle": "split-lip"
+ },
+ "ref": "lowpoly-animals/references/muzzles.md",
+ "rules": [
+  "A small pad, small mobile slits, and the Y split painted as a crease with a lit side."
+ ]
+}

@@ -1,0 +1,17 @@
+{
+ "about": "A flame point (red point) colourpoint cat: a cream body with orange-red points, often on a sturdier domestic body than a show Siamese.",
+ "extends": [
+  "species/housecat"
+ ],
+ "palette": {
+  "body": "cream",
+  "points (mask, ears, legs, tail)": "orange-red, graded into the cream",
+  "eyes": "blue",
+  "nose leather and paw pads": "pink",
+  "tail and legs": "faint darker barring in the points"
+ },
+ "rules": [
+  "The points are graded into the body over several texels, never a hard edge.",
+  "Faint tabby barring shows on the tail and in the leg points; the body may carry a faint saddle of colour along the back."
+ ]
+}

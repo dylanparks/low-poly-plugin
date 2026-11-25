@@ -1,0 +1,16 @@
+{
+ "about": "A blue point Siamese: an off-white body with nearly neutral slate-grey points.",
+ "extends": [
+  "species/housecat"
+ ],
+ "palette": {
+  "body": "off-white with a faint warm cast (photos: saturation 0.03-0.10), darkening a little along the back with age; never blue-tinted",
+  "points (mask, ears, legs, tail)": "slate grey, nearly neutral (photos: saturation about 0.10, 0.01-0.20) at about half the body's value, graded into the body",
+  "nose leather and paw pads": "slate grey",
+  "eyes": "deep blue"
+ },
+ "rules": [
+  "The points are a cool, nearly neutral slate grey, darker than a flame point's (about half the body's value), graded into the body over several texels, never a hard edge.",
+  "The body is an off-white, not a blue-white: \"blue\" names the points' dilute grey, not a blue cast on the coat."
+ ]
+}

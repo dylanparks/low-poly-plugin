@@ -1,0 +1,16 @@
+{
+ "about": "An adult male gorilla: black hair with the silver saddle, dark skin.",
+ "extends": [
+  "species/gorilla"
+ ],
+ "palette": {
+  "hair": "black to deep charcoal, lit to dark grey on top surfaces",
+  "saddle": "silver-grey over the lower back and hips, graded into the black",
+  "skin (face, chest, palms, soles)": "charcoal black, glossy, lit to grey on the forms",
+  "eyes": "dark brown, small and deep-set"
+ },
+ "rules": [
+  "The adult male skull carries a tall sagittal crest, so the head rises to a peak at the back: geometry, not paint.",
+  "The silver saddle is the silverback's signature: paint it as a broad soft band, not a patch."
+ ]
+}

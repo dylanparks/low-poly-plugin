@@ -1,0 +1,893 @@
+{
+ "about": "The measured ranges that `lp check` judges a model against. Each check names its stage, the measurement it reads, the range, the level (fail stops a stage; warn is reported but does not), what it applies to (keys of the model's spec.json: body_plan, skin, feet, tier) or, under \"excludes\", the values it does not apply to, and the reference that explains it. Edit the ranges here, not in the prose: SKILL.md and the references cite this file.",
+ "version": 1,
+ "tiers": {
+  "large": {
+   "vertices": [
+    219,
+    250
+   ],
+   "triangles": [
+    436,
+    480
+   ],
+   "bones": [
+    26,
+    33
+   ]
+  },
+  "medium": {
+   "vertices": [
+    171,
+    250
+   ],
+   "triangles": [
+    338,
+    480
+   ],
+   "bones": [
+    26,
+    39
+   ]
+  },
+  "small": {
+   "vertices": [
+    90,
+    146
+   ],
+   "triangles": [
+    125,
+    288
+   ],
+   "bones": [
+    18,
+    39
+   ]
+  },
+  "tiny": {
+   "vertices": [
+    35,
+    54
+   ],
+   "triangles": [
+    68,
+    104
+   ],
+   "bones": [
+    6,
+    9
+   ]
+  },
+  "swarm": {
+   "vertices": [
+    15,
+    25
+   ],
+   "triangles": [
+    8,
+    46
+   ],
+   "bones": [
+    3,
+    12
+   ]
+  },
+  "very-large": {
+   "vertices": [
+    300,
+    450
+   ],
+   "triangles": [
+    500,
+    720
+   ],
+   "bones": [
+    20,
+    40
+   ]
+  }
+ },
+ "checks": [
+  {
+   "id": "mesh.closed",
+   "stage": "mesh",
+   "measure": "mesh.open_edges",
+   "max": 0,
+   "level": "fail",
+   "spec_max": "cards",
+   "note": "one continuous skin; cards (open edges) only where the body plan uses them: the spec's \"cards\" gives how many open edges the design has (a membrane wing's free outline), and only that many pass",
+   "ref": "lowpoly-core §3, rule 1"
+  },
+  {
+   "id": "mesh.loose",
+   "stage": "mesh",
+   "measure": "mesh.loose_gap",
+   "max": 0.5,
+   "level": "fail",
+   "note": "how far the worst separate piece stands off the skin, % of the height (0 when an edge of the piece passes through the skin, as a tooth sunk into the gum does): a finger or claw built a little way off reads as broken (a bat thumb 2.2)",
+   "ref": "lowpoly-core §3, rule 1"
+  },
+  {
+   "id": "mesh.vertices",
+   "stage": "mesh",
+   "measure": "mesh.vertices",
+   "tier": "vertices",
+   "level": "warn",
+   "note": "unique positions, against the spec's tier",
+   "ref": "lowpoly-core §2"
+  },
+  {
+   "id": "mesh.triangles",
+   "stage": "mesh",
+   "measure": "mesh.triangles",
+   "tier": "triangles",
+   "level": "warn",
+   "ref": "lowpoly-core §2"
+  },
+  {
+   "id": "mesh.bones",
+   "stage": "rig",
+   "measure": "mesh.bones",
+   "tier": "bones",
+   "level": "warn",
+   "ref": "lowpoly-core §2"
+  },
+  {
+   "id": "limbs.hind_peak",
+   "stage": "mesh",
+   "measure": "limbs.hind_peak_t",
+   "min": 0.25,
+   "level": "warn",
+   "excludes": {
+    "body_plan": [
+     "bird",
+     "lizard"
+    ]
+   },
+   "note": "where the hind leg is widest from the front, 0 the knee, 1 the hip: a thigh is fullest at about mid-leg (or, short legs inside a broad body, at the hip). Not run on a sprawling lizard, whose knee points sideways and so is always the widest point seen from the front",
+   "ref": "lowpoly-animals/references/limbs.md"
+  },
+  {
+   "id": "limbs.hind_knee",
+   "stage": "mesh",
+   "measure": "limbs.hind_knee_share",
+   "max": 0.95,
+   "level": "warn",
+   "excludes": {
+    "body_plan": [
+     "bird",
+     "lizard"
+    ]
+   },
+   "note": "the knee's half-width over the widest: a knee as wide as the thigh puts the mass at the bottom of the leg. Not run on a sprawling lizard, whose knee points sideways and so is always the widest point seen from the front",
+   "ref": "lowpoly-animals/references/limbs.md"
+  },
+  {
+   "id": "mesh.slivers",
+   "stage": "mesh",
+   "measure": "mesh.max_aspect",
+   "max": 10,
+   "level": "warn",
+   "note": "the thinnest triangle in the bind pose; matters most where the camera looks (the head of a very large animal)",
+   "ref": "lowpoly-animals/references/heads.md"
+  },
+  {
+   "id": "feet.splay",
+   "stage": "mesh",
+   "measure": "feet.splay_min",
+   "min": 1.6,
+   "max": 2.7,
+   "level": "fail",
+   "excludes": {
+    "body_plan": [
+     "flyer"
+    ]
+   },
+   "applies": {
+    "feet": [
+     "paw",
+     "clawed"
+    ]
+   },
+   "note": "width at the ground over width at the ankle, the narrowest foot",
+   "ref": "lowpoly-animals/references/feet.md"
+  },
+  {
+   "id": "feet.reach",
+   "stage": "mesh",
+   "measure": "feet.reach_min",
+   "min": 0.8,
+   "max": 1.6,
+   "level": "fail",
+   "excludes": {
+    "body_plan": [
+     "flyer"
+    ]
+   },
+   "applies": {
+    "feet": [
+     "paw",
+     "clawed"
+    ]
+   },
+   "note": "toes ahead of the ankle, in ankle depths",
+   "ref": "lowpoly-animals/references/feet.md"
+  },
+  {
+   "id": "feet.contacts",
+   "stage": "mesh",
+   "measure": "feet.contacts_min",
+   "min": 5,
+   "max": 8,
+   "level": "fail",
+   "excludes": {
+    "body_plan": [
+     "flyer"
+    ]
+   },
+   "applies": {
+    "feet": [
+     "paw",
+     "clawed"
+    ]
+   },
+   "ref": "lowpoly-animals/references/feet.md"
+  },
+  {
+   "id": "feet.claw_tips",
+   "stage": "mesh",
+   "measure": "feet.tips_min",
+   "min": 3,
+   "max": 4,
+   "level": "fail",
+   "excludes": {
+    "body_plan": [
+     "flyer"
+    ]
+   },
+   "applies": {
+    "feet": [
+     "clawed"
+    ]
+   },
+   "ref": "lowpoly-animals/references/feet.md"
+  },
+  {
+   "id": "feet.vertices",
+   "stage": "mesh",
+   "measure": "feet.vertices_min",
+   "min": 17,
+   "max": 39,
+   "level": "warn",
+   "excludes": {
+    "body_plan": [
+     "flyer"
+    ]
+   },
+   "applies": {
+    "feet": [
+     "clawed"
+    ]
+   },
+   "ref": "lowpoly-animals/references/feet.md"
+  },
+  {
+   "id": "feet.long_toed.reach",
+   "stage": "mesh",
+   "measure": "feet.reach_min",
+   "min": 2.0,
+   "max": 8.5,
+   "level": "warn",
+   "excludes": {
+    "body_plan": [
+     "flyer"
+    ]
+   },
+   "applies": {
+    "feet": [
+     "long-toed"
+    ]
+   },
+   "note": "toes ahead of the ankle, in ankle depths; measured on two models only (giant rat 2.4, drake 8.4)",
+   "ref": "lowpoly-animals/references/feet.md; lowpoly-animals/references/reference-measurements.md, Feet"
+  },
+  {
+   "id": "feet.long_toed.tips",
+   "stage": "mesh",
+   "measure": "feet.tips_min",
+   "min": 3,
+   "max": 4,
+   "level": "warn",
+   "excludes": {
+    "body_plan": [
+     "flyer"
+    ]
+   },
+   "applies": {
+    "feet": [
+     "long-toed"
+    ]
+   },
+   "note": "three forward claws and a spur (drake 4, giant rat 3-4)",
+   "ref": "lowpoly-animals/references/feet.md"
+  },
+  {
+   "id": "feet.long_toed.contacts",
+   "stage": "mesh",
+   "measure": "feet.contacts_min",
+   "min": 2,
+   "max": 12,
+   "level": "warn",
+   "excludes": {
+    "body_plan": [
+     "flyer"
+    ]
+   },
+   "applies": {
+    "feet": [
+     "long-toed"
+    ]
+   },
+   "note": "giant rat 2-6, drake 12",
+   "ref": "lowpoly-animals/references/reference-measurements.md, Feet"
+  },
+  {
+   "id": "feet.long_toed.vertices",
+   "stage": "mesh",
+   "measure": "feet.vertices_min",
+   "min": 17,
+   "max": 39,
+   "level": "warn",
+   "excludes": {
+    "body_plan": [
+     "flyer"
+    ]
+   },
+   "applies": {
+    "feet": [
+     "long-toed"
+    ]
+   },
+   "ref": "lowpoly-animals/references/feet.md"
+  },
+  {
+   "id": "feet.long_toed.bones",
+   "stage": "rig",
+   "measure": "feet.bones_min",
+   "min": 3,
+   "max": 6,
+   "level": "warn",
+   "excludes": {
+    "body_plan": [
+     "flyer"
+    ]
+   },
+   "applies": {
+    "feet": [
+     "long-toed"
+    ]
+   },
+   "note": "toes on their own bones on a large animal (giant rat 3, drake 6)",
+   "ref": "lowpoly-animals/references/feet.md"
+  },
+  {
+   "id": "rig.blended",
+   "stage": "rig",
+   "measure": "mesh.blended_pct",
+   "min": 48,
+   "max": 76,
+   "level": "warn",
+   "applies": {
+    "body_plan": [
+     "quadruped"
+    ]
+   },
+   "note": "corners on two or more bones, %",
+   "ref": "lowpoly-core §2, §4"
+  },
+  {
+   "id": "motion.crossings",
+   "stage": "motion",
+   "measure": "motion.crossings_max",
+   "max": 40,
+   "level": "warn",
+   "note": "triangles of the main skin crossing others in the worst frame of any clip: a wing or limb through itself, another part or the body (lp self_cross names the bones). Approved builds reach 0-32 at joint creases (fox 5, crocodile 12, housecat 19, T. rex 32 with the jaw open); a folded membrane wing cutting through itself showed 351",
+   "ref": "lowpoly-core/references/common-failures.md"
+  },
+  {
+   "id": "motion.pieces",
+   "stage": "motion",
+   "measure": "motion.pieces_max",
+   "max": 40,
+   "level": "warn",
+   "note": "crossings involving a separate piece (a resting wing shell, a swapped or hidden part, teeth, claws) in the worst frame of any clip, leaving out the triangle pairs that already cross in the bind pose or in every frame of the clip (a tooth sunk into the gum, a shell's root sunk into the shoulder). motion.crossings counts only the main skin: the alicorn's takeoff read 16 there while its shells crossed the body and the flight wing 118 times during the swap. Not run on a model that is one piece",
+   "ref": "lowpoly-animals/references/parts.md, Wing on a quadruped"
+  },
+  {
+   "id": "motion.duty",
+   "stage": "motion",
+   "measure": "walk.duty_min",
+   "min": 0.58,
+   "max": 0.92,
+   "level": "fail",
+   "applies": {
+    "body_plan": [
+     "quadruped"
+    ]
+   },
+   "note": "share of the cycle a foot is on the ground, the lowest foot",
+   "ref": "lowpoly-animals/references/locomotion.md"
+  },
+  {
+   "id": "motion.lift",
+   "stage": "motion",
+   "measure": "walk.lift_max_pct",
+   "min": 2,
+   "max": 8,
+   "level": "warn",
+   "applies": {
+    "body_plan": [
+     "quadruped"
+    ]
+   },
+   "note": "highest foot lift, % of the model's height (high steppers 9-21)",
+   "ref": "lowpoly-animals/references/locomotion.md"
+  },
+  {
+   "id": "motion.balance",
+   "stage": "motion",
+   "measure": "stand.margin_min",
+   "min": 0.0,
+   "level": "fail",
+   "excludes": {
+    "body_plan": [
+     "flyer"
+    ]
+   },
+   "note": "the centre of mass over the feet in the worst frame of any standing clip: 1 centred, 0 on the edge of the ground contact, negative falling",
+   "ref": "lowpoly-core §6, standing"
+  },
+  {
+   "id": "motion.planted",
+   "stage": "motion",
+   "measure": "stand.slide_pct",
+   "max": 0.3,
+   "level": "warn",
+   "excludes": {
+    "body_plan": [
+     "flyer"
+    ]
+   },
+   "note": "how far a foot slides while it stays on the ground in any standing clip, % of the height (a step that lifts and lands again does not count): a breathing chest or swaying hips drags the legs hung from it. The reference game's still-stand clips 0-0.11, its bear idle 0.29; a housecat whose breathing swung its forelegs 0.83 (visible), 0.04 once they turned back against it. A deliberate scrape (a pig pawing the ground, 41) belongs in a clip left out of standing_clips",
+   "ref": "lowpoly-animals/references/locomotion.md, Standing"
+  },
+  {
+   "id": "motion.below_ground",
+   "stage": "motion",
+   "measure": "ground.below_pct",
+   "max": 1.5,
+   "level": "warn",
+   "note": "how far the skin goes below the ground in the worst frame of any clip, % of the height (a sole's blended weights sink a hair; a tail, belly or claw through the ground does not belong): the pangolin's tail sank 5.5 cm (18%) in its idle and walk while every other check passed, its balance counting only the feet as contact",
+   "ref": "lowpoly-core/references/common-failures.md"
+  },
+  {
+   "id": "texture.limb_detail",
+   "stage": "texture",
+   "measure": "texture.limb_detail",
+   "min": 0.17,
+   "level": "warn",
+   "note": "the flattest leg, arm or wing region's painted contrast, fine (2 cm) + mid (8 cm), over its brightness (lib/lowpoly/tools/region_detail.py): the reference game's large creatures 0.17-0.64 on their limbs; a giant bat painted almost flat 0.13",
+   "ref": "lowpoly-core/references/texture-method.md, Detail on the limbs"
+  },
+  {
+   "id": "texture.limb_brightness",
+   "stage": "texture",
+   "measure": "texture.limb_brightness",
+   "min": 0.15,
+   "level": "warn",
+   "note": "the darkest leg, arm or wing region's mean brightness: no limb of the reference game's creatures is below 0.17; darker reads as a black shape in the engine's lights",
+   "ref": "lowpoly-core/references/texture-method.md, Detail on the limbs"
+  },
+  {
+   "id": "texture.seam_median",
+   "stage": "texture",
+   "measure": "uv.seam_median",
+   "max": 0.1,
+   "level": "fail",
+   "ref": "lowpoly-core/references/texture-method.md, Continuity"
+  },
+  {
+   "id": "texture.seam_worst",
+   "stage": "texture",
+   "measure": "uv.seam_worst10",
+   "max": 0.25,
+   "level": "fail",
+   "ref": "lowpoly-core/references/texture-method.md, Continuity"
+  },
+  {
+   "id": "texture.stretch",
+   "stage": "texture",
+   "measure": "uv.stretch4_pct",
+   "max": 5,
+   "level": "warn",
+   "note": "surface stretched more than 4:1, %",
+   "ref": "lowpoly-core/references/texture-method.md, Faces the projection stretches"
+  },
+  {
+   "id": "coat.large",
+   "stage": "texture",
+   "measure": "coat.large",
+   "min": 0.035,
+   "max": 0.043,
+   "level": "warn",
+   "applies": {
+    "skin": [
+     "fur"
+    ]
+   },
+   "ref": "lowpoly-animals/references/texture.md, coat layers"
+  },
+  {
+   "id": "coat.form",
+   "stage": "texture",
+   "measure": "coat.mid",
+   "min": 0.014,
+   "max": 0.034,
+   "level": "warn",
+   "applies": {
+    "skin": [
+     "fur"
+    ]
+   },
+   "ref": "lowpoly-animals/references/texture.md, coat layers"
+  },
+  {
+   "id": "coat.fine",
+   "stage": "texture",
+   "measure": "coat.fine",
+   "min": 0.013,
+   "max": 0.049,
+   "level": "warn",
+   "applies": {
+    "skin": [
+     "fur"
+    ]
+   },
+   "ref": "lowpoly-animals/references/texture.md, coat layers"
+  },
+  {
+   "id": "coat.shapes",
+   "stage": "texture",
+   "measure": "coat.shape_depth",
+   "min": 0.023,
+   "max": 0.05,
+   "level": "warn",
+   "applies": {
+    "skin": [
+     "fur"
+    ]
+   },
+   "note": "the painted darks and lights of the form band, the smaller of the two",
+   "ref": "lowpoly-animals/references/texture.md"
+  },
+  {
+   "id": "coat.coherence",
+   "stage": "texture",
+   "measure": "coat.coherence",
+   "min": 0.06,
+   "max": 0.28,
+   "level": "warn",
+   "applies": {
+    "skin": [
+     "fur"
+    ]
+   },
+   "note": "strokes follow a flow field: never one direction over the body",
+   "ref": "lowpoly-animals/references/texture.md"
+  },
+  {
+   "id": "coat.local",
+   "stage": "texture",
+   "measure": "coat.local_coherence",
+   "min": 0.24,
+   "max": 0.33,
+   "level": "warn",
+   "applies": {
+    "skin": [
+     "fur"
+    ]
+   },
+   "ref": "lowpoly-animals/references/texture.md"
+  },
+  {
+   "id": "scales.crevices",
+   "stage": "texture",
+   "measure": "skin.crevices_pct",
+   "min": 6,
+   "max": 24,
+   "level": "warn",
+   "applies": {
+    "skin": [
+     "scales"
+    ]
+   },
+   "ref": "lowpoly-animals/references/skin-types.md"
+  },
+  {
+   "id": "scales.edges",
+   "stage": "texture",
+   "measure": "skin.edges_pct",
+   "min": 21,
+   "max": 42,
+   "level": "warn",
+   "applies": {
+    "skin": [
+     "scales"
+    ]
+   },
+   "ref": "lowpoly-animals/references/skin-types.md"
+  },
+  {
+   "id": "scales.fine",
+   "stage": "texture",
+   "measure": "skin.fine",
+   "min": 0.08,
+   "max": 0.13,
+   "level": "warn",
+   "applies": {
+    "skin": [
+     "scales"
+    ]
+   },
+   "ref": "lowpoly-animals/references/skin-types.md"
+  },
+  {
+   "id": "scales.gloss",
+   "stage": "texture",
+   "measure": "skin.highlights_pct",
+   "min": 2,
+   "max": 20,
+   "level": "warn",
+   "applies": {
+    "skin": [
+     "scales"
+    ]
+   },
+   "ref": "lowpoly-animals/references/skin-types.md"
+  },
+  {
+   "id": "chitin.gloss",
+   "stage": "texture",
+   "measure": "skin.highlights_pct",
+   "min": 6,
+   "max": 15,
+   "level": "warn",
+   "applies": {
+    "skin": [
+     "chitin"
+    ]
+   },
+   "ref": "lowpoly-animals/references/skin-types.md"
+  },
+  {
+   "id": "wet.gloss",
+   "stage": "texture",
+   "measure": "skin.highlights_pct",
+   "max": 19,
+   "level": "warn",
+   "applies": {
+    "skin": [
+     "wet"
+    ]
+   },
+   "ref": "lowpoly-animals/references/skin-types.md"
+  },
+  {
+   "id": "eye.catchlight",
+   "stage": "texture",
+   "measure": "eye.brightest",
+   "min": 0.55,
+   "level": "fail",
+   "excludes": {
+    "eyes": [
+     "glow"
+    ]
+   },
+   "note": "the brightest texel round the eye; the measured models 0.55-0.89, the test builds up to 0.98",
+   "ref": "lowpoly-animals/references/texture.md, Eyes"
+  },
+  {
+   "id": "eye.body",
+   "stage": "texture",
+   "measure": "eye.darkest",
+   "max": 0.06,
+   "level": "fail",
+   "excludes": {
+    "eyes": [
+     "glow"
+    ]
+   },
+   "note": "the eye body at its darkest",
+   "ref": "lowpoly-animals/references/texture.md, Eyes"
+  },
+  {
+   "id": "eye.rim",
+   "stage": "texture",
+   "measure": "eye.rim_sd",
+   "min": 0.08,
+   "max": 0.22,
+   "level": "warn",
+   "excludes": {
+    "eyes": [
+     "glow"
+    ]
+   },
+   "note": "brightness spread in the rim band: a drawn rim, not a fade",
+   "ref": "lowpoly-animals/references/texture.md, Eyes"
+  },
+  {
+   "id": "eye.socket",
+   "stage": "texture",
+   "measure": "eye.socket_step_abs",
+   "min": 0.03,
+   "level": "warn",
+   "note": "the socket is never the coat's own value",
+   "ref": "lowpoly-animals/references/texture.md, Eyes"
+  },
+  {
+   "id": "eye.size",
+   "stage": "texture",
+   "measure": "eye.size_pct",
+   "min": 1.2,
+   "level": "warn",
+   "note": "the painted eye's radius (its dark body) in % of the model's height (without the contract's parts named horn, antler, crest or frill: a kudu's horns added a third): the reference game's animals 1.4-2.5 (cow 1.46, deer 1.43, bear 1.38, a mare 1.79, dog and pig 2.5), about 1.5-2 times a real eye. A first alicorn's 0.28 (a 2-texel dot) read as a button",
+   "ref": "lowpoly-animals/references/eyes.md"
+  },
+  {
+   "id": "nose.bridge",
+   "stage": "texture",
+   "measure": "nose.bridge_over_side_min",
+   "min": 0.03,
+   "max": 0.41,
+   "level": "warn",
+   "applies": {
+    "skin": [
+     "fur"
+    ]
+   },
+   "note": "the lit bridge against the muzzle's side, the weakest station",
+   "ref": "lowpoly-animals/references/texture.md, Noses"
+  },
+  {
+   "id": "nose.mouth",
+   "stage": "texture",
+   "measure": "nose.mouth_depth_max",
+   "min": 0.05,
+   "max": 0.25,
+   "level": "warn",
+   "applies": {
+    "skin": [
+     "fur"
+    ]
+   },
+   "note": "the mouth line darker than the lip above it, the strongest station",
+   "ref": "lowpoly-animals/references/texture.md, Noses"
+  },
+  {
+   "id": "nose.nostrils",
+   "stage": "texture",
+   "measure": "nose.nostrils_darkest",
+   "max": 0.13,
+   "level": "warn",
+   "applies": {
+    "muzzle": [
+     "leather-pad",
+     "soft-equine",
+     "small-bare",
+     "muffle"
+    ]
+   },
+   "note": "the nostrils, the darkest 10% of the nose seen head-on: the darkest values on the head (the measured models 0.00-0.13; a brown mare 0.00). A first alicorn's 0.25 were dots barely darker than the muzzle",
+   "ref": "lowpoly-animals/references/muzzles.md"
+  },
+  {
+   "id": "nose.width",
+   "stage": "texture",
+   "measure": "nose.width_ratio",
+   "max": 0.7,
+   "level": "warn",
+   "applies": {
+    "muzzle": [
+     "soft-equine",
+     "small-bare"
+    ]
+   },
+   "note": "the nose's dark mass across the muzzle, seen head-on (measured 0.31-0.66): near 1 means nothing sets the nose apart from the muzzle round it (a first alicorn 0.81)",
+   "ref": "lowpoly-animals/references/muzzles.md"
+  },
+  {
+   "id": "nose.detail",
+   "stage": "texture",
+   "measure": "nose.detail",
+   "min": 0.028,
+   "level": "warn",
+   "note": "the muzzle's painted fine detail head-on (each pixel's step from its 3x3 mean, over the mean brightness): fur strokes, skin grain and creases. The reference game's animals 0.029 (pig) to 0.100 (bear); a rebuilt cat face painted only in smooth gradients read as cartoonish at 0.020, and 0.036 once its hair strokes radiating from the nose came back",
+   "ref": "lowpoly-animals/references/muzzles.md"
+  },
+  {
+   "id": "refs.views",
+   "stage": "mesh",
+   "measure": "refs.views_missing",
+   "max": 0,
+   "level": "warn",
+   "hero_level": "fail",
+   "note": "views without a measurable reference (side, front or rear, top): a reference counts when it has 2+ landmarks, an outline or by-eye \"measured\" ratios; no refs.json counts as all three missing. Fails when the spec says \"hero\": true",
+   "ref": "lowpoly-core §1, Step zero; lowpoly-core/references/measuring.md"
+  },
+  {
+   "id": "refs.detail",
+   "stage": "mesh",
+   "measure": "refs.detail_min",
+   "min": 12,
+   "level": "warn",
+   "hero_level": "fail",
+   "note": "measurements in the thinnest of the side, front-or-rear and top views (landmarks + outline points + measured ratios + profile stations): a few ratios read by eye leave the shape to be guessed; silhouette_measure.py reads 16-24 stations from a dead-on view",
+   "ref": "lowpoly-core/references/measuring.md, Quality over quantity"
+  },
+  {
+   "id": "refs.parts",
+   "stage": "mesh",
+   "measure": "refs.parts_missing",
+   "max": 0,
+   "level": "warn",
+   "hero_level": "fail",
+   "note": "parts named in the spec's \"ref_parts\" (a head, a wing, a foot) with no reference whose \"part\" names them: the alicorn's head was built with no skull or head reference",
+   "ref": "lowpoly-core §1, special parts; lowpoly-animals/references/heads.md"
+  },
+  {
+   "id": "overlay.landmarks",
+   "stage": "mesh",
+   "measure": "overlay.landmark_worst_pct",
+   "max": 5,
+   "level": "warn",
+   "note": "the worst landmark off its reference, in % of the aligned span (lp overlay prints the table; a reference of another species or pose is labelled there)",
+   "ref": "lowpoly-core/references/measuring.md, Measuring against the references"
+  },
+  {
+   "id": "overlay.outline",
+   "stage": "mesh",
+   "measure": "overlay.outline_worst_pct",
+   "max": 5,
+   "level": "warn",
+   "note": "the worst gap between the model's silhouette and a traced top line, underline or side edge, in % of the aligned span",
+   "ref": "lowpoly-core/references/measuring.md, Measuring against the references"
+  },
+  {
+   "id": "parts.budget",
+   "stage": "texture",
+   "measure": "parts.over_budget",
+   "max": 0,
+   "level": "warn",
+   "note": "triangles over its budget in the worst part, by the contract's \"parts\" (lp contract lists them): a part that grows takes from the body. A first alicorn's mane and wings took 908 triangles of a 720 tier",
+   "ref": "lowpoly-core/references/contracts.md"
+  },
+  {
+   "id": "parts.density",
+   "stage": "texture",
+   "measure": "parts.density_worst",
+   "max": 1.0,
+   "level": "warn",
+   "note": "the worst part's texel density against the body, as a factor outside its range (1 = at the edge): a part painted much denser or sparser than the body looks pasted on. Approved builds: every part 0.81-1.14 of the body; a first alicorn's wings 2.15",
+   "ref": "lowpoly-core/references/contracts.md"
+  },
+  {
+   "id": "parts.joins",
+   "stage": "texture",
+   "measure": "parts.join_step_max",
+   "max": 0.12,
+   "level": "warn",
+   "note": "the largest brightness step across a join, on the triangles either side, for parts not marked \"contrast\": approved builds 0.01-0.08; a first alicorn's head 0.13",
+   "ref": "lowpoly-core/references/contracts.md"
+  }
+ ]
+}

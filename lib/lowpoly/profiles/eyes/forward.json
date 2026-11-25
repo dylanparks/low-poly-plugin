@@ -1,0 +1,11 @@
+{
+ "about": "Eyes facing forward from a flat face (cats, dogs, bears, primates, owls).",
+ "set": {
+  "eye_shape": "forward"
+ },
+ "ref": "lowpoly-animals SKILL.md 5, Building a forward-facing face; texture.md, Eyes",
+ "rules": [
+  "The eye ring is the widest ring of the head with a ring close in front: the triangles between them form the flat face, unwrapped head-on into its own patch.",
+  "The eye is about a quarter of the face wide, painted as the zone stack: catchlight, near-black body, a drawn rim, a socket one soft step from the coat."
+ ]
+}
