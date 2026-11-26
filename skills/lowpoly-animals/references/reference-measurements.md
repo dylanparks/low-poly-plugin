@@ -65,7 +65,7 @@ sit down, up and fidget.
 | Pig | side | 8 | 0.92 | profile; snout disc painted |
 | Bear | forward | 24 | 1.02 | head-on: both eyes and the nose painted as a frontal face |
 | Dog | forward | 30 | 1.19 | three-quarter frontal, both eyes visible |
-| Wolf (a monster model of the same game) | forward | 49 | 1.08 | three-quarter frontal, plus a mouth strip with teeth and flat fur strips |
+| Wolf (a monster model of the same game) | forward | 49 | 1.08 | three-quarter frontal, plus a strip of painted gums and teeth (its texture's two fur strips are unused by the mesh) |
 
 **Head top line:** the crown (the highest point) is at 19% of head length on the bear, 31% on the cow and 39% on the
 deer, measured from the back of the head.
@@ -323,6 +323,42 @@ height.
 
 **Deer run:** the foot is down 6–9 of 32 frames, and the lift is 57–63% of H.
 
+## Jaws and mouths: the wolf (`lib/lowpoly/tools/jaw_study.py`)
+
+**Era style context, not targets** (the plugin's jaw limits come from anatomy: `lowpoly-core/references/temperament.md`,
+"Open the jaw wide"). The reference game's wolf (1.03 m tall, 248 vertices, 30 bones) is the measured model whose mouth
+opens. Measured
+2026-11-26 on its mesh and all 14 of its clips; 13 keys a clip, sampled at 97 points. The gape is the angle at the jaw's
+hinge between the upper lip's front and the chin; the snout's pitch is against its bind pose.
+
+**Construction:**
+
+| | Wolf |
+|---|---|
+| Head / jaw (positions on 50%+ of the bone) | 49 / 8 (16%) |
+| Jaw triangles | 8: a V wedge from the mouth's corners to the chin, as wide as the upper lip at the front |
+| Cavity | none: the two lip rims are open edges, the model's only 8 |
+| Teeth | painted: a 68 x 44 texel strip on 12 triangles facing forward and down, 7 upper (head bone), 5 lower (jaw bone) |
+| Separate pieces | none (one skin) |
+| Hinge to upper lip / mouth corner ahead of the hinge | 0.19 m / 0.03-0.05 m |
+
+**The gape by clip:**
+
+| Clip | Length | Gape | Lip gap | Snout at the widest |
+|---|---|---|---|---|
+| Bind pose, stand, walk (two), run | | 7 degrees, unchanging | 2.7 cm (2.6% of the height) | |
+| Idle fidget | 3.75 s | 0-7 | 1.1-2.7 cm | level |
+| Attack 1 | 2.92 s | 0-46: open 34, bite shut, open 46, ease to 21 | to 15.5 cm | +59 (raised 22-60 throughout) |
+| Attack 2 | 1.83 s | 1-82: bite, open 82, snap to 11, open 52 | to 25.9 cm | +53 (raised 24-79) |
+| Attack 3 | 1.25 s | 0-54: open 54, snap to 12, open 43, close to 4 | to 18.0 cm | +41 (raised 31-55) |
+| Howl | 5.00 s | 7-46, opening slowly over 3 s | to 15.4 cm | level, lifting from -17 to +53 |
+| Death | 2.00 s | 19-60 | to 19.8 cm | +12 |
+
+Two clips (a death fall and an idle fidget) pull the jaw off its hinge in the sampled keys and are left out.
+
+**Read as rules:** the jaw is never shut at rest; attacks are repeated snapping bites (open 46-82, shut within 0.1-0.2 s),
+with the head raised for the whole attack; the walk and run leave the jaw alone.
+
 ## Deer construction, as an example of a medium quadruped
 
 **Rig, 39 bones:** a root, five spine bones, a hip and a shoulder centre, a hip or shoulder bone per leg, three or four
@@ -352,3 +388,28 @@ The hip and scapula bones sit at the top of each limb, inside the body.
 | Fur and colour | thousands of hairs, white belly and rump | hand-painted strokes in 3–4 tones, white patches as soft-edged shapes, lighting baked in |
 | Texture layout | — | one 256 × 128 side pelt shared by both sides |
 | Motion | complex | idle fidgets, walk, run and die clips on 39 bones |
+
+## Where the triangles go (`lib/lowpoly/tools/topo_study.py`, `lp waste`; measured 2026-11-26)
+
+**Era style context, not targets:** how one of the reference game's models split its triangles, beside a first mountain
+lion. Spend a build's triangles from its own species' anatomy (`SKILL.md` §3, rule 4).
+
+Parts read from the rig: the head with its jaw and ears, the limbs above the ankle, the ankles and paws, and the body (torso,
+neck, tail).
+
+| | Measured wolf (492 triangles) | A first mountain lion (470), before this was measured |
+|---|---|---|
+| Rendered vertices per position | 1.05 (260 for 248) | 2.46 (612 for 249) |
+| Head: triangles / surface / density over the body | 20% / 12% / 2.5 | 32% / 8% / 7.0 |
+| Body | 34% / 52% | 31% / 53% |
+| Limbs above the ankle | 20% / 23% | 16% / 28% |
+| Ankles and paws | 26% / 13% | 20% / 12% |
+| Hind legs with their haunches, by bone name | 21% of the model | 12% |
+| Neck | 8 triangles | 34 |
+| Stations along the midline | 36 | 26 |
+| Corners on two or more bones | 68% | 50% |
+| Left triangles reusing a right triangle's texels | 96% | 94% |
+| Bind pose | mid-stride: fore feet 25 cm apart front to back, hind 19 cm | square |
+| Edges that collapse under 0.2% of the height | 9.3% of the triangles, mostly short paw edges | 3.8% |
+
+One animal: widen the ranges as more of the measured models are run through the tool.

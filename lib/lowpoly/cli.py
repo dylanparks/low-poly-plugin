@@ -4,6 +4,11 @@
       Measures the model with the tools in lowpoly/tools and judges every measurement against targets.json. Writes
       report.json and report.md to --out (default: <model>_report beside the model) and exits 1 if any check at the "fail"
       level fails, 0 otherwise.
+  lp waste <model.gltf|.glb>
+      How the model spends its polygons: rendered vertices per position, each part's share of the triangles beside its
+      share of the surface, whether it was built as a mirrored half, and every edge that could be collapsed with almost
+      no change to the surface (two triangles each that shape nothing), listed by part and position. Run it on the
+      untextured blockout, before any paint (lowpoly-core SKILL.md, "Stage gates").
   lp render <model.gltf|.glb> [--out dir] [--clip name]
       Contact pictures for a person to look at: the head textured and lit from two sides, the hindquarters, the walk.
   lp preview <model.gltf|.glb> [--out dir] [--clip name] [--phase 0..1] [--refs refs.json]
@@ -92,7 +97,7 @@ def read_spec(path):
     return spec, notes
 
 
-STAGE_TOOLS = {'mesh': ['mesh', 'feet', 'thin', 'limbs', 'overlay'], 'rig': ['mesh', 'rig'], 'motion': ['rig', 'stand', 'cross'],
+STAGE_TOOLS = {'mesh': ['mesh', 'topo', 'feet', 'thin', 'limbs', 'rear', 'overlay'], 'rig': ['mesh', 'rig'], 'motion': ['rig', 'stand', 'cross'],
                'texture': ['uv', 'body', 'skin', 'eye', 'nose', 'regions', 'parts']}
 
 
@@ -211,6 +216,34 @@ def measure_feet(model, out, tag):
         if sane(1): m['feet.splay_min'] = min(sane(1))
         if sane(2): m['feet.reach_min'] = min(sane(2))
     return m, t
+
+
+def measure_topo(model):
+    """how the polygons are spent: rendered vertices per position, the head's density over the body's, mirrored
+    construction read through the texture, and edges that shape nothing (lowpoly/tools/topo_study.py)"""
+    t = run_tool('topo_study', model)
+    m = {'topo.corners_per_position': num(r'corners per position ([\d.]+)', t), 'topo.head_density': num(r'head density over body ([\d.]+)', t),
+         'topo.mirror_texels_pct': num(r"right triangle's texels (\d+)%", t), 'topo.waste_pct': num(r'triangles, ([\d.]+)% of the model', t)}
+    lr = re.search(r'triangles left (\d+) right (\d+)', t)
+    if lr: m['topo.side_difference'] = abs(int(lr.group(1)) - int(lr.group(2)))
+    return {k: v for k, v in m.items() if v is not None}, t
+
+
+def measure_rear(model, A, walk_clip=None):
+    """the hindquarters from behind (lowpoly/tools/rear_study.py): the haunch band's outline in the bind pose and at four
+    phases of the walk, the worst of each measure. A saddlebag lobe, a waist between the thigh and the body or a sharp turn
+    in the outline reads oddly from the rear and 3/4-rear camera, where no side or front measure looks"""
+    frames = [()]
+    clip = walk_clip if walk_clip in (A.get('anims') or {}) else ('walk' if 'walk' in (A.get('anims') or {}) else None)
+    if clip: frames += [(clip, ph) for ph in ('0', '0.25', '0.5', '0.75')]
+    worst, texts = {}, []
+    for fr in frames:
+        t = run_tool('rear_study', model, *fr); texts.append(t)
+        r = re.search(r'rear: thighs over hips ([\d.]+) \| bulge ([\d.]+)% \| notch ([\d.]+)% \| corner (\d+) deg', t)
+        if not r: continue
+        for k, v in (('rear.bulge_pct', float(r.group(2))), ('rear.notch_pct', float(r.group(3))), ('rear.corner_deg', float(r.group(4)))):
+            worst[k] = max(worst.get(k, 0.0), v)
+    return worst, '\n'.join(texts)
 
 
 def measure_thin(model, tag):
@@ -483,8 +516,10 @@ def check(model, spec_path=None, stage='all', out=None):
 
     if 'mesh' in want: take('mesh', measure_mesh, model, A)
     if 'feet' in want and spec.get('feet', 'paw') != 'none': take('feet', measure_feet, model, out, tag)
+    if 'topo' in want: take('topo', measure_topo, model)
     if 'thin' in want: take('thin', measure_thin, model, tag)
     if 'limbs' in want: take('limbs', measure_limbs, model, tag)
+    if 'rear' in want and spec.get('body_plan', 'quadruped') == 'quadruped': take('rear', measure_rear, model, A, spec.get('walk_clip'))
     if 'overlay' in want:
         rp = None
         if spec.get('refs'):
@@ -675,8 +710,8 @@ def main(argv):
 
 
 OPTIONS = {'check': ('spec', 'stage', 'out'), 'render': ('out', 'clip'), 'preview': ('out', 'clip', 'phase', 'refs'),
-           'overlay': ('out', 'threshold'), 'bake-springs': (), 'export-viewer': (), 'contract': ('out',)}
-ARGS = {'check': 1, 'render': 1, 'preview': 1, 'overlay': 2, 'bake-springs': 3, 'export-viewer': 3, 'contract': 1}
+           'overlay': ('out', 'threshold'), 'bake-springs': (), 'export-viewer': (), 'contract': ('out',), 'waste': ()}
+ARGS = {'check': 1, 'render': 1, 'preview': 1, 'overlay': 2, 'bake-springs': 3, 'export-viewer': 3, 'contract': 1, 'waste': 1}
 
 
 def run(argv):
@@ -685,7 +720,7 @@ def run(argv):
         from lowpoly import spring_bake; print(spring_bake.__doc__); return 0
     if cmd in ('overlay', 'preview') and rest[:1] in (['-h'], ['--help']):     # the tool's own usage: the refs.json format and more
         print(run_tool('measure_overlay' if cmd == 'overlay' else 'preview', '--help')); return 0
-    if cmd not in OPTIONS: raise UsageError('unknown command %r (check, contract, render, preview, overlay, bake-springs or export-viewer; lp --help for more)' % cmd)
+    if cmd not in OPTIONS: raise UsageError('unknown command %r (check, contract, waste, render, preview, overlay, bake-springs or export-viewer; lp --help for more)' % cmd)
     opts, pos, i = {}, [], 0
     while i < len(rest):
         if rest[i].startswith('--'):
@@ -708,6 +743,8 @@ def run(argv):
         if opts.get('out'): open(opts['out'], 'w', encoding='utf-8').write(md); print('wrote', opts['out'])
         else: sys.stdout.write(md)
         return 0
+    if cmd == 'waste':
+        read_model(pos[0]); sys.stdout.write(run_tool('topo_study', pos[0], '--waste')); return 0
     if cmd == 'render':
         for p in render(pos[0], opts.get('out'), opts.get('clip')): print('wrote', p)
         return 0

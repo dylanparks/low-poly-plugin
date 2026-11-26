@@ -174,6 +174,29 @@ theropod, not the species (`case-study-trex.md`, rounds 18-20). Anatomy first, t
 - **From below and in front, and from above and behind:** the jaw's corner running into the throat.
 - **Open,** in the attack clip, from the front and the side: the jaws part without crossing (`lib/lowpoly/tools/lit_view.py`, then the
   viewer).
+- **The gape, in numbers,** in every clip: `lib/lowpoly/tools/jaw_study.py` (the angle at the hinge between the upper lip's
+  front and the chin, the lip gap, the snout's pitch at the widest, and whether the teeth are modelled or painted).
+
+**Era context: the reference game's painted snarl** (not a standard; the reference game's wolf, 248 vertices, re-measured
+2026-11-26 with `jaw_study.py`; numbers in `reference-measurements.md`, "Jaws and mouths"). This is how the one shipped
+model with a mouth that opens is built. It is not the rest of this section: those rules come from this plugin's own builds
+(the 12 m T. rex, the Kodiak, the gorilla), which are larger or hero builds seen closer.
+- **The jaw is a small wedge:** 8 vertices and 8 triangles on its own bone (16% of the head's 49), a V from the two mouth
+  corners to a chin point, the same width as the upper lip at the front: the rows face the camera rather than overlapping.
+- **No cavity:** the upper and lower lip rims are left as open edges (8 of them, the model's only ones). Nothing closes the
+  mouth behind the teeth; the gap reads dark.
+- **The teeth are painted,** on 12 triangles that face forward and down: 7 under the snout (upper row, head bone) and 5 on
+  the jaw's front (lower row, jaw bone), from one 68 x 44 texel strip of gums and white teeth on near-black.
+- **Never fully shut:** 7 degrees and a 2.7 cm lip gap (2.6% of the height) in the bind pose and every moving clip, so the
+  painted teeth always show.
+- **The corner** is 3-5 cm ahead of the hinge; the upper lip 0.19 m ahead of it.
+- **Not the default for a hostile mob.** Copied onto a medium-tier mountain lion (2026-11-26), painted teeth behind a short
+  opening read from the game camera as a pink slit; the wolf's own teeth face the camera on its snout's underside and its
+  mouth is held open in every pose, which the lion's closed cavity did not give them. A hostile mob gets a modelled row at
+  every tier (`lowpoly-core/references/temperament.md`, "Which to build"): about 8 pyramids, 32 vertices, at the medium
+  tier. How far a jaw opens comes from the species' anatomy (`lowpoly-core/references/temperament.md`, "Open the jaw wide").
+- **The motion that goes with it** (snapping bites with the head up, the howl) is in
+  `lowpoly-core/references/temperament.md`, "Open the jaw wide".
 
 **A very large head (built on the 12 m test animal).** When the camera fills the screen with the head, the simple forms
 that suit a small animal look painted on. Build as geometry what the camera can see into or around.
@@ -207,7 +230,8 @@ stretched open by a jaw bone, looked painted on: the texture streaked and the te
   its third added incisor blocks and cheek-tooth blocks. A bear (I 3/3, C 1/1, P 4/4, M 2/3) shows, per jaw: the I1-I2 pair
   and I3 a side, the canines (the lower in front of the upper), a gap, and a long low row of cheek teeth: 12 pyramids beside
   the canines, 48 vertices. Paint each tooth's gum colour at its root, not in a band at one height.
-- **Teeth: small closed pyramids** (4 vertices, 4 triangles, as simple as the measured dog and cow ears, only many more). Their
+- **Teeth: small closed pyramids** (4 vertices, 4 triangles, as simple as the measured dog and cow ears, only many more; this
+  plugin's standard for a head seen close, not the measured wolf's, whose teeth are painted). Their
   bases lie in the lip rims, a centimetre sunk into them. Upper teeth stand on the outer part of the rim and lower teeth on
   the inner part, so the two rows pass each other when the jaw closes. Make the middle teeth the longest and the front and
   back ones short. Upper teeth are on the head bone, lower teeth on the jaw bone.
@@ -246,8 +270,10 @@ an eye under about 90 degrees, and measure it (`lib/lowpoly/tools/edge_angles.py
    at its edge, or it ends in a hard rectangle, and sample the skin underneath at the point's true position (§6).
 4. **Check it from the front, 3/4 and side,** with the engine's lights (`lib/lowpoly/tools/lit_view.py`) and in the viewer.
 
-**Extras in the measured models:** a wolf model from the same game has a separate mouth-interior strip (gums and teeth) and flat fur cards for its tail
-brush and ruff.
+**Extras in the measured models:** a wolf model from the same game has a separate mouth strip of painted gums and teeth (the
+painted snarl above). Its texture also holds two long fur strips, but no triangle of its one mesh uses them: the tail is a
+closed volume (17 vertices) and the model has no cards (re-measured 2026-11-26; an earlier note said it had flat fur cards
+for its tail brush and ruff).
 
 **Birds: heads and beaks (from the bald eagle of the agent trial).** A bird's head is not a mammal's with a muzzle: the
 beak is a horn sheath on its own bones, and the mammal top-line rule (SKILL.md §5) does not hold. The test eagle's beak was

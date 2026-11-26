@@ -28,6 +28,7 @@ reading JPEG references in `silhouette_measure.py`. `lp --help` has the full usa
 | Command | What it does |
 |---|---|
 | `lp check <model> [--spec spec.json] [--stage mesh\|rig\|texture\|motion\|all] [--out dir]` | Runs the tools that apply to the spec and judges 61 checks against `lib/lowpoly/targets.json`; writes `report.json`, `report.md` and each tool's raw output; exits 1 on a check at the "fail" level |
+| `lp waste <model>` | How the model spends its polygons: rendered vertices per position, each part's share of the triangles against its share of the surface, mirrored construction, and every edge that could be collapsed with almost no change. Run on the untextured blockout (gate 1) |
 | `lp contract <spec.json> [--out brief.md]` | Resolves a style contract: the shared profiles in `lib/lowpoly/profiles/` (style, muzzle and eye kinds, species, colour, scale, temperament) layered under the model's own parts, palette and rules; prints the brief every part builder works from (`skills/lowpoly-core/references/contracts.md`) |
 | `lp preview <model> [--clip c] [--phase p] [--out dir] [--refs refs.json]` | Six fixed views (3/4 front, 3/4 rear, side, front, rear, top) shaded as the viewer shades them, with a ground line and scale bar; `preview.html` to turn it round and play clips; with `--refs`, `compare.html` sets each view beside its references |
 | `lp render <model> [--clip c] [--out dir]` | The head textured and lit, the hindquarters and the walk |
@@ -41,6 +42,9 @@ checks), skin, feet, tier, eye (`"eyes": "glow"` for a pupil-less glow), open ed
 
 ## Library
 
+- `lib/lowpoly/build.py`: the half-model builder: arcs, strips, holes and loop bridges for the left half, `mirror_and_weld`,
+  per-piece winding, a one-UV-per-vertex mirrored pelt, `pose_x` for an off-centre bind pose, `to_model` for `write_gltf`.
+  `python -m lowpoly.build` runs its self-test.
 - `lib/lowpoly/gltf_io.py`: glTF 2.0 in and out (.gltf with .bin, or .glb): skin, rest pose, clips, texture. A .bin that
   doesn't match its .gltf is refused.
 - `lib/lowpoly/rig_parts.py`: the head, limbs and feet read from the rig (bone names, else the rig's shape), shared by the
@@ -57,7 +61,7 @@ checks), skin, feet, tier, eye (`"eyes": "glow"` for a pupil-less glow), open ed
 |---|---|
 | Views | `preview.py` (behind `lp preview`), `lit_view.py` (viewer-shaded close-up at any angle), `head_views.py` and `head_textured.py` (the head untextured and textured), `region_views.py`, `walk_sheet.py` |
 | References | `measure_overlay.py` (behind `lp overlay`), `ref_overlay.py` (draws a side view over a reference), `silhouette_measure.py` (dense outline measurements from a dead-on reference image) |
-| Mesh and motion | `self_cross.py` (parts passing through each other, `--where`), `visible_area.py`, `thin_triangles.py`, `edge_angles.py`, `limb_widths.py`, `foot_study.py`, `stand_study.py`, `rig_study.py` |
+| Mesh and motion | `self_cross.py` (parts passing through each other, `--where`), `visible_area.py`, `thin_triangles.py`, `edge_angles.py`, `limb_widths.py`, `foot_study.py`, `stand_study.py`, `rig_study.py`, `topo_study.py` (behind `lp waste`: rendered vertices, triangle shares by part, mirrored construction, edges that shape nothing), `jaw_study.py` (the gape in every clip, modelled or painted teeth), `rear_study.py` (the haunch outline from behind: bulge, notch, corner) |
 | Texture | `uv_study.py`, `uv_reuse.py`, `body_study.py`, `skin_study.py`, `region_detail.py`, `eye_study.py`, `nose_study.py`, `ear_study.py`, `head_detail.py`, `foot_detail.py` |
 
 ## Checks, by stage

@@ -39,8 +39,25 @@ follow the species, and for insects use the eyes' colour and size instead.
 - Each eye sits on a facet angled forward beside the nose bridge, directly under a **brow fold**. The fold is an angled crease
   where the forehead plane meets the muzzle plane, sloping down toward the nose.
 - The painted upper lid lies on that crease, so the brow shades the lid and the glare holds from every angle.
-- The mouth is the same idea: the jaw is open geometry and the teeth are geometry too: small closed pyramids sunk in the gums,
-  the formula's visible row (`lowpoly-animals/references/heads.md`). The mouth's inner strip carries only the gums and the throat.
+- **The mouth is painted on open geometry, not modelled teeth** (re-measured 2026-11-26 with `lib/lowpoly/tools/jaw_study.py`;
+  an earlier version of this note said the wolf's teeth were closed pyramids, which the file does not bear out). The jaw is a
+  small wedge of 8 vertices (16% of the head's) on its own bone, held 7 degrees open in every pose, a 2.7 cm gap. There is no
+  cavity: the two lip rims are left as open edges. The teeth are painted on a 68 x 44 texel strip of gums and teeth, mapped
+  onto 12 triangles that face forward and down: 7 under the snout (the upper row, on the head bone) and 5 on the jaw's front
+  (the lower row). From the game's 3/4 camera that reads as a snarl full of teeth for no extra vertices.
+- **Which to build: a hostile mob gets modelled teeth at every tier.** The reference game's painted mouth is era context, not
+  the default. Tried on a medium-tier mountain lion (2026-11-26), teeth painted on the palate and floor behind a 4 cm
+  opening at the snout's tip read from the game camera as a pink slit: no jaw, no teeth. Rebuilt as below it read at once,
+  in the idle snarl and in the attack. The same lesson as the T. rex's (a painted mouth looked painted on), the Kodiak's and
+  the gorilla's (canines alone read as a mouth missing teeth):
+  - **A visible row of closed pyramids, sunk in the lip rims:** per side an upper and a lower canine (the lower in front)
+    and an upper and a lower incisor block, painted as three incisors with two dark gaps. The cheek teeth may be painted
+    along the rim behind the canines. 8 pyramids, 32 vertices and 32 triangles: pay for them from the body's straight
+    runs, not the head's landmarks (the lion gave back two barrel rings and a tail ring).
+  - **A mouth as long as the species':** the corner under the eye's front on a cat or dog, the lower jaw swinging from
+    there (the corner half on each jaw), not a slit at the snout's tip.
+  - **The jaw's front a rounded U** (the giant bat), and the inside kept dark (`lowpoly-animals/references/heads.md`).
+  - A docile animal keeps its mouth closed, and needs no teeth. Say in the report which you built.
 
 **The glow: no pupil, and smaller than you think.** A hostile mammal's or bird's eye reads best as a small, soft glow with no
 pupil and no slit. **The fierce glare the user settled on** (the Kodiak, 2026-11-24, from their reference image): bulky
@@ -100,6 +117,18 @@ animal that keeps a real pupil on purpose (a reptile's slit) sets `"eyes": "pupi
   and lunge about 40 (from about 31); the gorilla's roar about 40 (from 30) and its charge 24. Leave the idle's resting
   gap alone. A wider jaw can drive the chin into the chest: the gorilla's threat went from 18 to 34 crossings until the
   head tipped back 0.12 radians with the gape (a roaring animal lifts its head anyway), which brought it to 16.
+- **How far a jaw can open is the species' anatomy** (measure every clip with `lib/lowpoly/tools/jaw_study.py`: the angle at
+  the hinge between the upper lip's front and the chin):
+  - **The limit:** no clip opens past the species' maximum bony gape. A modern cat's is about 65 degrees (the puma is the
+    worked example in Kitchener, Van Valkenburgh and Yamaguchi, "Felid form and function"); measured domestic cats average
+    45-51 degrees at full opening (Renner et al., Journal of Veterinary Dentistry, 2023). Look up the species' figure, or its
+    family's, before animating, and cite it: a gape past it reads as a broken jaw, not a threat.
+  - **The threat uses most of it:** a hostile attack or roar near the maximum, the idle's snarl a third to a half of it.
+  - **At rest and on the move** the mouth is shut, unless the species pants or the contract asks for a snarl.
+  - **The head follows the bite:** lift the head as the jaw opens until the chin clears the chest (motion.crossings), as the
+    gorilla's threat needed; how high comes from the species' own footage, not another model.
+  - Snapping bites (open, shut within a few frames, open again) are an animation style of the reference game's era: use them
+    when the contract asks for that look.
 
 ## By body plan
 

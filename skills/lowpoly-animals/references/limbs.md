@@ -83,6 +83,31 @@ With the hole ending behind the knee, the thigh's front face folds back under th
 deer and bear have none. Check it in side, rear and underside renders of the hindquarters
 (`lib/lowpoly/tools/region_views.py`).
 
+## The haunch from behind (lp check rear.*, `lib/lowpoly/tools/rear_study.py`)
+
+**The anatomy.** The haunch is one convex mass: the gluteals over the pelvis and the hip joint, and the biceps femoris and
+the hamstrings down the back of the thigh to the stifle. From behind it is widest over the hip joint and the thigh's
+muscle, and below the stifle the leg narrows evenly through the gaskin to the hock. A convex mass has no waist and no
+corner, so from behind the outline runs down from the hip as one column. Read the widths from the species' own rear and
+3/4-rear photos (and a rear plate where one exists) with the tail lifted or to one side, so it doesn't hide the contour.
+
+**The failure** (a mountain lion, 2026-11-26). To make the thigh widest at mid-leg (limbs.hind_peak), its thigh ring was
+widened until it stood out past the hips, while the body's lower flank round the leg's root kept the torso shape's
+narrower side (0.85 of the half-width). From behind the outline went in at the leg's root, out to the thigh ring, and
+in again to the shin: a saddlebag lobe with a waist above it (bulge 2.8% of the height, notch 2.6%, a 40-degree turn).
+No side or front measure saw it.
+
+**Build it as a column:**
+- Push the lower flank round the hind leg's root out to the hip's width, so the leg's root doesn't make a waist.
+- Size the thigh's widest ring from the muscle, just outside the hip's width at most, and taper the knee, gaskin and hock
+  rings evenly below it.
+- limbs.hind_peak asks where the thigh is fullest; it does not ask for it to stick out. Satisfy it by the ring's height,
+  not by widening it past the body.
+
+**Check it:** `lp check` rear.bulge, rear.notch and rear.corner measure the haunch band (the hock to just above the hip,
+tail left out) in the bind pose and four walk frames. The limits allow for low-poly facets only; a convex mass itself has
+no lobe, waist or corner. Look at the rear and 3/4-rear views of `lp preview` too.
+
 ## Both sides alike: check the symmetry after every topology change (from SKILL.md §8)
 
 A mirrored model shares one pelt between its sides, so both sides must have the same triangles, mirrored. The pelt then fits
