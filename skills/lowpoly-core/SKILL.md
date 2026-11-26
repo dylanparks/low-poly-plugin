@@ -48,6 +48,57 @@ it moves**: study one in code for its construction (welded or separate, weighted
 subject's own anatomy, sized from your own reference. Copying a reference model's proportions or motion onto another subject
 gives a clean model of the wrong thing; use the range across several of a group, not one example.
 
+## What a model is for
+
+Read this before anything else: every rule below follows from it, and a build that keeps the rules but misses this comes out
+tidy and wrong.
+
+> A model is **a silhouette that deforms**, read from a three-quarter game camera 10-20 m away, among dozens of others, and
+> paid for in **rendered vertices and texels**. A triangle earns its place only if it (a) changes the outline from that
+> camera, (b) lets a joint bend without collapsing, or (c) holds a texture feature the pelt cannot. Everything else is painted.
+
+**Where this comes from.** The measured models were made for a 333 MHz machine with an 8 MB video card, in a world that
+streams without loading screens, so every creature competed for memory and for per-vertex work every frame. Lighting was per
+vertex, so form had to be painted. The artists built from a side drawing: trace the outline, give it half the width, build
+**one half, mirror it and weld the centre**, pose it, lay it out as one side-view pelt, paint over photos. Those limits are
+gone; the discipline is what makes the look, so the plugin keeps it. **The reference game's models are context for that
+style** (how simple the polygons are, how a pelt maps), never a standard: every proportion, width, angle and limit the
+plugin measures comes from the subject's own anatomy references (§1).
+
+**The cost model.**
+- **Rendered vertices, not triangles.** Every UV seam and hard edge duplicates a vertex for the renderer. One mirrored pelt
+  (§5) keeps it near one per position by construction; a first mountain lion, cut into 43 texture charts, had 249 positions
+  and 612 rendered vertices (2.46), and rebuilt on one pelt 1.06. `lp check` budget.corners warns past 1.3.
+- **Triangles follow the outline and the joints, not the face.** Spend them where the species' anatomy makes the outline
+  turn and where joints bend (§2). The first mountain lion put 32% of its triangles on a head of 8% of its surface, 7 times
+  the body's density, and too few on the haunches, where the silhouette and the walk are; rebuilt from its references it
+  read better at 3.8. budget.head_density warns past 4 (the plugin's own builds; teeth left out).
+- **A thin triangle that buys outline is a good one.** mesh.slivers and texture.stretch are warnings to look at, never
+  reasons to move a triangle off the silhouette the anatomy gives.
+- **Paint what the camera cannot see round.** Toes, nostrils, the eye: painted at the medium tier and below; geometry for
+  them belongs to a very large animal or a hero build whose head fills the camera (§2). **Teeth are the exception on a
+  hostile mob:** its threat reads from the mouth, so it gets a modelled row at every tier (temperament.md, "Which to
+  build"). A painted snarl on a medium-tier mountain lion read as a pink slit from the game camera (2026-11-26).
+
+**The build order** (the stage gates below hold you to it):
+1. The side outline from the references, then the widths: stations where the outline bends (§1, §3).
+2. **One half,** mirrored and welded (`lib/lowpoly/build.py`), so both sides match by construction (§3).
+3. Spend the tier's triangles by part (§2), then run `lp waste` and move what shapes nothing to where the outline is coarse.
+4. Pose the bind pose off-centre, as the animal stands (§3, rule 7).
+5. One mirrored pelt, one UV per vertex (§5). Then paint.
+
+## Stage gates
+
+A shape error found after the texture is painted costs a round of everything. The first mountain lion's legs 0.6 times too
+thin, its dog-length muzzle and its bloated head were all found after its paint was finished. Pass each gate before starting
+the next stage:
+
+| Gate | Run | Must hold before going on |
+|---|---|---|
+| **1. Blockout** (untextured, no clips) | `lp check <model> --spec spec.json --stage mesh`, `lp waste <model>`, `lp preview` | the overlay within 5% in every view that has a reference; budget.corners, budget.head_density, mesh.mirror and mesh.sides clean; the wasted edges moved or justified; the six-view sheet reads as the animal |
+| **2. Rig and motion** | `--stage rig`, `--stage motion` | joints at the skeleton's; every clip free of crossings; feet planted |
+| **3. Texture** | `--stage texture` | seams, coat, eye and nose checks; colours judged in `lp preview` |
+
 ## The core idea in one paragraph
 
 Gather the subject's skeleton and muscle in side, front and top views, and measure the joints, bone lengths and outline as
@@ -141,6 +192,10 @@ Budgets of the measured models:
 
 ## 3. Topology
 
+0. **Build one half.** Define the left half only (x >= 0), then mirror and weld: `lib/lowpoly/build.py` (`Half`,
+   `mirror_and_weld`, `fix_winding`, `pelt_uv`, `pose_x`, `to_model`). Both sides then match in vertices, triangles,
+   winding and texels by construction; a builder that makes each side separately drifts (an ear at another angle, teeth
+   inside out, three times in one animal). `lp check` mesh.mirror and mesh.sides read it back from the model.
 1. **One continuous skin.** Limbs, neck, head and tail grow out of the torso by sharing its vertices.
    - **Never** place capped tubes or capsules against the body.
    - **Never** bury a separate limb tube inside the body: it looks attached when still, and slides through in motion.
@@ -160,7 +215,8 @@ Budgets of the measured models:
 6. **Smooth normals across the whole skin.** Low poly plus smooth shading gives the soft look. Hard edges only on hooves,
    horns, beaks and shells.
 7. **Bind pose = the subject's natural stance, not a T-pose:** joints angled as in the reference, feet flat on the ground,
-   the head at its natural height. Slight asymmetry is fine.
+   the head at its natural height. **Pose it after mirroring** (`build.pose_x`), as the species' own standing photos show
+   it (a puma often mid-stride, one forefoot ahead). Symmetry belongs to the construction, not the stance.
 
 **Clean triangles.** No triangle with an aspect over about 10 (the longest edge squared over twice the area): weld vertices
 a few millimetres apart, flip the diagonals of nearly flat quads (`lib/lowpoly/mesh_tidy.py`). **Mirrored pairs alike:**
@@ -185,7 +241,8 @@ The texture does most of the work.
 - **Name the surface types, region by region,** before painting: each is painted and measured differently (fur, scales,
   plates, wet skin, chitin, membranes for animals: `lowpoly-animals/references/skin-types.md`).
 - **Layout:** paint **one side** as a flattened side view, a "pelt", that both sides share (a planar side projection: `u`
-  along the body, `v` = height, `x` ignored). With a mirrored pelt, add a vertex on the spine so the back can be unrolled.
+  along the body, `v` = height, `x` ignored). **One UV per vertex is the target** (`build.pelt_uv`; budget.corners): every
+  extra chart duplicates rendered vertices along its seam, so a patch must earn its place as a triangle does. With a mirrored pelt, add a vertex on the spine so the back can be unrolled.
   - **Overlapping parts** in the side view (legs, ears, wings over the back) get their own strip, or they take the colour of
     what they overlap.
   - **Own patches:** forward-facing faces, eyes on a long or large head, a mouth's interior and teeth, feet, and any group
@@ -215,6 +272,10 @@ The gaits and clip sets of animals are in `lowpoly-animals` §7. These hold for 
   falls inside the ground contact, near its middle (`lp check` motion.balance; not for flyers). **The planted feet stay put:**
   a bone that breathes or sways (the chest, the hips) drags the legs hung from it, so those legs turn back by the same amount
   (`lp check` motion.planted).
+- **Joints bend as the anatomy does and the skin keeps its width.** No hinge (a knee, an elbow, a hock) bends backwards in
+  any frame; no blended joint ring folds so far that it pinches, no short band of skin behind a joint stretches; in an action
+  clip the paired limbs move each on their own (`lp check` motion.hyperextended, motion.leg_rings, motion.leg_stretch_*,
+  motion.lockstep; `leg_bend_study.py`; `lowpoly-animals/references/limbs.md`, "Legs that bend").
 - **Nothing passes through itself or the body** in any frame of any clip (`self_cross.py`, `lp check` motion.crossings;
   `--where` names the bones).
 - **Secondary motion** (tails, ears, hair, feathers, a mane) as baked spring bones: `lp bake-springs`, with stiffness, drag,
@@ -224,6 +285,8 @@ The gaits and clip sets of animals are in `lowpoly-animals` §7. These hold for 
 ## 7. Checklist (before calling it done)
 
 `lp check` runs the measurable items; the report goes with the preview sheet in every review.
+- [ ] The three stage gates passed in order; built as one half and mirrored; rendered vertices within 1.3 of positions; the
+  head no more than 4 times the body's triangle density; `lp waste` run and its edges moved or justified.
 - [ ] A contract written before the build (profiles from the reference translation, parts with budgets), every part briefed
   from `lp contract`, and the parts.* checks clean at every merge (`references/contracts.md`).
 - [ ] The temperament was settled and the reference set gathered **first**, in every view, each dead-on view measured
@@ -238,6 +301,7 @@ The gaits and clip sets of animals are in `lowpoly-animals` §7. These hold for 
 - [ ] Surface types named per region; a mirrored pelt with painted light and form; own patches for stretched faces; seams
       in range; colours judged under the engine's lights and confirmed in the viewer (§5).
 - [ ] Every clip checked for crossings; standing clips balanced; motion compared with reference frames (§6).
+- [ ] No joint bent backwards, no joint ring pinched or band of skin stretched, paired limbs independent in action clips (§6).
 - [ ] Seen at game distance from a 3/4 angle, the subject is obvious without labels.
 
 ## Common failures

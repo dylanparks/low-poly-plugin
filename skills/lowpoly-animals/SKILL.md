@@ -26,7 +26,7 @@ eye lids, coats and the non-fur skins also draw on the same game's animal-like m
 | `references/heads.md` | the muzzle against the eyes, ears, jaws and mouths, long-faced heads, brows and sockets on very large heads, bird heads and beaks |
 | `references/muzzles.md` | the muzzle by kind (leather pad, soft equine, muffle, disc, split lip, lipless): its end, nostrils, lips and chin as geometry, then painted as lit forms |
 | `references/eyes.md` | side-facing, docile eyes: the almond, its tilt, the lids' shading outward, the tear duct at low pixel density, size against the model |
-| `references/limbs.md` | building the muscle, not the bone: lobes, folds, the groin, the front view's widths |
+| `references/limbs.md` | building the muscle, not the bone: lobes, folds, the groin, the front view's widths; legs that bend as the anatomy does and keep their width in motion |
 | `references/texture.md` | coat layers, eyes and pupils, noses, the head's coat and values, feet paint |
 | `references/skin-types.md` | scales, plates, wet skin, chitin and membranes, and how to tell which an animal has |
 | `references/reptile-skin.md` | reptiles: the scale for each zone, plates and beads, crossfades, colour matching, and the underbelly rolls contoured to the muscle |
@@ -98,7 +98,13 @@ The general rules (one skin, holes and bridges, rings, winding, normals, bind po
 3. **The underline follows the species.** Where the species has a tucked flank (cats, dogs, deer, horses), the underline
    rises from the chest to the flank, so the top of the hind leg shows. Heavy-bellied animals (pig, cow, bear) keep a low
    belly, but the thigh's front edge must still read.
-4. **Ring counts.** Torso: the measured mammals use 7 sides (one belly vertex, two on each near-vertical flank, a two-vertex
+4. **Where the triangles go** (lowpoly-core, "What a model is for"): from the species' anatomy, not another model's
+   shares. Start from each part's share of the surface on the blockout built from the references, then move triangles
+   toward where the outline turns in the side, front, top and rear views (a muscle's fullest point, a joint's crease) and
+   where joints bend in the clips, and away from straight runs. `lp waste` lists the edges that shape nothing;
+   budget.head_density catches a head that took the body's share. (The reference game's split is recorded as era context
+   in `references/reference-measurements.md`, "Where the triangles go"; it is not a target.)
+   **Ring counts.** Torso: the measured mammals use 7 sides (one belly vertex, two on each near-vertical flank, a two-vertex
    ridge on the back, so the body is taller than wide), 8 with a spine vertex for an unrolled back. Rings at the chest front,
    behind the elbows, the waist, the front of the haunch, the rump, the tail root. Limbs: rings only at knee or elbow, hock
    or wrist, then the foot. Tail: 3–4 sides tapering to a point, or a flat card for a bushy tail. Ears: part of the head skin
@@ -185,6 +191,10 @@ profiles, which sets `"eyes": "glow"` and replaces the species' pupil eye (`lowp
   a short tear streak. The radius is 1.4-2.5% of the height (`lp check` eye.size).
 - **Jaws and mouths:** each jaw from its bones and muscles: the lower jaw's own sides, edge and depth, the mouth's corner,
   the widest point over the jaw muscles, which jaw overlaps, teeth from the dental formula, the jaw's corner into the throat.
+  A hostile mob gets modelled teeth at every tier: canines and incisor blocks as sunk pyramids, the mouth running back to
+  its corner, a rounded chin, a dark inside (`lowpoly-core/references/temperament.md`, "Which to build"). The reference
+  game's painted snarl is era context (`references/heads.md`), not the default. Measure every clip's gape with
+  `lib/lowpoly/tools/jaw_study.py` and keep it within the species' maximum bony gape (temperament.md, "Open the jaw wide").
 - **A very large head:** a mouth hole between two jaws with 3D teeth, brow and sockets as geometry, eyes in the lateral
   sockets with an oblique patch; creases round the eye under about 90 degrees, slivers under an aspect of about 10.
 
@@ -234,6 +244,15 @@ with the toes flat, swings with them folded down, and lands flat. The body is lo
 (typically 0.7), lift (2-8% of the height; the high-stepping deer 9-21%), stride, how far the joints fold, and the footfall
 order. Let the shoulder slide with a reaching foreleg, fold the hind leg into a Z in the swing, and carry the head lower in a
 walk. The table and the notes on each joint are in `references/locomotion.md`.
+
+**Legs that bend** (details and the measured numbers in `references/limbs.md`, "Legs that bend"):
+- **Joints fold as the species' do.** Elbows, knees and hocks are hinges that bend one way and never straighten past their
+  line (`lp check` motion.hyperextended fails on one frame of it); a carpus folds both ways of straight.
+- **The skin keeps its width.** Keep each blended joint ring's fold under about 50° from the bind pose (a ring blended
+  across a joint shrinks to cos(bend / 2)); spread a deep pose over the neighbouring joints; cap the wrist's turn against
+  the forearm in the IK (the lion: 22-23°) and tip the pastern beyond it (motion.leg_rings, motion.leg_stretch_*).
+- **Each leg on its own in an action clip:** its own timing, height and path; feet left behind follow the body
+  (motion.lockstep). An attack follows the species' hunting behaviour (lowpoly-core `references/temperament.md`).
 
 **Standing:** the centre of mass inside the feet's contact in every standing clip (lowpoly-core §6). Don't trust the bind
 pose's feet; fix it in the standing clips with the walk's own IK (`references/locomotion.md`).

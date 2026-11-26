@@ -172,6 +172,100 @@
    "ref": "lowpoly-animals/references/heads.md"
   },
   {
+   "id": "rear.bulge",
+   "measure": "rear.bulge_pct",
+   "max": 1.5,
+   "note": "the haunch's outline from behind, between the hock and just above the hip: the most it steps out and back again within 12% of the height, % of the height, the worst of the bind pose and four walk frames (lowpoly/tools/rear_study.py). The haunch is one convex mass, so its outline has no lobe; the limit allows for facets. A mountain lion whose thigh ring stood out past the hips as a saddlebag read 2.8",
+   "stage": "mesh",
+   "level": "warn",
+   "applies": {
+    "body_plan": [
+     "quadruped"
+    ]
+   },
+   "ref": "lowpoly-animals/references/limbs.md, The haunch from behind"
+  },
+  {
+   "id": "rear.notch",
+   "measure": "rear.notch_pct",
+   "max": 1.0,
+   "note": "the deepest waist in the haunch's outline from behind between two wider parts (the thigh and the body above it), % of the height. A convex muscle mass has none; the limit allows for facets. The saddlebag mountain lion read 2.6",
+   "stage": "mesh",
+   "level": "warn",
+   "applies": {
+    "body_plan": [
+     "quadruped"
+    ]
+   },
+   "ref": "lowpoly-animals/references/limbs.md, The haunch from behind"
+  },
+  {
+   "id": "rear.corner",
+   "measure": "rear.corner_deg",
+   "max": 25,
+   "note": "the sharpest turn of the haunch's outline from behind, degrees: a facet sticking out reads as a corner where the muscle is a smooth curve. The saddlebag mountain lion read 40",
+   "stage": "mesh",
+   "level": "warn",
+   "applies": {
+    "body_plan": [
+     "quadruped"
+    ]
+   },
+   "ref": "lowpoly-animals/references/limbs.md, The haunch from behind"
+  },
+  {
+   "id": "budget.corners",
+   "stage": "mesh",
+   "measure": "topo.corners_per_position",
+   "max": 1.3,
+   "level": "warn",
+   "note": "rendered vertices per welded position: every UV seam duplicates a vertex for the renderer. A single mirrored pelt (lowpoly/build.py) keeps it near 1 by construction; a first mountain lion cut into 43 texture charts ran 2.46, rebuilt on one pelt 1.06",
+   "ref": "lowpoly-core SKILL.md, What a model is for"
+  },
+  {
+   "id": "budget.head_density",
+   "stage": "mesh",
+   "measure": "topo.head_density",
+   "max": 4.0,
+   "level": "warn",
+   "excludes": {
+    "tier": [
+     "very-large",
+     "tiny",
+     "swarm"
+    ]
+   },
+   "note": "the head skin's triangles per square metre over the body's (torso, neck, tail). Separate pieces such as a hostile mob's modelled teeth are left out (counted on their own line). A first mountain lion ran 7.0, with too few triangles on its haunches; rebuilt from its references, 3.8. Not judged on a very large animal, whose head earns geometry",
+   "ref": "lowpoly-core SKILL.md, What a model is for"
+  },
+  {
+   "id": "mesh.mirror",
+   "stage": "mesh",
+   "measure": "topo.mirror_texels_pct",
+   "min": 90,
+   "level": "warn",
+   "note": "left triangles whose exact texels a right triangle also uses, %: a model built as one half, mirrored and welded, on a mirrored pelt. Positions are not compared: a bind pose stepped off-centre is right. Build with lowpoly/build.py and both sides match by construction",
+   "ref": "lowpoly-core SKILL.md 3, Build one half"
+  },
+  {
+   "id": "mesh.sides",
+   "stage": "mesh",
+   "measure": "topo.side_difference",
+   "max": 4,
+   "level": "warn",
+   "note": "left triangles minus right triangles: two sides built separately drift apart (an ear stitched differently, a tooth turned inside out)",
+   "ref": "lowpoly-core SKILL.md 3, Build one half"
+  },
+  {
+   "id": "mesh.waste",
+   "stage": "mesh",
+   "measure": "topo.waste_pct",
+   "max": 10,
+   "level": "warn",
+   "note": "triangles on edges that collapse with under 0.2% of the height of change and that no joint needs, % of the model (lp waste lists them): triangles that shape nothing. a texture feature can justify one",
+   "ref": "lowpoly-core SKILL.md, What a model is for"
+  },
+  {
    "id": "feet.splay",
    "stage": "mesh",
    "measure": "feet.splay_min",
@@ -402,6 +496,51 @@
    "level": "warn",
    "note": "crossings involving a separate piece (a resting wing shell, a swapped or hidden part, teeth, claws) in the worst frame of any clip, leaving out the triangle pairs that already cross in the bind pose or in every frame of the clip (a tooth sunk into the gum, a shell's root sunk into the shoulder). motion.crossings counts only the main skin: the alicorn's takeoff read 16 there while its shells crossed the body and the flight wing 118 times during the swap. Not run on a model that is one piece",
    "ref": "lowpoly-animals/references/parts.md, Wing on a quadruped"
+  },
+  {
+   "id": "motion.leg_rings",
+   "stage": "motion",
+   "measure": "legs.ring_min",
+   "min": 0.9,
+   "level": "warn",
+   "note": "the narrowest ring of leg skin in any frame of any clip, as a share of its bind-pose size (leg_bend_study.py). Linear blend skinning shrinks a ring weighted half and half across a joint to about cos(bend / 2): 0.91 at a 50 degree fold, 0.71 at 90. A first mountain lion pounce read 0.86 at the elbow in its crouch; shared between the elbow and the wrist, 0.91",
+   "ref": "lowpoly-animals/references/limbs.md, Legs that bend"
+  },
+  {
+   "id": "motion.leg_stretch_min",
+   "stage": "motion",
+   "measure": "legs.stretch_min",
+   "min": 0.7,
+   "level": "warn",
+   "note": "the shortest an edge along a leg gets in any frame, against its bind length: skin crushed into the inside of a fold. A first mountain lion attack read 0.55",
+   "ref": "lowpoly-animals/references/limbs.md, Legs that bend"
+  },
+  {
+   "id": "motion.leg_stretch_max",
+   "stage": "motion",
+   "measure": "legs.stretch_max",
+   "max": 1.35,
+   "level": "warn",
+   "note": "the longest an edge along a leg gets in any frame, against its bind length: a short band of skin behind a joint folded too far (a mountain lion's wrist turned 69 degrees against its forearm in the walk's swing: 1.39; held to 22 degrees with the pastern tipping instead, 1.27)",
+   "ref": "lowpoly-animals/references/limbs.md, Legs that bend"
+  },
+  {
+   "id": "motion.hyperextended",
+   "stage": "motion",
+   "measure": "legs.hyperextended",
+   "max": 0,
+   "level": "fail",
+   "note": "frames, over all clips, in which a hinge (a knee, an elbow, the shoulder or hip above it, a hock bent in the bind pose) crosses the line between its neighbours to the wrong side: a joint bent backwards. A carpus or ankle standing near straight in the bind pose flexes both ways and is not judged",
+   "ref": "lowpoly-animals/references/limbs.md, Legs that bend"
+  },
+  {
+   "id": "motion.lockstep",
+   "stage": "motion",
+   "measure": "legs.lockstep_max",
+   "max": 0.95,
+   "level": "warn",
+   "note": "the mean correlation of a pair of legs' joint angles over an action clip (an attack, a roar; not a gait or a standing clip), the most alike pair: 1 is two legs moving as one. A first mountain lion pounce read 1.00 on its hind legs; with each leg on its own timing and path, 0.90",
+   "ref": "lowpoly-animals/references/limbs.md, Legs that bend"
   },
   {
    "id": "motion.duty",
