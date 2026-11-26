@@ -272,6 +272,10 @@ The gaits and clip sets of animals are in `lowpoly-animals` §7. These hold for 
   falls inside the ground contact, near its middle (`lp check` motion.balance; not for flyers). **The planted feet stay put:**
   a bone that breathes or sways (the chest, the hips) drags the legs hung from it, so those legs turn back by the same amount
   (`lp check` motion.planted).
+- **Joints bend as the anatomy does and the skin keeps its width.** No hinge (a knee, an elbow, a hock) bends backwards in
+  any frame; no blended joint ring folds so far that it pinches, no short band of skin behind a joint stretches; in an action
+  clip the paired limbs move each on their own (`lp check` motion.hyperextended, motion.leg_rings, motion.leg_stretch_*,
+  motion.lockstep; `leg_bend_study.py`; `lowpoly-animals/references/limbs.md`, "Legs that bend").
 - **Nothing passes through itself or the body** in any frame of any clip (`self_cross.py`, `lp check` motion.crossings;
   `--where` names the bones).
 - **Secondary motion** (tails, ears, hair, feathers, a mane) as baked spring bones: `lp bake-springs`, with stiffness, drag,
@@ -297,6 +301,7 @@ The gaits and clip sets of animals are in `lowpoly-animals` §7. These hold for 
 - [ ] Surface types named per region; a mirrored pelt with painted light and form; own patches for stretched faces; seams
       in range; colours judged under the engine's lights and confirmed in the viewer (§5).
 - [ ] Every clip checked for crossings; standing clips balanced; motion compared with reference frames (§6).
+- [ ] No joint bent backwards, no joint ring pinched or band of skin stretched, paired limbs independent in action clips (§6).
 - [ ] Seen at game distance from a 3/4 angle, the subject is obvious without labels.
 
 ## Common failures

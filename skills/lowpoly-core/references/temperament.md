@@ -26,7 +26,7 @@ usually docile. The answer changes:
 | **Head shape** | Rounded cranium, smooth muzzle | Sharper planes: a heavier brow over the eyes, a blunt or snarling nose and wrinkles over the muzzle, ears set wide; follow the species (a vampire bat has a flat nose pad, no nose leaf, and upright pointed ears) |
 | **Skin and coat** | Soft, fuzzy fur; even tones; clean edges | Rougher, straggly fur at the edges; higher contrast; darker overall, with the eyes and mouth the brightest points. Darken by shifting the whole value range, keeping its layers (large masses, form shading, fine hair, tufts) and the flow field: re-run `lp check`'s coat checks after darkening. The giant bat's near-black pass flattened every layer to almost nothing and ran every stroke one way |
 | **Extremities** | Smooth curves | Longer, more hooked claws. Keep the real animal's outline otherwise: a ragged, torn wing edge was tried on the hostile giant bat and reverted, because the reviewer preferred a real bat's wing; the threat reads from the head, eyes, teeth and pose |
-| **Pose and motion** | Relaxed: head level or lowered, slow breathing | Forward-leaning and tense: head low and forward, shoulders up, quick head turns, a gape or snarl in the idle |
+| **Pose and motion** | Relaxed: head level or lowered, slow breathing | Forward-leaning and tense: head low and forward, shoulders up, quick head turns, a gape or snarl in the idle. The attack from the species' own hunting behaviour, each leg on its own timing (below, "The attack") |
 
 ## Eyes: front-facing, under a brow
 
@@ -191,3 +191,18 @@ function and measures each leg):
 head low and forward. Its forefeet gripping rock are the bear's forefeet on rock: plantigrade palms on the stone with the
 claws hooked over its edge, so build the forefoot with two-vertex claws, give the toe bone a curl so the claws can close round
 an edge, and plant it with the same IK, its sole pitched to the rock's face.
+
+## The attack: the species' own hunting behaviour
+
+Build the attack from how the species kills, read from its references (wildlife agencies, field guides, footage), not from
+another model's clip. Write the sequence down first, with its sources, then animate it in place, starting and ending on the
+stand so it repeats in melee.
+- **The mountain lion (2026-11-26):** an ambush hunter that stalks as close as it can, bursts in two or three bounds, leaps
+  onto the prey, holds it with the forepaws and kills with one sustained bite to the neck or the base of the skull (NPS,
+  Yellowstone cougar; California Department of Fish and Wildlife). The clip: a crouch with the hind feet treading and the
+  tail tip twitching, a spring that rears the forequarters about 30 degrees with the forelegs reaching high and wide, the
+  grab and one clamped bite held through a wrench of the head, the drop and a recovery a leg at a time. A first version
+  snapped twice and lunged with the legs in lockstep; the reviewer asked for the species' own attack.
+- **Retractile claws stay sheathed.** A cat's claws are hidden at rest and on the move; modelled claws on the lion were
+  removed at the reviewer's request, the paws reading as paws. Hooked claws as geometry belong to species that show them.
+- **The legs move each on their own** and bend as the anatomy does (`lowpoly-animals/references/limbs.md`, "Legs that bend").

@@ -169,3 +169,55 @@ the midline). Check it in front, rear and underside renders of each pair of legs
 The Kodiak's rear crossings fell from 19 to 6 with it. Don't overdo the groin's arch on a heavy animal: raised 12 cm, the Kodiak's hindquarters
 read thin and high from below and behind; a heavy bear's rump is deep and low, its underside close to the tops of the
 thighs (the arch at most a few centimetres).
+
+## Legs that bend (lp check motion.leg_rings, motion.leg_stretch_*, motion.hyperextended, motion.lockstep; `lib/lowpoly/tools/leg_bend_study.py`)
+
+A leg built with the right widths can still lose them in motion: a joint folds further than its ring of skin can follow, or
+a short band of skin behind a joint stretches by a third. Read how the species' joints bend before animating, and measure
+every clip.
+
+**How a quadruped mammal's joints bend** (the carnivore and ungulate limb; check the species' own):
+- **Hinges bend one way only.** The elbow folds with its point (the olecranon) behind; the knee with its point in front; the
+  hock (the tarsus) with its point behind. None straightens past its line: a knee or elbow bent backwards reads as a break.
+  The shoulder and the hip swing forward and back over a range; they don't flip either.
+- **The carpus (wrist) is the exception.** It stands near straight, a little dorsiflexed, under the weight, and in the swing
+  it folds far the other way (the paw tucks back). Both sides of straight are anatomical, so `lp check` judges it only when
+  the bind pose shows it clearly bent (a hock, a plantigrade wrist).
+- **Big folds share the joints.** A crouch, a pounce's gather, a swing: a cat folds its shoulder, elbow and wrist (hip, knee
+  and hock) together, each part of the way, never one joint all of it.
+
+**What the skin can follow.** The viewer skins by linear blend: a ring of skin weighted half and half across a joint shrinks
+to about cos(bend / 2) of its width as the joint folds away from its bind angle:
+
+| Fold from the bind pose | 30° | 50° | 70° | 90° |
+|---|---|---|---|---|
+| The joint ring's width | 0.97 | 0.91 | 0.82 | 0.71 |
+
+- **Keep each blended ring's fold under about 50° from the bind** (motion.leg_rings warns under 0.90). A deeper pose spreads
+  the fold over the neighbouring joints, or bends from a bind pose closer to it.
+- **Short bands stretch most.** The skin between a wrist ring and a knuckle ring is a few centimetres long; turning the wrist
+  50° against the forearm stretches its back edges by a third. Cap the wrist's turn in the leg IK and tip the pastern with the
+  forearm beyond it: on the mountain lion, 22-23° (`WRIST_LIM`, `WALK_WRIST_LIM` in its builder). motion.leg_stretch_* warn
+  outside 0.70-1.35.
+- **Where the leg meets the body** the armpit and the groin stretch as the shoulder or the hip swings: real skin does too.
+  It is the last stretch left on a well-built leg (1.3 on the lion); a junction past 1.35 needs the swing reduced or the
+  junction's weights moved toward the leg.
+
+**Each leg on its own in an action clip.** A clip that moves the left and right legs as one reads as a puppet. In an attack,
+a roar or a rear, give each leg its own timing (a few hundredths of the clip apart), height and path, and let the feet that
+the body leaves behind follow it (a pounce's hind feet hop after it as the forepaws land, then step back one at a time).
+motion.lockstep warns when a pair's joint angles correlate past 0.95 over an action clip. Gaits and standing clips are not
+judged: their pairs move in phase or counterphase by design.
+
+**The mountain lion's pounce and walk (2026-11-26), measured with `leg_bend_study.py`:**
+
+| | First pounce | Rebuilt |
+|---|---|---|
+| Narrowest joint ring | 0.86 (elbow, crouch) | 0.91 |
+| Edge length along the legs | 0.74-1.30 | 0.76-1.32 |
+| Hind pair correlation | 1.00 (lockstep) | 0.90 |
+| The walk's left wrist against its forearm | 69° in the swing, edges to 1.39 | capped at 22°, 1.27 |
+
+The fixes: a shallower crouch, the wrist rising onto the toes as the elbow folds, the wrist cap, each leg's own timing and
+path, and the hind feet following the body. The pounce's sequence (crouch, spring and rear, grab, one held neck bite, drop,
+recover) came from the species' hunting behaviour (`lowpoly-core/references/temperament.md`, the attack).

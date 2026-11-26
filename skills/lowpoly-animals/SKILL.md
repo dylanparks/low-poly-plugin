@@ -26,7 +26,7 @@ eye lids, coats and the non-fur skins also draw on the same game's animal-like m
 | `references/heads.md` | the muzzle against the eyes, ears, jaws and mouths, long-faced heads, brows and sockets on very large heads, bird heads and beaks |
 | `references/muzzles.md` | the muzzle by kind (leather pad, soft equine, muffle, disc, split lip, lipless): its end, nostrils, lips and chin as geometry, then painted as lit forms |
 | `references/eyes.md` | side-facing, docile eyes: the almond, its tilt, the lids' shading outward, the tear duct at low pixel density, size against the model |
-| `references/limbs.md` | building the muscle, not the bone: lobes, folds, the groin, the front view's widths |
+| `references/limbs.md` | building the muscle, not the bone: lobes, folds, the groin, the front view's widths; legs that bend as the anatomy does and keep their width in motion |
 | `references/texture.md` | coat layers, eyes and pupils, noses, the head's coat and values, feet paint |
 | `references/skin-types.md` | scales, plates, wet skin, chitin and membranes, and how to tell which an animal has |
 | `references/reptile-skin.md` | reptiles: the scale for each zone, plates and beads, crossfades, colour matching, and the underbelly rolls contoured to the muscle |
@@ -244,6 +244,15 @@ with the toes flat, swings with them folded down, and lands flat. The body is lo
 (typically 0.7), lift (2-8% of the height; the high-stepping deer 9-21%), stride, how far the joints fold, and the footfall
 order. Let the shoulder slide with a reaching foreleg, fold the hind leg into a Z in the swing, and carry the head lower in a
 walk. The table and the notes on each joint are in `references/locomotion.md`.
+
+**Legs that bend** (details and the measured numbers in `references/limbs.md`, "Legs that bend"):
+- **Joints fold as the species' do.** Elbows, knees and hocks are hinges that bend one way and never straighten past their
+  line (`lp check` motion.hyperextended fails on one frame of it); a carpus folds both ways of straight.
+- **The skin keeps its width.** Keep each blended joint ring's fold under about 50° from the bind pose (a ring blended
+  across a joint shrinks to cos(bend / 2)); spread a deep pose over the neighbouring joints; cap the wrist's turn against
+  the forearm in the IK (the lion: 22-23°) and tip the pastern beyond it (motion.leg_rings, motion.leg_stretch_*).
+- **Each leg on its own in an action clip:** its own timing, height and path; feet left behind follow the body
+  (motion.lockstep). An attack follows the species' hunting behaviour (lowpoly-core `references/temperament.md`).
 
 **Standing:** the centre of mass inside the feet's contact in every standing clip (lowpoly-core §6). Don't trust the bind
 pose's feet; fix it in the standing clips with the walk's own IK (`references/locomotion.md`).

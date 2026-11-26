@@ -498,6 +498,51 @@
    "ref": "lowpoly-animals/references/parts.md, Wing on a quadruped"
   },
   {
+   "id": "motion.leg_rings",
+   "stage": "motion",
+   "measure": "legs.ring_min",
+   "min": 0.9,
+   "level": "warn",
+   "note": "the narrowest ring of leg skin in any frame of any clip, as a share of its bind-pose size (leg_bend_study.py). Linear blend skinning shrinks a ring weighted half and half across a joint to about cos(bend / 2): 0.91 at a 50 degree fold, 0.71 at 90. A first mountain lion pounce read 0.86 at the elbow in its crouch; shared between the elbow and the wrist, 0.91",
+   "ref": "lowpoly-animals/references/limbs.md, Legs that bend"
+  },
+  {
+   "id": "motion.leg_stretch_min",
+   "stage": "motion",
+   "measure": "legs.stretch_min",
+   "min": 0.7,
+   "level": "warn",
+   "note": "the shortest an edge along a leg gets in any frame, against its bind length: skin crushed into the inside of a fold. A first mountain lion attack read 0.55",
+   "ref": "lowpoly-animals/references/limbs.md, Legs that bend"
+  },
+  {
+   "id": "motion.leg_stretch_max",
+   "stage": "motion",
+   "measure": "legs.stretch_max",
+   "max": 1.35,
+   "level": "warn",
+   "note": "the longest an edge along a leg gets in any frame, against its bind length: a short band of skin behind a joint folded too far (a mountain lion's wrist turned 69 degrees against its forearm in the walk's swing: 1.39; held to 22 degrees with the pastern tipping instead, 1.27)",
+   "ref": "lowpoly-animals/references/limbs.md, Legs that bend"
+  },
+  {
+   "id": "motion.hyperextended",
+   "stage": "motion",
+   "measure": "legs.hyperextended",
+   "max": 0,
+   "level": "fail",
+   "note": "frames, over all clips, in which a hinge (a knee, an elbow, the shoulder or hip above it, a hock bent in the bind pose) crosses the line between its neighbours to the wrong side: a joint bent backwards. A carpus or ankle standing near straight in the bind pose flexes both ways and is not judged",
+   "ref": "lowpoly-animals/references/limbs.md, Legs that bend"
+  },
+  {
+   "id": "motion.lockstep",
+   "stage": "motion",
+   "measure": "legs.lockstep_max",
+   "max": 0.95,
+   "level": "warn",
+   "note": "the mean correlation of a pair of legs' joint angles over an action clip (an attack, a roar; not a gait or a standing clip), the most alike pair: 1 is two legs moving as one. A first mountain lion pounce read 1.00 on its hind legs; with each leg on its own timing and path, 0.90",
+   "ref": "lowpoly-animals/references/limbs.md, Legs that bend"
+  },
+  {
    "id": "motion.duty",
    "stage": "motion",
    "measure": "walk.duty_min",

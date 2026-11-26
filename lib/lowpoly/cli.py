@@ -97,7 +97,7 @@ def read_spec(path):
     return spec, notes
 
 
-STAGE_TOOLS = {'mesh': ['mesh', 'topo', 'feet', 'thin', 'limbs', 'rear', 'overlay'], 'rig': ['mesh', 'rig'], 'motion': ['rig', 'stand', 'cross'],
+STAGE_TOOLS = {'mesh': ['mesh', 'topo', 'feet', 'thin', 'limbs', 'rear', 'overlay'], 'rig': ['mesh', 'rig'], 'motion': ['rig', 'stand', 'cross', 'legs'],
                'texture': ['uv', 'body', 'skin', 'eye', 'nose', 'regions', 'parts']}
 
 
@@ -349,6 +349,29 @@ def measure_cross(model):
     return m, t
 
 
+GAIT = re.compile(r'walk|trot|run|gallop|canter|bound|hop|swim|fly|crawl', re.I)
+
+
+def measure_legs(model, A, spec):
+    """how the legs bend through the clips (lowpoly/tools/leg_bend_study.py): the narrowest ring of leg skin against the
+    bind pose (linear blend skinning pinches a joint's ring as it folds), the most an edge along a leg stretches or
+    shrinks, the frames a knee, elbow or hock bends backwards, and the most a pair of legs moves in lockstep in an action
+    clip (an attack, a roar: not the walk, a gait or a standing clip, where pairs move in phase or counterphase by design)"""
+    t = run_tool('leg_bend_study', model)
+    rows = re.findall(r'^clip (\S+): ring ([\d.]+) \| stretch ([\d.]+)\.\.([\d.]+) \| hyperextended (\d+) \| lockstep (\S+)', t, re.M)
+    if not rows: return {}, t
+    anims = A.get('anims') or {}
+    standing = set(spec.get('standing_clips') or [c for c in anims if c == A.get('idle') or re.search(r'idle|stand', c, re.I)])
+    walk = spec.get('walk_clip', 'walk')
+    m = {'legs.ring_min': min(float(r[1]) for r in rows), 'legs.stretch_min': min(float(r[2]) for r in rows),
+         'legs.stretch_max': max(float(r[3]) for r in rows), 'legs.hyperextended': sum(int(r[4]) for r in rows)}
+    m['legs.ring_clip'] = min(rows, key=lambda r: float(r[1]))[0]
+    act = [(r[0], float(r[5])) for r in rows if r[5] != '-' and r[0] not in standing and r[0] != walk and not GAIT.search(r[0])]
+    if act:
+        w = max(act, key=lambda r: r[1]); m['legs.lockstep_max'] = w[1]; m['legs.lockstep_clip'] = w[0]
+    return m, t
+
+
 def measure_regions(model):
     """painted detail on the limbs: the flattest leg, arm or wing region's fine + mid contrast, and the darkest one's brightness"""
     t = run_tool('region_detail', model)
@@ -536,6 +559,7 @@ def check(model, spec_path=None, stage='all', out=None):
     if 'rig' in want and A.get('anims'): take('rig', measure_rig, model, tag, spec.get('walk_clip'))
     if 'stand' in want and A.get('anims'): take('stand', measure_stand, model, tag, spec.get('standing_clips'))
     if 'cross' in want: take('cross', measure_cross, model)
+    if 'legs' in want and A.get('anims'): take('legs', measure_legs, model, A, spec)
     if 'uv' in want: take('uv', measure_uv, model, tag)
     if 'regions' in want: take('regions', measure_regions, model)
     skin = spec.get('skin', 'fur')                       # an unknown skin (a typo) runs neither study: its checks are not run
