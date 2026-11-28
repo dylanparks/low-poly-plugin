@@ -1,0 +1,255 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>__TITLE__ character</title>
+<style>
+  :root { --bg: #282a30; --panel: #1e2025; --text: #e2e5eb; --muted: #9aa1ad; --accent: #6ea8ff; --border: #3a3e47; }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; height: 100%; background: var(--bg); color: var(--text); font: 14px/1.5 system-ui, sans-serif; }
+  body { display: flex; flex-direction: column; }
+  header { display: flex; flex-wrap: wrap; gap: 8px 16px; align-items: center; padding: 10px 16px; background: var(--panel); border-bottom: 1px solid var(--border); }
+  h1 { font-size: 15px; margin: 0 8px 0 0; }
+  h2 { font-size: 13px; text-transform: uppercase; letter-spacing: .06em; color: var(--muted); margin: 0 0 12px; font-weight: 600; }
+  .group { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; }
+  .group > span { color: var(--muted); font-size: 12px; }
+  button, select { font: inherit; font-size: 13px; color: var(--text); background: #2c2f37; border: 1px solid var(--border); border-radius: 6px; padding: 4px 10px; min-height: 30px; cursor: pointer; }
+  button:hover, select:hover { border-color: var(--accent); }
+  button:focus-visible, select:focus-visible, input:focus-visible { outline: 2px solid var(--accent); outline-offset: 1px; }
+  button[aria-pressed="true"] { background: #33405a; border-color: var(--accent); }
+  input[type=range] { width: 100%; accent-color: var(--accent); }
+  #phase { width: 140px; }
+  .wrap { flex: 1; display: flex; min-height: 0; }
+  main { flex: 1; position: relative; min-width: 0; }
+  aside { width: 300px; flex: none; background: var(--panel); border-left: 1px solid var(--border); padding: 16px; overflow-y: auto; }
+  .opt { margin-bottom: 22px; }
+  .opt label { display: flex; justify-content: space-between; align-items: baseline; font-size: 13px; margin-bottom: 4px; }
+  .opt label output { color: var(--muted); font-variant-numeric: tabular-nums; font-size: 12px; }
+  .ends { display: flex; justify-content: space-between; color: var(--muted); font-size: 11px; margin-top: 2px; }
+  .tone-track { height: 10px; border-radius: 5px; margin: 2px 0 4px; border: 1px solid var(--border); }
+  .swatch { display: inline-block; width: 14px; height: 14px; border-radius: 3px; vertical-align: -2px; margin-right: 6px; border: 1px solid var(--border); }
+  .note { color: var(--muted); font-size: 12px; margin: 4px 0 0; }
+  .actions { display: flex; gap: 8px; margin-top: 8px; }
+  pre { background: #17191d; border: 1px solid var(--border); border-radius: 6px; padding: 8px; font-size: 12px; white-space: pre-wrap; margin: 8px 0 0; }
+  canvas { width: 100%; height: 100%; display: block; touch-action: none; cursor: grab; }
+  canvas:active { cursor: grabbing; }
+  .hint { position: absolute; left: 16px; bottom: 10px; color: var(--muted); font-size: 12px; pointer-events: none; }
+  #err { padding: 24px; color: #ff9b8f; }
+  @media (max-width: 760px) { .wrap { flex-direction: column; } aside { width: auto; border-left: 0; border-top: 1px solid var(--border); max-height: 45vh; } }
+</style>
+</head>
+<body>
+<header>
+  <h1 id="name"></h1>
+  <div class="group" role="group" aria-label="Fixed views"><span>View</span><span id="views" class="group"></span></div>
+  <div class="group"><span><label for="clip">Clip</label></span>
+    <select id="clip"><option value="">bind pose</option></select>
+    <button id="play" type="button" aria-pressed="false">Play</button>
+    <span><label for="phase">Phase</label></span>
+    <input id="phase" type="range" min="0" max="1" step="0.001" value="0">
+    <span id="phaseval">0.00</span></div>
+</header>
+<div class="wrap">
+<main><canvas id="c" aria-label="The character, drag to turn it, scroll to zoom"></canvas>
+  <div class="hint">Drag to orbit · right-drag (or shift-drag) to pan · wheel to zoom · the viewer's lights</div></main>
+<aside aria-label="Customization">
+  <h2>Customize</h2>
+  <div id="opts"></div>
+  <div class="actions"><button id="reset" type="button">Reset</button><button id="copy" type="button">Copy values</button></div>
+  <pre id="values" aria-live="polite"></pre>
+</aside>
+</div>
+<script>
+const DATA = __DATA__;
+const $ = id => document.getElementById(id);
+$('name').textContent = DATA.name;
+function bytes(b64) { const s = atob(b64), u = new Uint8Array(s.length); for (let i = 0; i < s.length; i++) u[i] = s.charCodeAt(i); return u.buffer; }
+const f32 = b => new Float32Array(bytes(b)), u16 = b => new Uint16Array(bytes(b));
+const canvas = $('c'), gl = canvas.getContext('webgl', { antialias: true });
+if (!gl) { document.querySelector('main').innerHTML = '<p id="err">WebGL is not available in this browser.</p>'; throw new Error('no webgl'); }
+
+// ---- the model: bind positions, normals, weights; morph targets; bones and clips
+const C = f32(DATA.v), N = C.length / 16;
+const BP = new Float32Array(N * 3), BN = new Float32Array(N * 3), UV = new Float32Array(N * 2), WT = new Float32Array(N * 4), JT = new Uint16Array(N * 4);
+for (let i = 0; i < N; i++) { const o = i * 16;
+  for (let k = 0; k < 3; k++) { BP[i * 3 + k] = C[o + k]; BN[i * 3 + k] = C[o + 3 + k]; }
+  UV[i * 2] = C[o + 6]; UV[i * 2 + 1] = C[o + 7];
+  for (let k = 0; k < 4; k++) { WT[i * 4 + k] = C[o + 8 + k]; JT[i * 4 + k] = Math.round(C[o + 12 + k]); } }
+const MORPH = {}; (DATA.morphs || []).forEach(m => MORPH[m.name] = f32(m.d));
+const NB = DATA.bones.length, PAR = DATA.parent, REST = DATA.rest, INV = DATA.inv;
+const ORDER = []; (function () { const seen = new Set(); const visit = i => { if (seen.has(i)) return; const p = PAR[i]; if (p !== null && p >= 0 && p !== i) visit(p); seen.add(i); ORDER.push(i); }; for (let i = 0; i < NB; i++) visit(i); })();
+const CLIPS = {};
+for (const k in DATA.clips) { const f = f32(DATA.clips[k].k); let p = 0; const bones = [];
+  for (let b = 0; b < NB; b++) { const nr = f[p], np = f[p + 1]; p += 2; const r = [], t = [];
+    for (let j = 0; j < nr; j++) { r.push([f[p], f[p + 1], f[p + 2], f[p + 3], f[p + 4]]); p += 5; }
+    for (let j = 0; j < np; j++) { t.push([f[p], f[p + 1], f[p + 2], f[p + 3]]); p += 4; }
+    bones.push({ r, t }); }
+  CLIPS[k] = { d: DATA.clips[k].d, bones }; }
+const BLENDS = {}, VARIANTS = new Set();                 // clip -> {option, below, above}: its variants, kept off the clip list
+(DATA.blends || []).forEach(b => { BLENDS[b.clip] = b; VARIANTS.add(b.below); VARIANTS.add(b.above); });
+const qmul = (a, b) => [a[3] * b[0] + a[0] * b[3] + a[1] * b[2] - a[2] * b[1], a[3] * b[1] - a[0] * b[2] + a[1] * b[3] + a[2] * b[0],
+                        a[3] * b[2] + a[0] * b[1] - a[1] * b[0] + a[2] * b[3], a[3] * b[3] - a[0] * b[0] - a[1] * b[1] - a[2] * b[2]];
+function qrot(q, v) { const [x, y, z, w] = q, ix = w * v[0] + y * v[2] - z * v[1], iy = w * v[1] + z * v[0] - x * v[2], iz = w * v[2] + x * v[1] - y * v[0], iw = -x * v[0] - y * v[1] - z * v[2];
+  return [ix * w + iw * -x + iy * -z - iz * -y, iy * w + iw * -y + iz * -x - ix * -z, iz * w + iw * -z + ix * -y - iy * -x]; }
+function sample(keys, t, n) { if (!keys.length) return null; if (keys.length === 1 || t <= keys[0][0]) return keys[0].slice(1);
+  for (let j = 1; j < keys.length; j++) if (t <= keys[j][0]) { const a = keys[j - 1], b = keys[j], u = (t - a[0]) / Math.max(1e-6, b[0] - a[0]);
+    let s = 1; if (n === 4 && a[1] * b[1] + a[2] * b[2] + a[3] * b[3] + a[4] * b[4] < 0) s = -1;
+    const out = []; for (let k = 1; k <= n; k++) out.push(a[k] + (s * b[k] - a[k]) * u);
+    if (n === 4) { const l = Math.hypot(...out); for (let k = 0; k < 4; k++) out[k] /= l; } return out; }
+  return keys[keys.length - 1].slice(1); }
+
+// ---- the customization: options from the model's character file
+const OPTS = DATA.options || [], VAL = {};
+OPTS.forEach(o => VAL[o.id] = o.default);
+function toneAt(o, t) { const r = o.ramp, x = Math.max(0, Math.min(1, t)) * (r.length - 1), i = Math.min(r.length - 2, Math.floor(x)), u = x - i;
+  return r[i].map((c, k) => c + (r[i + 1][k] - c) * u); }
+const fmt = v => (Math.round(v * 100) / 100).toFixed(2);
+function buildPanel() { const box = $('opts'); box.innerHTML = '';
+  OPTS.forEach(o => { const d = document.createElement('div'); d.className = 'opt'; const id = 'opt_' + o.id;
+    const lo = o.type === 'tone' ? 0 : o.min, hi = o.type === 'tone' ? 1 : o.max;
+    d.innerHTML = `<label for="${id}"><span>${o.type === 'tone' ? '<span class="swatch" id="sw_' + o.id + '"></span>' : ''}${o.label}</span><output id="out_${o.id}"></output></label>`
+      + (o.type === 'tone' ? `<div class="tone-track" style="background:linear-gradient(90deg,${o.ramp.map(c => 'rgb(' + c.join(',') + ')').join(',')})"></div>` : '')
+      + `<input id="${id}" type="range" min="${lo}" max="${hi}" step="0.01" value="${VAL[o.id]}">`
+      + `<div class="ends"><span>${o.min_label || (o.type === 'tone' ? 'palest' : 'very thin')}</span><span>${o.max_label || (o.type === 'tone' ? 'darkest' : 'bodybuilder')}</span></div>`
+      + (o.note ? `<p class="note">${o.note}</p>` : '');
+    box.appendChild(d);
+    const inp = d.querySelector('input'); inp.oninput = () => { VAL[o.id] = +inp.value; refresh(); }; });
+  refresh(); }
+function refresh() { OPTS.forEach(o => { $('out_' + o.id).textContent = fmt(VAL[o.id]);
+    if (o.type === 'tone') $('sw_' + o.id).style.background = 'rgb(' + toneAt(o, VAL[o.id]).map(Math.round).join(',') + ')'; });
+  $('values').textContent = JSON.stringify(VAL, null, 1); setFrame(); draw(); }
+$('reset').onclick = () => { OPTS.forEach(o => VAL[o.id] = o.default); buildPanel(); };
+$('copy').onclick = () => { navigator.clipboard && navigator.clipboard.writeText(JSON.stringify(VAL)); $('copy').textContent = 'Copied'; setTimeout(() => $('copy').textContent = 'Copy values', 1200); };
+
+// ---- the pose: morph, then skin (glTF order), every frame
+const PP = new Float32Array(N * 3), PN = new Float32Array(N * 3), MP = new Float32Array(N * 3);
+let clip = '', phase = 0, playing = false, last = 0;
+function setFrame() {
+  MP.set(BP);
+  OPTS.filter(o => o.type === 'morph').forEach(o => { const v = VAL[o.id], m = v < 0 ? MORPH[o.below] : MORPH[o.above], w = Math.abs(v);
+    if (m && w) for (let i = 0; i < N * 3; i++) MP[i] += m[i] * w; });
+  const Wq = new Array(NB), Wp = new Array(NB);
+  for (const b of ORDER) { let q = REST.slice(b * 7, b * 7 + 4), t = REST.slice(b * 7 + 4, b * 7 + 7);
+    if (clip) { const k = CLIPS[clip].bones[b]; const r = sample(k.r, phase, 4), p = sample(k.t, phase, 3); if (r) q = r; if (p) t = p;
+      // a blend space: the clip mixed toward its variant for an option's value (the idle's arms rest further out as
+      // the muscle grows), each bone's rotation nlerped by |value|
+      const bl = BLENDS[clip];
+      if (bl) { const v = VAL[bl.option] || 0, other = v < 0 ? bl.below : bl.above, w = Math.min(1, Math.abs(v));
+        if (w && CLIPS[other]) { const k2 = CLIPS[other].bones[b]; const r2 = sample(k2.r, phase, 4), p2 = sample(k2.t, phase, 3);
+          if (r2) { const s = q[0] * r2[0] + q[1] * r2[1] + q[2] * r2[2] + q[3] * r2[3] < 0 ? -1 : 1;
+            const m = q.map((c, i) => c + (s * r2[i] - c) * w), l = Math.hypot(...m); q = m.map(c => c / l); }
+          if (p2) t = t.map((c, i) => c + (p2[i] - c) * w); } } }
+    const pa = PAR[b];
+    if (pa === null || pa < 0 || pa === b) { Wq[b] = q; Wp[b] = t; } else { Wq[b] = qmul(Wq[pa], q); const r = qrot(Wq[pa], t); Wp[b] = [Wp[pa][0] + r[0], Wp[pa][1] + r[1], Wp[pa][2] + r[2]]; } }
+  const Sq = new Array(NB), Sp = new Array(NB);                    // bone b's skinning transform: world * inverse bind
+  for (let b = 0; b < NB; b++) { const iq = INV.slice(b * 7, b * 7 + 4), ip = INV.slice(b * 7 + 4, b * 7 + 7);
+    Sq[b] = qmul(Wq[b], iq); const r = qrot(Wq[b], ip); Sp[b] = [Wp[b][0] + r[0], Wp[b][1] + r[1], Wp[b][2] + r[2]]; }
+  for (let i = 0; i < N; i++) { let px = 0, py = 0, pz = 0, nx = 0, ny = 0, nz = 0;
+    const v = [MP[i * 3], MP[i * 3 + 1], MP[i * 3 + 2]], n = [BN[i * 3], BN[i * 3 + 1], BN[i * 3 + 2]];
+    for (let k = 0; k < 4; k++) { const w = WT[i * 4 + k]; if (!w) continue; const b = JT[i * 4 + k];
+      const r = qrot(Sq[b], v), rn = qrot(Sq[b], n);
+      px += w * (r[0] + Sp[b][0]); py += w * (r[1] + Sp[b][1]); pz += w * (r[2] + Sp[b][2]); nx += w * rn[0]; ny += w * rn[1]; nz += w * rn[2]; }
+    PP[i * 3] = px; PP[i * 3 + 1] = py; PP[i * 3 + 2] = pz; PN[i * 3] = nx; PN[i * 3 + 1] = ny; PN[i * 3 + 2] = nz; }
+  gl.bindBuffer(gl.ARRAY_BUFFER, pb); gl.bufferSubData(gl.ARRAY_BUFFER, 0, PP);
+  gl.bindBuffer(gl.ARRAY_BUFFER, nbuf); gl.bufferSubData(gl.ARRAY_BUFFER, 0, PN);
+}
+
+// ---- drawing: the plugin viewer's lights; the skin tone recolours the masked texels, keeping their painted shading
+let cen = [0, 0, 0], size = 1;
+{ const lo = [1e9, 1e9, 1e9], hi = [-1e9, -1e9, -1e9]; for (let i = 0; i < N * 3; i += 3) for (let k = 0; k < 3; k++) { lo[k] = Math.min(lo[k], BP[i + k]); hi[k] = Math.max(hi[k], BP[i + k]); }
+  cen = lo.map((v, k) => (v + hi[k]) / 2); size = Math.max(hi[0] - lo[0], hi[1] - lo[1], hi[2] - lo[2]); }
+const VS = `attribute vec3 p; attribute vec3 n; attribute vec2 uv; uniform vec3 cen; uniform vec2 pan; uniform float yaw, pitch, dist, f, aspect;
+varying vec3 vn; varying vec2 vuv;
+void main() { vec3 q = p - cen; float cy = cos(yaw), sy = sin(yaw), cp = cos(pitch), sp = sin(pitch);
+  float d = q.z * sy + q.x * cy; float X = -(q.z * cy - q.x * sy) + pan.x; float Y = q.y * cp - d * sp + pan.y; float Z = d * cp + q.y * sp;
+  float zc = dist - Z; float nr = dist * 0.02, fr = dist * 4.0;
+  gl_Position = vec4(X * f / aspect, Y * f, zc * (fr + nr) / (fr - nr) - 2.0 * fr * nr / (fr - nr), zc);
+  vn = n; vuv = uv; }`;
+// up to two recolourings (a skin tone, a hair colour), each by its own mask: the texel times tone / painted keeps the painted
+// shading; a sheen adds back what was painted brighter than the reference, so dark hair keeps its highlights; a soften
+// lifts the painted shadows as the tone gets light (shadows painted for a mid colour read as smudges on platinum)
+const FS = `precision mediump float; varying vec3 vn; varying vec2 vuv; uniform sampler2D tex; uniform sampler2D mask0, mask1;
+uniform vec3 tone0, painted0, tone1, painted1; uniform float sheen0, sheen1, soften0, soften1;
+vec3 recolour(vec3 c, vec3 tone, vec3 painted, float sheen, float soften) { float lp = dot(painted, vec3(0.3, 0.59, 0.11)), lc = dot(c, vec3(0.3, 0.59, 0.11));
+  float g = 1.0 - soften * smoothstep(0.35, 0.85, dot(tone, vec3(0.3, 0.59, 0.11)));
+  return min(vec3(1.0), pow(max(c / painted, vec3(0.0)), vec3(g)) * tone + sheen * max(0.0, lc - lp) * vec3(1.0)); }
+void main() { vec3 n = normalize(vn); vec3 nm = vec3(n.x, n.y, -n.z); float h = 0.5 + 0.5 * nm.y;
+  vec3 sun = normalize(vec3(3.0, 6.0, -4.0)); float d = max(0.0, dot(nm, sun)); vec3 gr = vec3(68.0, 80.0, 102.0) / 255.0;
+  vec3 c0 = texture2D(tex, vuv).rgb; vec3 c = c0;
+  // the two masks are shares of one texel (a brow's edge is part skin, part brow): weighted together, not one after the
+  // other, which left part of the painted skin on every shared texel (a pale halo round the brows on dark skin)
+  float m0 = texture2D(mask0, vuv).r, m1 = texture2D(mask1, vuv).r, ms = m0 + m1;
+  if (ms > 1.0) { m0 /= ms; m1 /= ms; ms = 1.0; }
+  c = c0 * (1.0 - ms) + recolour(c0, tone0, painted0, sheen0, soften0) * m0 + recolour(c0, tone1, painted1, sheen1, soften1) * m1;
+  gl_FragColor = vec4(min(vec3(1.0), c * (1.2 * (h + (1.0 - h) * gr) + 1.6 * d)), 1.0); }`;
+function sh(t, s) { const o = gl.createShader(t); gl.shaderSource(o, s); gl.compileShader(o); if (!gl.getShaderParameter(o, gl.COMPILE_STATUS)) throw new Error(gl.getShaderInfoLog(o)); return o; }
+const prog = gl.createProgram(); gl.attachShader(prog, sh(gl.VERTEX_SHADER, VS)); gl.attachShader(prog, sh(gl.FRAGMENT_SHADER, FS)); gl.linkProgram(prog); gl.useProgram(prog);
+const U = n => gl.getUniformLocation(prog, n);
+function buf(data, attr, size, dyn) { const b = gl.createBuffer(); gl.bindBuffer(gl.ARRAY_BUFFER, b); gl.bufferData(gl.ARRAY_BUFFER, data, dyn ? gl.DYNAMIC_DRAW : gl.STATIC_DRAW);
+  const l = gl.getAttribLocation(prog, attr); gl.enableVertexAttribArray(l); gl.vertexAttribPointer(l, size, gl.FLOAT, false, 0, 0); return b; }
+const pb = buf(BP, 'p', 3, true), nbuf = buf(BN, 'n', 3, true); buf(UV, 'uv', 2, false);
+const idx = u16(DATA.idx); { const ib = gl.createBuffer(); gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, ib); gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, idx, gl.STATIC_DRAW); }
+function texture(unit, url, fallback) { const t = gl.createTexture(); gl.activeTexture(gl.TEXTURE0 + unit); gl.bindTexture(gl.TEXTURE_2D, t);
+  gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, 1, 1, 0, gl.RGBA, gl.UNSIGNED_BYTE, new Uint8Array(fallback));
+  const prm = () => { gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR); gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE); gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE); };
+  prm(); if (url) { const im = new Image(); im.onload = () => { gl.activeTexture(gl.TEXTURE0 + unit); gl.bindTexture(gl.TEXTURE_2D, t); gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, im); prm(); draw(); }; im.src = url; } }
+const TONES = OPTS.filter(o => o.type === 'tone').slice(0, 2);
+texture(0, DATA.tex, [180, 180, 180, 255]);
+for (let k = 0; k < 2; k++) texture(1 + k, (DATA.masks || [])[k] || '', [0, 0, 0, 255]);
+gl.uniform1i(U('tex'), 0); gl.uniform1i(U('mask0'), 1); gl.uniform1i(U('mask1'), 2); gl.enable(gl.DEPTH_TEST);
+const cam = { yaw: 55 * Math.PI / 180, pitch: 10 * Math.PI / 180, dist: size * 1.7 };
+let pan = [0, 0];                                         // a sideways shift of the view, so orbiting stays on the model
+const FOV = 35 * Math.PI / 180;
+function draw() {
+  const w = canvas.clientWidth, h = canvas.clientHeight, dpr = window.devicePixelRatio || 1;
+  if (canvas.width !== Math.round(w * dpr) || canvas.height !== Math.round(h * dpr)) { canvas.width = Math.round(w * dpr); canvas.height = Math.round(h * dpr); }
+  gl.viewport(0, 0, canvas.width, canvas.height); gl.clearColor(40 / 255, 42 / 255, 48 / 255, 1); gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
+  for (let k = 0; k < 2; k++) { const to = TONES[k];
+    const tone = to ? toneAt(to, VAL[to.id]) : [1, 1, 1], painted = to ? to.painted : [1, 1, 1];
+    gl.uniform3fv(U('tone' + k), tone.map(x => x / 255)); gl.uniform3fv(U('painted' + k), painted.map(x => x / 255));
+    gl.uniform1f(U('sheen' + k), to ? (to.sheen || 0) : 0); gl.uniform1f(U('soften' + k), to ? (to.soften || 0) : 0); }
+  gl.uniform3fv(U('cen'), cen); gl.uniform2fv(U('pan'), pan); gl.uniform1f(U('yaw'), cam.yaw); gl.uniform1f(U('pitch'), cam.pitch); gl.uniform1f(U('dist'), cam.dist);
+  gl.uniform1f(U('f'), 1 / Math.tan(FOV / 2)); gl.uniform1f(U('aspect'), canvas.width / canvas.height);
+  gl.drawElements(gl.TRIANGLES, idx.length, gl.UNSIGNED_SHORT, 0);
+}
+for (const k in CLIPS) { if (VARIANTS.has(k)) continue; const o = document.createElement('option'); o.value = k; o.textContent = k; $('clip').appendChild(o); }
+if (DATA.idle && CLIPS[DATA.idle]) $('clip').value = clip = DATA.idle;
+$('clip').onchange = e => { clip = e.target.value; phase = 0; $('phase').value = 0; showPhase(); setFrame(); draw(); };
+function showPhase() { $('phaseval').textContent = phase.toFixed(2); }
+$('phase').oninput = e => { phase = +e.target.value; showPhase(); setFrame(); draw(); };
+$('play').onclick = () => { playing = !playing; $('play').setAttribute('aria-pressed', playing); $('play').textContent = playing ? 'Pause' : 'Play'; last = performance.now(); if (playing) requestAnimationFrame(tick); };
+function tick(t) { if (!playing) return; if (clip) { phase = (phase + (t - last) / 1000 / Math.max(0.05, CLIPS[clip].d)) % 1; $('phase').value = phase; showPhase(); setFrame(); draw(); } last = t; requestAnimationFrame(tick); }
+const vb = [];
+// the plugin's views: yaw 90 looks at the front, 0 at the left side
+[['front', 90, 0], ['3/4 front', 55, 8], ['side', 0, 0], ['3/4 rear', -35, 8], ['rear', -90, 0], ['face', 70, 4]].forEach(([label, yaw, pitch]) => {
+  const b = document.createElement('button'); b.type = 'button'; b.textContent = label; b.setAttribute('aria-pressed', 'false');
+  b.onclick = () => { cam.yaw = yaw * Math.PI / 180; cam.pitch = pitch * Math.PI / 180; cam.dist = size * (label === 'face' ? 0.45 : 1.7);
+    if (label === 'face') cen = [0, DATA.head_y || cen[1], 0]; else cen = [cen0[0], cen0[1], cen0[2]];
+    pan = [0, 0];
+    vb.forEach(x => x.setAttribute('aria-pressed', x === b)); draw(); };
+  vb.push(b); $('views').appendChild(b); });
+const cen0 = cen.slice();
+let drag = null;
+// left drag orbits round the model; right drag (or shift + left drag, for a trackpad) pans: the view shifts sideways and
+// up (the model follows the pointer at the depth of its centre) while the orbit's centre stays on the model, so after a
+// pan the model still turns in place
+canvas.addEventListener('contextmenu', e => e.preventDefault());
+canvas.addEventListener('pointerdown', e => { drag = [e.clientX, e.clientY, e.button === 2 || e.shiftKey]; canvas.setPointerCapture(e.pointerId); });
+canvas.addEventListener('pointermove', e => { if (!drag) return;
+  const dx = e.clientX - drag[0], dy = e.clientY - drag[1];
+  if (drag[2]) {
+    const k = 2 * cam.dist * Math.tan(FOV / 2) / Math.max(1, canvas.clientHeight);
+    pan = [pan[0] + dx * k, pan[1] - dy * k];
+  } else {
+    cam.yaw -= dx * 0.01; cam.pitch = Math.max(-1.55, Math.min(1.5707, cam.pitch + dy * 0.01));
+  }
+  drag = [e.clientX, e.clientY, drag[2]]; vb.forEach(x => x.setAttribute('aria-pressed', 'false')); draw(); });
+canvas.addEventListener('pointerup', () => drag = null);
+canvas.addEventListener('wheel', e => { e.preventDefault(); cam.dist = Math.max(size * 0.15, Math.min(size * 10, cam.dist * Math.exp(e.deltaY * 0.001))); draw(); }, { passive: false });
+window.addEventListener('resize', draw);
+buildPanel();
+</script>
+</body>
+</html>

@@ -92,8 +92,8 @@ pupils) is in `lowpoly-animals/references/texture.md`.
 A planar projection paints well only the faces that face along its axis. Faces turned away from it get a sliver of texture
 smeared across them, in bands: under the side projection, these are faces that face forward or back, up or down.
 - **Measured:** the measured models have 8-19% of their up- and down-facing faces stretched more than 4:1.
-- **The check:** `lp check` reports the share (`texture.stretch`). List the worst faces by position too, to see which part
-  they belong to.
+- **The check:** `lp check` reports the share (`texture.stretch`) and warns past 5% of the surface. List the worst faces
+  by position too, to see which part they belong to.
 
 **First ask whether the shape is right.** A flat panel that the anatomy doesn't have is better fixed in the geometry, and
 that removes its stretch too:
@@ -129,6 +129,19 @@ render it front-on and at 3/4 under the engine's lights.
 - **Paint a part's patch as the neighbouring skin continuing,** not in its own palette: the same colour and darkening at each
   height, the same shading and the same pattern size where they meet. A foot painted in its own lighter palette showed a
   step at the ankle; painted as the leg continuing down, the seams halved.
+
+## Attached pieces: lit with the skin's normals
+
+A separate rigid piece set into the skin (an ear, a horn, a tusk, a hair card: lowpoly-core §3, rule 1) is lit by its own
+faces, so it turns light and dark against the skin beside it and reads as stuck on. Three things join it:
+- **Normals.** Blend each of its vertex normals with the nearest skin vertex's: fully where it meets the skin, about half
+  over the rest. It then lights as a continuation of the skin, and its forms come from the paint.
+- **A broad root.** Where it meets the skin it spreads over a base, with points just under the skin. A piece that
+  narrows to one sunk point sits on a stalk.
+- **Paint.** Its root and the fold behind it are in the skin's own shaded tone, and the skin's contact shadow round it
+  is deepened.
+
+First built on a person's ear (`lowpoly-characters/references/head-and-face.md`, "Ears").
 
 ## Detail on the limbs and wings of large animals
 

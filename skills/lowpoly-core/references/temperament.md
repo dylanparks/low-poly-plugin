@@ -34,7 +34,8 @@ usually docile. The answer changes:
 That is much of why an animal reads as threatening, and it holds for most mammals and reptiles. It isn't a hard rule:
 follow the species, and for insects use the eyes' colour and size instead.
 
-**How a shipped low-poly wolf from the measured set builds it** (measured on its head):
+**How the reference game's wolf builds it** (one of its monster models, measured on its head; not one of the 22 ambient
+animals):
 - The eyes are **painted, not modelled**: there is no eyeball geometry.
 - Each eye sits on a facet angled forward beside the nose bridge, directly under a **brow fold**. The fold is an angled crease
   where the forehead plane meets the muzzle plane, sloping down toward the nose.
@@ -112,6 +113,8 @@ animal that keeps a real pupil on purpose (a reptile's slit) sets `"eyes": "pupi
   Tighten the socket toward the nose and below the glow, and fade the under-eye shade to nothing at the inner corner.
 - **Paint the face by position, not by facing.** Snout terms that switched on each face's normal (a lit bridge, a shaded
   side) drew a hard line along the edge between the bridge's faces and the side's, right past the eye's inner corner.
+  (Position chooses what is painted where. The smooth, interpolated normal may shade it or fade it through a soft ramp,
+  never switch it face by face: `lowpoly-characters/references/texture.md`, "Paint placed by where the skin faces".)
 - **Open the jaw wide when it threatens.** The user found the first hostile mobs' gapes too timid and asked for them wider
   (2026-11-24). What shipped: the giant bat's bite 70 degrees at its peak (from 58), its snarls 38; the Komodo's threat
   and lunge about 40 (from about 31); the gorilla's roar about 40 (from 30) and its charge 24. Leave the idle's resting

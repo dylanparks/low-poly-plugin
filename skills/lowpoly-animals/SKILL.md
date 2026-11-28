@@ -1,6 +1,6 @@
 ---
 name: lowpoly-animals
-description: Build or critique a low-poly, game-ready 3D animal (mammal, bird, fish, reptile, insect or other creature, real or assembled from real parts) in the style of late-90s/early-2000s RPGs. Use when generating an animal mesh in code, turning photos or a description into a low-poly animal, texturing, rigging or animating it, or when a procedural animal looks like tubes and capsules, has off proportions or moves like the wrong species. Load lowpoly-core first (the reference set, budgets, topology, weights, the texture method and the checks); this skill adds body plans, limb joins and the flank fold, feet and claws, heads, eyes, ears and opening mouths, fur, scales, plates, wet skin, chitin and membranes, wings, manes and other body parts as modules, planted-foot IK gaits, and an animal checklist.
+description: Build or critique a low-poly, game-ready 3D animal (mammal, bird, fish, reptile, insect or other creature, real or assembled from real parts) in the style of late-90s/early-2000s RPGs; for a person or a humanoid race (orc, ogre, troll, goblin) use lowpoly-characters instead. Use when generating an animal mesh in code, turning photos or a description into a low-poly animal, texturing, rigging or animating it, or when a procedural animal looks like tubes and capsules, has off proportions or moves like the wrong species. Load lowpoly-core first (the reference set, budgets, topology, weights, the texture method and the checks); this skill adds body plans, limb joins and the flank fold, feet and claws, heads, eyes, ears and opening mouths, fur, scales, plates, wet skin, chitin and membranes, wings, manes and other body parts as modules, planted-foot IK gaits, and an animal checklist.
 ---
 
 # Low-poly animals (late-90s RPG style)
@@ -35,6 +35,10 @@ eye lids, coats and the non-fur skins also draw on the same game's animal-like m
 | `references/reference-measurements.md` | the measured data behind every number |
 | `references/common-failures.md` | the animal failures from the test builds, how they looked, and the fix |
 | `references/case-study-*.md` | the test builds, round by round |
+
+**People and humanoid races** (an orc, an ogre, a goblin) are `lowpoly-characters`, not this skill: a person's joints,
+texture charts, bind pose and checks differ, and that skill says where. A creature that mixes the two (a centaur, a
+minotaur, a werewolf) takes its animal parts from here (`references/parts.md`) and its human parts from there.
 
 ## 1. The animal's references
 
@@ -252,7 +256,7 @@ walk. The table and the notes on each joint are in `references/locomotion.md`.
   across a joint shrinks to cos(bend / 2)); spread a deep pose over the neighbouring joints; cap the wrist's turn against
   the forearm in the IK (the lion: 22-23°) and tip the pastern beyond it (motion.leg_rings, motion.leg_stretch_*).
 - **Each leg on its own in an action clip:** its own timing, height and path; feet left behind follow the body
-  (motion.lockstep). An attack follows the species' hunting behaviour (lowpoly-core `references/temperament.md`).
+  (motion.lockstep). An attack follows the species' hunting behaviour (`lowpoly-core/references/temperament.md`).
 
 **Standing:** the centre of mass inside the feet's contact in every standing clip (lowpoly-core §6). Don't trust the bind
 pose's feet; fix it in the standing clips with the walk's own IK (`references/locomotion.md`).

@@ -86,11 +86,18 @@ def write_gltf(A, out_path, texture_png=None):
         wa = acc(add(struct.pack('<%df' % (4 * n), *[x for p in w for x in p]), 34962), 5126, n, 'VEC4')
         ja = acc(add(struct.pack('<%dH' % (4 * n), *[x for p in j for x in p]), 34962), 5123, n, 'VEC4')
         ix = struct.unpack('<%dH' % (len(base64.b64decode(s['i'])) // 2), base64.b64decode(s['i']))
+        targets = []
+        for mo in s.get('morphs', []):                      # morph targets: a position delta per corner (a body type, a face)
+            dl = struct.unpack('<%df' % (3 * n), base64.b64decode(mo['d']))
+            dd = [dl[k * 3:k * 3 + 3] for k in range(n)]
+            targets.append({'POSITION': acc(add(struct.pack('<%df' % (3 * n), *dl)), 5126, n, 'VEC3',
+                                            [min(p[k] for p in dd) for k in range(3)], [max(p[k] for p in dd) for k in range(3)])})
         for tex_index, first, count in s['r']:
             sub = ix[first * 3:(first + count) * 3]
             ia = acc(add(struct.pack('<%dH' % len(sub), *sub), 34963), 5123, len(sub), 'SCALAR')
             prims.append({'attributes': {'POSITION': pa, 'NORMAL': na, 'TEXCOORD_0': ua, 'WEIGHTS_0': wa, 'JOINTS_0': ja},
                           'indices': ia, 'material': tex_index})
+            if targets: prims[-1]['targets'] = targets
     mesh_node = len(nodes); nodes.append({'name': A.get('name', 'animal'), 'mesh': 0, 'skin': 0})
 
     anims = []
@@ -124,7 +131,10 @@ def write_gltf(A, out_path, texture_png=None):
                 materials[-1]['pbrMetallicRoughness']['baseColorTexture'] = {'index': len(textures) - 1}
     doc = {'asset': {'version': '2.0', 'generator': 'lowpoly gltf_io'},
            'scene': 0, 'scenes': [{'nodes': roots + [mesh_node]}], 'nodes': nodes,
-           'meshes': [{'name': A.get('name', 'animal'), 'primitives': prims}],
+           'meshes': [dict({'name': A.get('name', 'animal'), 'primitives': prims},
+                           **({'weights': [0.0] * len(A['subs'][0]['morphs']),
+                               'extras': {'targetNames': [m['name'] for m in A['subs'][0]['morphs']]}}
+                              if A['subs'] and A['subs'][0].get('morphs') else {}))],
            'skins': [{'joints': list(range(nb)), 'inverseBindMatrices': ibm_acc}],
            'animations': anims, 'materials': materials, 'accessors': accs, 'bufferViews': views,
            'buffers': [{'uri': binname, 'byteLength': len(buf)}],
@@ -219,6 +229,12 @@ def read_gltf(path):
     flat = [x for c in corners for x in c]
     subs.append({'v': base64.b64encode(struct.pack('<%df' % len(flat), *flat)).decode(),
                  'i': base64.b64encode(struct.pack('<%dH' % (3 * len(tris)), *[i for t in tris for i in t])).decode(), 'r': ranges})
+    mesh = doc['meshes'][mesh_i]; prim0 = mesh['primitives'][0]
+    names_ = (mesh.get('extras') or {}).get('targetNames', [])
+    for k, tg in enumerate(prim0.get('targets', [])):         # morph targets (one sub: the corners above, in order)
+        dd_ = _accessor(doc, bufs, tg['POSITION']); fl = [x for v in dd_ for x in v]
+        subs[0].setdefault('morphs', []).append({'name': names_[k] if k < len(names_) else 'target%d' % k,
+                                                 'd': base64.b64encode(struct.pack('<%df' % len(fl), *fl)).decode()})
     anims = {}
     for an in doc.get('animations', []):
         per = {b: {'rotation': [], 'translation': []} for b in range(len(joints))}

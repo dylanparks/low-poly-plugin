@@ -195,7 +195,7 @@ model with a mouth that opens is built. It is not the rest of this section: thos
   mouth is held open in every pose, which the lion's closed cavity did not give them. A hostile mob gets a modelled row at
   every tier (`lowpoly-core/references/temperament.md`, "Which to build"): about 8 pyramids, 32 vertices, at the medium
   tier. How far a jaw opens comes from the species' anatomy (`lowpoly-core/references/temperament.md`, "Open the jaw wide").
-- **The motion that goes with it** (snapping bites with the head up, the howl) is in
+- **The motion that goes with it** (snapping bites with the head up) is in
   `lowpoly-core/references/temperament.md`, "Open the jaw wide".
 
 **A very large head (built on the 12 m test animal).** When the camera fills the screen with the head, the simple forms
@@ -267,7 +267,7 @@ an eye under about 90 degrees, and measure it (`lib/lowpoly/tools/edge_angles.py
    front, made them look like a painted visor.
 3. **Keep the patch to the socket's own surfaces** (the strips between the lip, the flank and the brow). If two surfaces
    project to the same part of the patch, the eye shows twice at 3/4. Fade the dark socket out well inside the patch, not
-   at its edge, or it ends in a hard rectangle, and sample the skin underneath at the point's true position (§6).
+   at its edge, or it ends in a hard rectangle, and sample the skin underneath at the point's true position (lowpoly-core §5).
 4. **Check it from the front, 3/4 and side,** with the engine's lights (`lib/lowpoly/tools/lit_view.py`) and in the viewer.
 
 **Extras in the measured models:** a wolf model from the same game has a separate mouth strip of painted gums and teeth (the

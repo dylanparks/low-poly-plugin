@@ -146,4 +146,3 @@ and the outline set of lowpoly-core §1. From them, measure as fractions of the 
 **5. Check it:** `lib/lowpoly/tools/skin_study.py` should put the scaled regions in the scale column above:
 - crevices 6-24%, edges 20% or more, a repeat at the chosen cell size, painted highlights within range;
 - the lit render (§6) should show no clipped gloss.
-"""

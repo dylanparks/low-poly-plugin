@@ -1,6 +1,6 @@
 ---
 name: lowpoly-core
-description: The shared method for building or critiquing any low-poly, game-ready 3D model (an animal, a creature, a character) in the style of late-90s/early-2000s RPGs. Use whenever a low-poly model is generated in code, built from photos or a description, textured, rigged, animated or reviewed, before any skill for one kind of model (load lowpoly-animals after it for animals). Covers the reference set and measuring the model against it in every view, budgets scaled to size and camera distance, one-skin topology (holes and bridges, rings at landmarks, winding, normals, bind pose), rigs and skin weights, the painted mirrored texture (continuity and seams, density, stretched faces, lighting judged as the engine shades it), docile against hostile temperament, secondary motion and parts crossing in motion, the lp check pipeline, and the failures that recur in every build.
+description: The shared method for building or critiquing any low-poly, game-ready 3D model (an animal, a creature, a character) in the style of late-90s/early-2000s RPGs. Use whenever a low-poly model is generated in code, built from photos or a description, textured, rigged, animated or reviewed, before any skill for one kind of model (load lowpoly-animals after it for animals, lowpoly-characters for people and humanoid races). Covers the reference set and measuring the model against it in every view, budgets scaled to size and camera distance, one-skin topology (holes and bridges, rings at landmarks, winding, normals, bind pose), rigs and skin weights, the painted mirrored texture (continuity and seams, density, stretched faces, lighting judged as the engine shades it), docile against hostile temperament, secondary motion and parts crossing in motion, the lp check pipeline, and the failures that recur in every build.
 ---
 
 # Low-poly game models: the shared method (late-90s RPG style)
@@ -8,8 +8,10 @@ description: The shared method for building or critiquing any low-poly, game-rea
 The goal is a model that reads as the real thing at a glance from a 3/4 game camera, on a small budget. The detail goes
 into the **silhouette, the joints and the painted texture**, not into round geometry.
 
-This skill is the method every kind of model shares. A skill for one kind of model (`lowpoly-animals`) adds what is
-particular to it: body plans, limbs, feet, heads, coats, gaits. Load this one first; its numbers and rules hold for both.
+This skill is the method every kind of model shares. A skill for one kind of model adds what is particular to it:
+`lowpoly-animals` (body plans, limbs, feet, heads, coats, gaits) or `lowpoly-characters` (people and humanoid races: a
+body measured against a survey, faces, hands, body types, a character's texture charts). Load this one first; its rules
+hold for every kind. Where a kind of model does something differently, this skill says so and names the place.
 
 **What the numbers come from.** Budgets and construction facts are measured on the 22 shipped ambient animal models of a
 late-1990s commercial RPG (**the measured models**), in depth on five quadruped mammals. Only the measurements are used; no
@@ -25,7 +27,8 @@ model, texture or file of that game is part of this skill. Where a rule rests on
 | `references/common-failures.md` | failures that are not about one kind of model, and the habits that catch them |
 | `references/contracts.md` | style contracts: shared profiles (style, muzzle and eye kinds, species, colour), parts with budgets, `lp contract`, the parts.* checks |
 
-Paths starting `lowpoly-animals/` are in the animal skill.
+Paths starting `lowpoly-animals/` are in the animal skill, and those starting `lowpoly-characters/` in the character
+skill.
 
 **Checks in code.** Every "check it" step says what to measure. The tools are in the plugin's `lib/lowpoly/tools/`, read
 glTF 2.0 and print their usage. **Run `lp check <model.gltf> --spec spec.json`**: it runs them and judges every number
@@ -96,7 +99,7 @@ the next stage:
 | Gate | Run | Must hold before going on |
 |---|---|---|
 | **1. Blockout** (untextured, no clips) | `lp check <model> --spec spec.json --stage mesh`, `lp waste <model>`, `lp preview` | the overlay within 5% in every view that has a reference; budget.corners, budget.head_density, mesh.mirror and mesh.sides clean; the wasted edges moved or justified; the six-view sheet reads as the animal |
-| **2. Rig and motion** | `--stage rig`, `--stage motion` | joints at the skeleton's; every clip free of crossings; feet planted |
+| **2. Rig and motion** | `--stage rig`, `--stage motion` | joints at the skeleton's; no part passing through another in any clip (contact in a closed fold aside, §6); feet planted |
 | **3. Texture** | `--stage texture` | seams, coat, eye and nose checks; colours judged in `lp preview` |
 
 ## The core idea in one paragraph
@@ -173,6 +176,14 @@ Budgets of the measured models:
 | Tiny or background: rat, raven, seagull | 35–54 | 68–104 | 6–9 | 64 × 64 to 256 × 128 |
 | Swarm or ambient: fish, bird, bat, butterfly, spider | 15–25 | 8–46 | 3–12 | 32 × 32 to 128 × 64 |
 
+A person or humanoid race the camera follows is `lp check`'s `character` tier: 400–720 vertices, 760–1400 triangles,
+24–44 bones, a 512 × 512 texture. It isn't one of the measured animals' tiers: a face, hands and joints that read as
+human, and modelled hair, need more (`lowpoly-characters` §2).
+
+`lib/lowpoly/targets.json` holds the ranges `lp check` judges, and is the one place to change them. Its large and
+medium tiers run to the hero allowance below (250 vertices, 480 triangles), past the measured models' own counts in the
+table.
+
 - **Pick a tier** for the size and how close the camera gets, and say which. Up to about 3.5 m a hero may go one tier up (at
   most about 250 vertices, 480 triangles); past that, `lp check`'s very-large tier: 300–450 vertices, 500–720 triangles.
 - **The small-animal standard** (approved on a housecat, 2026-11-23): an animal about a housecat's size (a body up to about
@@ -201,12 +212,16 @@ Budgets of the measured models:
    - **Never** bury a separate limb tube inside the body: it looks attached when still, and slides through in motion.
    - **Thin parts grow from their joint** (a finger, a thumb, a claw): a piece built beside the joint floats in motion.
      `lp check` mesh.loose counts loose pieces and their gaps.
+   - **What may be a separate piece:** a rigid part that doesn't bend with the skin and is set into it, its edges passing
+     through the skin so mesh.loose reads 0: teeth, claws, a shell, hair, a humanoid's ears. It rides one bone, gets its own
+     texture chart, and is lit with the skin's normals where it meets it (`references/texture-method.md`, "Attached
+     pieces"). Anything that bends (a limb, a neck, a tail, a thumb) is never one.
 2. **Holes and bridges.** A limb's top *is* a hole cut in the body (remove the quads where it leaves; their vertices are the
    limb's first ring), bridged to the next limb ring, so the skin round it is shared and stretches when it swings. The animal
    skill has the measured joins (`lowpoly-animals` §3).
 3. **Few sides, boxy shapes, rings at landmarks.** Rings go where the outline changes, never at even spacing: torso 6–8
    sides, neck 5–6, limbs 3–4 (deeper front-to-back than side-to-side), rings only at the joints and at the fullest point of
-   each muscle mass. Thin parts (fins, membranes, crests) are flat two-sided cards on their own bone, declared in the spec
+   each muscle mass. (Those side counts are the animal tiers'; the character tier's are in `lowpoly-characters` §3.) Thin parts (fins, membranes, crests) are flat two-sided cards on their own bone, declared in the spec
    (`"cards"`).
 4. **Bridge rings with different vertex counts.** Walk both rings in angle order round their shared axis and emit a triangle
    each time one of them advances. Every part must be bridged: a cap plus a separate tube leaves a gap from every angle.
@@ -216,7 +231,9 @@ Budgets of the measured models:
    horns, beaks and shells.
 7. **Bind pose = the subject's natural stance, not a T-pose:** joints angled as in the reference, feet flat on the ground,
    the head at its natural height. **Pose it after mirroring** (`build.pose_x`), as the species' own standing photos show
-   it (a puma often mid-stride, one forefoot ahead). Symmetry belongs to the construction, not the stance.
+   it (a puma often mid-stride, one forefoot ahead). Symmetry belongs to the construction, not the stance. (A humanoid is
+   the exception for its arms: it stands upright and symmetric with the arms in an A-pose, 45 degrees down, so the
+   shoulder deforms both up and down; its clips bring them to rest: `lowpoly-characters` §3.)
 
 **Clean triangles.** No triangle with an aspect over about 10 (the longest edge squared over twice the area): weld vertices
 a few millimetres apart, flip the diagonals of nearly flat quads (`lib/lowpoly/mesh_tidy.py`). **Mirrored pairs alike:**
@@ -227,11 +244,13 @@ change; angle-sorted stitches differ side to side, and the unlike side samples t
 
 - **One bone per real joint,** at the skeleton's joint: a spine of root, pelvis and 2–5 spine bones; a chain per limb; the
   neck, the head, a jaw if the mouth opens, ears that move; 2–4 tail bones. Each foot gets its own bone so its sole can stay
-  flat. The lists per body plan are in the animal skill.
+  flat. The lists per body plan are in the animal skill, the humanoid rig in `lowpoly-characters` §4. (A helper bone
+  inside a muscle mass, moved as its joint closes, is the one bone that isn't a joint: `lowpoly-characters` §4.)
 - **Joint rings:** split about 50/50 between the two bones that meet there. Rings mid-segment are 100% one bone. Torso rings
   blend along the spine; neck rings between the neck bones and the head.
 - **Where a limb meets the body,** the skin round the hole blends body and limb so it stretches (a working start: the
-  shared groin vertex 50/50 to the two limbs, the lower flank body 0.4 / limb 0.6, the upper flank 0.75 / 0.25).
+  shared groin vertex body 0.3–0.5 with the rest split between the two limbs, the lower flank body 0.4 / limb 0.6, the
+  upper flank 0.75 / 0.25; the measured joins are in `lowpoly-animals` §4).
 - **Rest rotations:** identity is fine; a bone's animation key is then simply its bend.
 - **Check it:** `lp check` rig.* (bones, blended share), and every clip for parts crossing (§6).
 
@@ -241,7 +260,9 @@ The texture does most of the work.
 - **Name the surface types, region by region,** before painting: each is painted and measured differently (fur, scales,
   plates, wet skin, chitin, membranes for animals: `lowpoly-animals/references/skin-types.md`).
 - **Layout:** paint **one side** as a flattened side view, a "pelt", that both sides share (a planar side projection: `u`
-  along the body, `v` = height, `x` ignored). **One UV per vertex is the target** (`build.pelt_uv`; budget.corners): every
+  along the body, `v` = height, `x` ignored). (An upright body can't use it: a person's chest, face and shins face forward
+  and would be edge-on in a side view. A humanoid gets one chart per region, each unwrapped round its own axis and shared
+  by both sides: `lowpoly-characters/references/texture.md`. The rest of this section holds for it.) **One UV per vertex is the target** (`build.pelt_uv`; budget.corners): every
   extra chart duplicates rendered vertices along its seam, so a patch must earn its place as a triangle does. With a mirrored pelt, add a vertex on the spine so the back can be unrolled.
   - **Overlapping parts** in the side view (legs, ears, wings over the back) get their own strip, or they take the colour of
     what they overlap.
@@ -277,7 +298,11 @@ The gaits and clip sets of animals are in `lowpoly-animals` §7. These hold for 
   clip the paired limbs move each on their own (`lp check` motion.hyperextended, motion.leg_rings, motion.leg_stretch_*,
   motion.lockstep; `leg_bend_study.py`; `lowpoly-animals/references/limbs.md`, "Legs that bend").
 - **Nothing passes through itself or the body** in any frame of any clip (`self_cross.py`, `lp check` motion.crossings;
-  `--where` names the bones).
+  `--where` names the bones). **Contact is not crossing:** where soft tissue meets in a closed fold (a calf against the
+  back of the thigh, an arm against the chest, fingers in a fist) the skins touch, and a few triangles cross there; a
+  joint crease does the same (approved builds read 0–32). Judge those in the renders: the fault is a part passing deep
+  through another, or a slit left open where the tissue should meet (`lowpoly-characters/references/joints-and-motion.md`,
+  "Contact versus crossing").
 - **Secondary motion** (tails, ears, hair, feathers, a mane) as baked spring bones: `lp bake-springs`, with stiffness, drag,
   gravity, colliders, the ground and settings per clip (`lowpoly-animals/references/locomotion.md`).
 - **Idle and hover clips need variance:** a few overlapping cycles of different lengths, not one nod repeated.
@@ -300,11 +325,13 @@ The gaits and clip sets of animals are in `lowpoly-animals` §7. These hold for 
 - [ ] Joint rings blended 50/50, the limb joins blended, blended corners in range for the size (§4).
 - [ ] Surface types named per region; a mirrored pelt with painted light and form; own patches for stretched faces; seams
       in range; colours judged under the engine's lights and confirmed in the viewer (§5).
-- [ ] Every clip checked for crossings; standing clips balanced; motion compared with reference frames (§6).
+- [ ] Every clip checked for crossings (each one a crease or a contact, none a part through a part); standing clips
+      balanced; motion compared with reference frames (§6).
 - [ ] No joint bent backwards, no joint ring pinched or band of skin stretched, paired limbs independent in action clips (§6).
 - [ ] Seen at game distance from a 3/4 angle, the subject is obvious without labels.
 
 ## Common failures
 
 `references/common-failures.md` has the failures that recur in any build, what each looks like and the fix, with the habits
-that catch them: read it when a build looks wrong, and run its habits before every review. The animal skill has its own.
+that catch them: read it when a build looks wrong, and run its habits before every review. The animal and character
+skills have their own.

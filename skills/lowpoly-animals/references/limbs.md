@@ -176,6 +176,18 @@ A leg built with the right widths can still lose them in motion: a joint folds f
 a short band of skin behind a joint stretches by a third. Read how the species' joints bend before animating, and measure
 every clip.
 
+**Not for a person or humanoid race (`"body_plan": "humanoid"`).** These ring and crush checks, and lockstep, were set on a mountain lion's legs. They
+push a joint's bend across two or three rings to keep the leg's width. On a human knee that spreading bends the leg in two
+places: a "knee block" between two creases. A person's knee is one hinge: the ring above on the thigh alone, the ring
+below on the shin alone, and only the knee's own ring, at the joint line, shared. The skin behind a deeply bent human
+knee really does compress, and the calf and hamstrings press together there. Model that contact (the calf's belly pushed
+up into the fold by a helper bone) instead of keeping the ring's width. A standing human attack plants both feet, so its
+legs move alike. `lp check` skips motion.leg_rings, motion.leg_stretch_min and motion.lockstep for `humanoid`;
+motion.hyperextended and motion.leg_stretch_max (skin over-stretched across a joint's front) still apply. A two-legged
+animal (`"biped"`: a theropod, an ostrich) keeps every rule here. The humanoid's joints are in
+`lowpoly-characters/references/joints-and-motion.md`. Its helper bones, which press two masses together in a closing
+fold, would suit a heavy animal's folds too (a thigh against a belly); that hasn't been built on an animal yet.
+
 **How a quadruped mammal's joints bend** (the carnivore and ungulate limb; check the species' own):
 - **Hinges bend one way only.** The elbow folds with its point (the olecranon) behind; the knee with its point in front; the
   hock (the tarsus) with its point behind. None straightens past its line: a knee or elbow bent backwards reads as a break.
