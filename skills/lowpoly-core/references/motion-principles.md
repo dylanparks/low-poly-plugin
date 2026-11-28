@@ -106,17 +106,20 @@ sum two periods where a cycle would otherwise repeat exactly.
 | Quantity | Measured (running, 2.5-3.5 m/s) | First humanoid run |
 |---|---|---|
 | Stride time | 0.74 s at 2.5 m/s; 0.70 s at 3.5 | 0.72 s |
-| Rise and fall of the body | 77-91 mm (about 4.4-5.2% of height) | 4.3% |
-| Pelvis turn about the vertical, range | 14 ± 4 degrees (5-28 between runners) | 11 |
+| Rise and fall of the body | 77-91 mm (about 4.4-5.2% of height) | 5.1% |
+| Pelvis turn about the vertical, range | 14 ± 4 degrees (5-28 between runners) | 18 |
 | Pelvis side tilt, range | 14 ± 4 degrees | 11 |
 | Pelvis forward tilt, range | about 8 degrees | not measured (the chest pitches 1) |
-| Upper body turn, range, arms swinging | about 30 degrees (a simulation) | 20 |
+| Upper body turn, range, arms swinging | about 30 degrees (a simulation) | 30 |
 | Step width | 2-4 cm | 5.5 cm at the ankle (see below) |
-| Knee flexion in the swing | 94-109 degrees | 95 |
+| Knee flexion in the swing | 94-109 degrees | 106 |
 | Hip flexion / extension | 44-53 / 4-8 degrees | |
 | Contact time | about 0.29 s (duty about 0.4) | 0.26 s |
 
 - **The chest turns against the pelvis** (antiphase), and the arms swing with the chest: arm extremes with leg extremes.
+- **Within the measured range, choose the lively end.** A run set at the middle of every measured range read as
+  timid beside the style's own runs; at the top of the ranges (and with the elbows pumping, 40 degrees of open and
+  close) it reads as a run. Past the ranges it bounds. **[ours]**
 - **The hip drops on the swing side** as the body lands; the spine bends the other way so the head stays level.
 - **The head** pitches against the bounce and faces the direction of travel. **[measured]**
 - **Poses:** contact (leg nearly straight), down (lowest, support knee bent), push-off, flight (highest; at least a

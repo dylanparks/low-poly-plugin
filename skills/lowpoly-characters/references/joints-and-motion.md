@@ -78,9 +78,14 @@ it. Judged on the average body, a thin idle's arms cut into the median hips that
 
 ## The run
 
-- **The pelvis and chest work against each other.** The pelvis turns about 11 degrees and tilts about 11 (the swing
-  side's hip drops); the chest turns the other way and carries the arm swing; the body rises and falls 4% of its
-  height; the head pitches against the bounce. The arm, elbow and hand each run a little later than the chest.
+- **The pelvis and chest work against each other.** The pelvis turns about 19 degrees and tilts about 11 (the swing
+  side's hip drops); the chest turns the other way, about 31 degrees, and carries the arm swing; the body rises and
+  falls 5% of its height; the head pitches against the bounce and barely turns (2 degrees). The arm, elbow and hand
+  each run a little later than the chest.
+- **The arms pump.** The elbow closes to about 107 degrees as the fist comes up to the chest in front and opens to
+  65 on the back swing. A first run swung the arms with the elbow nearly fixed (a 20 degree range) and the hands low:
+  accurate enough, and lifeless. A second pass took the turn and the pump to the top of what runners measure; the
+  reference game's run goes further still (twice the bounce), which on these proportions would bound.
 - **The feet's track** is 5.5 cm either side of the midline, the swing foot 2 cm wider, and 7.7 cm on the muscular
   build: at the 2-4 cm measured on runners the swing foot passed through the standing shin.
 - **Planted means no sliding.** Whatever is on the ground (heel, flat foot, ball) moves at one ground speed. The stance

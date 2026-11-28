@@ -23,6 +23,8 @@ that game is part of this plugin.
 ## Plans
 
 - `docs/automation-plan.md`: turning the process into a pipeline.
+- `docs/gait-speed-plan.md`: a plan, not yet built, for gaits from walk to sprint on a speed slider (delete it once
+  it is implemented).
   - **Scripts:** an `lp` command in `bin/`, a shared build library and `targets.json` for every measured range.
   - **Agents:** one specialist per stage and a read-only reviewer.
   - **Hooks:** `SubagentStop`, `Stop` and `PreToolUse` refuse to move on until the checks pass.
