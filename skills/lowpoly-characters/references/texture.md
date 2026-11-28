@@ -28,9 +28,13 @@ edge-on in it. Each region is unwrapped round its own axis, ring by ring: a row 
 
 ## Paint placed by where the skin faces
 
+Position chooses what is painted where (lowpoly-core's rule: "paint by position, not by facing"; a zone or colour
+switched on each face's normal draws a hard line along the faces' edges). Facing does two smaller jobs, always from the
+smooth, interpolated normal and through a soft ramp:
+
 - **The face's features belong on its front.** Paint limited by depth alone reaches the jaw's underside, which lies
-  inside the face's depth: limit the mouth's lines and shadows to skin facing forward (the normal's forward share over
-  about 0.3).
+  inside the face's depth: fade the mouth's lines and shadows out where the skin stops facing forward (a ramp on the
+  normal's forward share from about 0.15 to 0.45).
 - **Shade by the mesh's own surfaces wherever possible.** Downward faces are in shade: under the brow ridge, the nose and
   the lower lip, the jaw's underside. Then the shading stays matched when the mesh moves.
 - **The head's baked light is gentler than the body's.** The face's forms are small and steep, and the renderer lights
@@ -71,9 +75,14 @@ edge-on in it. Each region is unwrapped round its own axis, ring by ring: a row 
   - **Standoff.** Each edge vertex is set a few mm off the real skin: 2.5 mm, 5 at the nape.
   - **Clearances.** The fringe's tips stop above the brows. The edge over the ears clears the helix's top.
 
-## Normal transfer for attached pieces
+## Attached pieces: the ear
 
-An ear, a hair card or a horn set on the skin is lit by its own faces and reads as stuck on. Blend each of its vertex
-normals with the nearest skin's (fully at the root, about half beyond). The piece then lights as a continuation of the
-skin while the paint carries its forms. Paint its root and the fold behind it in the skin's own shaded tone; deepen the
-skin's contact shadow round it.
+The general method (blend the piece's normals with the skin's, a broad root, the root painted in the skin's shaded
+tone) is `lowpoly-core/references/texture-method.md`, "Attached pieces". On the ear: its normals fully the head's at
+the helix's root, the tragus and the two root points, about 0.55 over the shell; its back and the head's contact shadow
+round its root both 0.40 toward the skin's shade.
+
+## Hair that moves
+
+The first build's hair is rigid. Hair that swings (a ponytail, long locks) takes spring bones baked into the clips:
+`lp bake-springs` (`lowpoly-animals/references/locomotion.md`, the spring bones).

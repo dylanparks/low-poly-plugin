@@ -16,8 +16,8 @@ tips, a tip point. The first build: 9.5 cm palm, 4.5 cm to the middle joint, 5 c
 | Proximal phalanx | 0.196 | 37 mm |
 | Distal phalanx, to the tip | 0.158 | 30 mm |
 
-- **Reach.** The bones themselves are shorter (48, 31 and 21 mm): the joint-centre lengths include the joints and the
-  pulp. Laid against the index, the thumb's tip reaches about 69% along the index's first segment.
+- **Reach.** The two phalanges' bones are shorter than their segments (about 31 and 21 mm): the joint-centre lengths
+  include the joints and the pulp. Laid against the index, the thumb's tip reaches about 69% along the index's first segment.
 - **The thenar eminence** (the ball of the thumb) runs from the wrist crease to the thenar crease (mean 7.4 cm). The web
   to the index spans about 6.8 cm in palmar abduction.
 - **The thumb's ray is turned about 80-90 degrees** from the fingers': its nail faces out to the side, its pad toward the

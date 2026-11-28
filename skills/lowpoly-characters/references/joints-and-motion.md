@@ -2,11 +2,14 @@
 
 ## A hinge is one joint
 
-A knee or elbow bends at one ring on the joint's line, its weights split between the two bones. The ring above belongs to
-the upper bone alone and the ring below to the lower. Spreading the change over three rings is how an animal's leg is
-weighted to keep its width; on a human it bends the leg in two places, a knee block between two creases. With
-`"body_plan": "biped"`, `lp check` leaves out the animal leg rules (motion.leg_rings, motion.leg_stretch_min,
-motion.lockstep).
+A knee bends at one ring on the joint's line, its weights split between the two bones (the first build: thigh 0.55, shin
+0.45). The ring above belongs to the upper bone alone and the ring below to the lower. The first build's elbow has no
+ring on its line, for the budget: the rings either side share the bend (0.75 upper arm and 0.25 forearm above the joint,
+the reverse below). Spreading the change over three rings is how an animal's leg is weighted to keep its width; on a
+human it bends the leg in two places, a knee block between two creases. With
+`"body_plan": "humanoid"`, `lp check` leaves out the animal leg rules (motion.leg_rings, motion.leg_stretch_min,
+motion.lockstep); motion.hyperextended and motion.leg_stretch_max still apply. A two-legged animal is `"biped"` and
+keeps them all (`lowpoly-animals/references/limbs.md`, "Legs that bend").
 
 ## Where soft tissue meets: helper bones
 
@@ -25,7 +28,8 @@ fold.
   bulging 5 mm at push-off.
 - **Too small a weight does nothing visible.** At 35% weight a 2.4 cm push moved the elbow's corner 8 mm; at 55% and
   3.2 cm the fold closed.
-- **Cost.** Each helper is a bone: the three folds take six. Keep them in the tier's bone count, or say why not.
+- **Cost.** Each helper is a bone: the three folds take five a side, ten in all, on a 32-bone skeleton. The character
+  tier's bone range (24-44) allows for them.
 
 ## Contact versus crossing
 
@@ -47,11 +51,13 @@ it. Judged on the average body, a thin idle's arms cut into the median hips that
   man's arms rest further from the body, palms turned back. A thin build's arms hang closest.
 - **The first build's three idles:**
 
-  | Build | Arm out | Elbow | Inward turn | Hand to thigh |
-  |---|---|---|---|---|
-  | Thin | about 4 degrees | 14 | | 22 mm |
-  | Average | about 6 | 15 | | 33 mm |
-  | Muscular | about 13 | 24 | 26, palms back | 46 mm |
+  | Build | Arm out from vertical | Elbow | Inward turn |
+  |---|---|---|---|
+  | Thin | about 4 degrees | 14 | 6 |
+  | Average | about 8 | 15 | 10, palms toward the thighs |
+  | Muscular | about 20 | 24 | 26, palms turned back |
+
+  Each was set on its own morph body: at 13 degrees out the muscular arms pressed into the lats.
 
 - **Thin-build hands stay clear of the thighs.** Hung straighter, they tucked against the thighs; carried slightly out,
   they align with the shoulders.
@@ -78,13 +84,14 @@ it. Judged on the average body, a thin idle's arms cut into the median hips that
 - **The toe's tip** is on the toe bone alone. A 30% share on the foot dragged it 11 mm into the ground as the heel rose.
 - **The arms carry the build.**
 
-  | Build | Arms out | Swing | Calf bulge |
+  | Build | Arm drop from the A-pose (rad) | Swing (rad) | Calf bulge |
   |---|---|---|---|
-  | Thin | 0.58 rad drop | ±0.46 | ×0.6 |
+  | Thin | 0.58 | ±0.46 | ×0.6 |
   | Average | 0.52 | ±0.46 | ×1.0 |
-  | Muscular | 0.46 | ±0.33, centred further forward (shorter, mostly off the back) | ×1.4 |
+  | Muscular | 0.27 (the arms carried well out) | ±0.33, centred further forward (shorter, mostly off the back) | ×1.4 |
 
-  Carried further out alone, the muscular arm passed close to the bulked lat as it swung back.
+  The drop is from the A-pose, in radians: a smaller drop carries the arms further out. At 0.46 the muscular arm passed
+  through the bulked lat as it swung back.
 
 ## Blend spaces for body types
 

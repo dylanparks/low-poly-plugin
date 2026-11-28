@@ -104,7 +104,7 @@ shell, flap, takeoff and hover. The first wings were panels hinged straight off 
     a folding hand.
   - **The swap still overlaps for about 0.1 s** (124-140 crossings counting the shells), and finishing the shell's shrink
     earlier made it worse. `lp check` motion.crossings counts only the main skin; motion.pieces counts the separate
-    pieces' new crossings (118 here, a warning), and `lp self_cross` names the bones.
+    pieces' new crossings (118 here, a warning), and `self_cross.py --where` names the bones.
 - **A raised wing's underside goes black in the engine.** The viewer lights a ground-facing surface with the ground colour
   alone and no sun: the underside measured 0.21-0.36 of the top's brightness. The normals were right. Shade the lower
   sheet with the upper sheet's normal, as the thin feather sheet it is (0.75-1.0 of the top). For it to read a little

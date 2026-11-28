@@ -11,7 +11,7 @@ a marker. There were three causes:
 - **The paint showed no form.** The bridge was only 0.07 brighter than the side, and the mouth line was 0.01 darker than
   the lip above it.
 
-The reference game's lame mare does what a muzzle needs, with fewer than half the alicorn's texels on the front of the head
+The reference game's lame mule does what a muzzle needs, with fewer than half the alicorn's texels on the front of the head
 (25 × 20 against 34 × 35):
 - the end is a blunt block, 0.128 m wide against 0.184 m across the cheeks;
 - the nostrils are the darkest thing on the head (0.00), inside a nose of 0.04;

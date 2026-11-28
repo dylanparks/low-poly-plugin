@@ -51,7 +51,7 @@ A contract for a red fox is only a few lines. It names its profiles, and everyth
 ## Parts
 
 `"parts"` names each part by the bones that carry it, written as patterns. A triangle belongs to the part whose bones carry
-most of its weight, and every other triangle is the body. For each part `lowpoly/tools/parts_study.py` measures:
+most of its weight, and every other triangle is the body. For each part `lib/lowpoly/tools/parts_study.py` measures:
 
 | Check | What it compares | Default | Measured |
 |---|---|---|---|

@@ -1,6 +1,6 @@
 # Common failures
 
-The detail behind SKILL.md's "Common failures". Each was found in a real build (the two case studies have the numbers). The fix is in the section named.
+The detail behind SKILL.md's "Common failures". Each was found in a real build (the case studies have the numbers). The fix is in the section named.
 
 | Failure | What it looks like | Fix |
 |---|---|---|
@@ -14,7 +14,7 @@ The detail behind SKILL.md's "Common failures". Each was found in a real build (
 | A reptile belly drawn as crease lines | Thin dark lines and scribbled folds on a pale belly read as a sketch | Soft transverse rolls of about 15 texels: a groove on each ring (and one between), a soft U half a roll wide in the skin's own darker hue, a blurred highlight 40% down each roll, the belly shaded as a cylinder (`references/reptile-skin.md`, section 5) |
 | Scales that read as cobblestones, and a belly with a hard edge | Round cells lit from their centres, black grout, no grain; the belly switched by which way each face points | Plates in a wavy diamond grid laid along the body, lit on the upper edge and shaded toward the trailing edge; the belly blended by position round the body over a wide band (`references/reptile-skin.md`) |
 | A bird's beak drawn like a mammal's muzzle | A beak half the head or longer, its top edge sloping down from base to tip, as tall as the skull: a toucan, not an eagle | Measure the beak's landmarks in a side photo; the culmen level until the hook, the cere in front of the eye (`references/heads.md`, "Birds") |
-| Buried limb tubes, capped tails | Attached when still, coming apart in motion; a visible gap at the tail | Holes and bridges (§3, rules 1, 2, 7) |
+| Buried limb tubes, capped tails | Attached when still, coming apart in motion; a visible gap at the tail | Holes and bridges (§3, rule 1; lowpoly-core §3, rules 1, 2 and 7) |
 | Stick legs of even thickness | A rump overhanging thin legs; a V-notch between belly and thigh | Thigh ring from kneecap to hamstring, the flank fold (§3, rule 2) |
 | A leg that leaves the belly as a thin column, no thigh | Built from a skeleton where the femur is inside the torso outline; the muscle reference was not checked | A thigh lobe ring under the hole, a mid-thigh ring tapering to the knee, a fold against the belly (§3, rule 2) |
 | The thigh widest at the knee, the haunch pinched above it | From the front or behind, the leg's mass at the bottom: a bulging knee under a narrow haunch (`lp check`: `limbs.hind_peak` under 0.25, `limbs.hind_knee` over 0.95) | A ring at mid-thigh at the fullest point, the haunch's lower flank out, the knee in (`references/limbs.md`) |
@@ -38,7 +38,7 @@ The detail behind SKILL.md's "Common failures". Each was found in a real build (
 | An eye painted as one soft blob near the coat's value | Visible in the texture, gone on the model: no catchlight, no rim, a smear at game distance | The eye stack, crisp at the centre, measured round the eye (§6) |
 | Eyes moved to a dead-forward surface to show from straight on | A painted visor | Eyes in the orbits, in an oblique patch (§5) |
 | Parts overlapping in the side pelt | Ears or a far leg in the colour of what they cover | Their own strips (§6) |
-| Forward- or back-facing faces on the side projection | Bands of smeared texture across a blunt nose, a chin or a chest front | Their own patch, projected along their direction, painted from the pelt unrolled round the edge (`references/texture.md`) |
+| Forward- or back-facing faces on the side projection | Bands of smeared texture across a blunt nose, a chin or a chest front | Their own patch, projected along their direction, painted from the pelt unrolled round the edge (`lowpoly-core/references/texture-method.md`, "Faces the projection stretches") |
 | Toes as separate wedges sunk into the foot | Toes that slide through the foot in motion; no join between toe and foot | Toes welded onto the foot's own faces, each on its own bone (`references/feet.md`, "Claws and toes as part of the skin") |
 | A reference model's construction copied without the species' anatomy | Clean claws on a foot that reads as spikes, or as a hand from below | The anatomy first (weight-bearing toes, the first toe, the heel pad), then the construction (`references/feet.md`) |
 | Sine waves on each joint | Feet that slide and sink | Planted feet with IK, including the body's bob (§7) |

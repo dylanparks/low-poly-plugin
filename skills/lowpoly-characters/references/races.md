@@ -69,8 +69,8 @@ person. Game and concept art supply shape language only, named as convention.
 | Gorilla | 116 (110-125) | Fleagle; Schultz 1937 |
 | Orangutan | 139 (135-151) | Fleagle; Schultz 1937 |
 
-- **Male gorilla:** 136-227 kg, 1.4-1.8 m tall, arm span 2.3-2.6 m (about 1.7 times body length); a sagittal crest. It
-  knuckle-walks only about 60% of the time.
+- **Male gorilla** (the Gorilla article on Wikipedia, citing field studies; secondary): 136-227 kg, 1.4-1.8 m tall, arm
+  span 2.3-2.6 m (about 1.7 times body length); a sagittal crest. It knuckle-walks only about 60% of the time.
 - **Hands.** Chimpanzees and orangutans have long fingers and a relatively short thumb; the gorilla's hand stayed close to
   the human's (Almécija, Smaers & Jungers 2015). A "short thumb" fits a chimp-like troll, not a gorilla-like one.
 - **On the human base:**
@@ -103,7 +103,7 @@ person. Game and concept art supply shape language only, named as convention.
   - **Size and proportions.** Stature about 0.6-0.7 of the man, and the head scaled up toward a child's share (5-6 heads
     tall).
   - **Body.** The trunk long against short legs; the limbs thin.
-  - **Ears and nose.** Large (`head-and-face.md`, ears: a larger `length` and `breadth`, a long `tip`, a wide flare).
+  - **Ears and nose.** Large (`head-and-face.md`, ears: a larger `length`, `breadth` and `protrusion`, a long `tip`).
 - **Goblin convention:** a big head and ears, thin limbs (no design source states it: a design choice).
 
 ## Ogre (analog: gigantism and acromegaly, the heaviest strongmen)
@@ -147,6 +147,16 @@ The human base with the body type toward thin and long:
   - **Tolkien's elf:** only slightly pointed, a leaf; move the helix's back-top point 15-25% of the ear's length up and
     back, the tilt 25-30.
   - **Game-style long points:** up to about three times the human ear (one artist's tutorial, not a standard).
+
+## Temperament, and creatures that are part animal
+
+- **Hostile or docile** (`lowpoly-core/references/temperament.md`) is settled first, as for any model. That file was
+  written from animals, and its `temperament/hostile` profile sets a glowing, pupil-less eye and modelled teeth. On a
+  humanoid, hostility reads first from the brow, the jaw, tusks or teeth and the posture; whether a hostile orc or ogre
+  also takes the glowing eye is the user's choice: ask.
+- **Part animal** (a centaur, a minotaur, a werewolf): the human parts from this skill, the animal parts from
+  `lowpoly-animals` (`lowpoly-animals/references/parts.md` joins parts into composites), each checked against its own references.
+  The spec's `body_plan` follows the legs: `"humanoid"` on human legs, `"biped"` or `"quadruped"` on an animal's.
 
 ## What stays fixed in every race
 

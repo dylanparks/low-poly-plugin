@@ -31,13 +31,16 @@
       overlay.json, a picture per reference and overlay.html (over the photo). The refs.json format: lp overlay --help.
 
 spec.json (all optional) says what the model is, so that only the checks that apply to it run:
-  {"body_plan": "quadruped|biped|bird|fish|lizard|arthropod|flyer", "skin": "fur|scales|plates|chitin|wet|feathers|cloth",
+  {"body_plan": "quadruped|biped|humanoid|bird|fish|lizard|arthropod|flyer", "skin": "fur|scales|plates|chitin|wet|feathers|cloth",
    "feet": "paw|clawed|long-toed|hoof|hand|shod|none", "tier": "large|medium|small|tiny|swarm|very-large|character",
    "eye": {"u": 307, "v": 34, "half_width": 4, "half_height": 3}, "walk_clip": "walk",
    "standing_clips": ["idle", "stand"], "refs": "refs.json", "cards": 16}   (standing_clips default: the idle clip and any
    clip named idle or stand; refs, relative to the spec: the overlay's landmarks, judged at the mesh stage; cards: how many
    open edges the design has on purpose, such as a membrane wing's free outline, so mesh.closed passes at that many and
-   fails on one more. body_plan flyer skips the standing checks: the feet's ground metrics and motion.balance; "eyes": "glow"
+   fails on one more. body_plan flyer skips the standing checks: the feet's ground metrics and motion.balance; body_plan
+   humanoid (a person or a humanoid race; biped is a two-legged animal such as a theropod) skips the animal leg rules
+   motion.leg_rings, motion.leg_stretch_min and motion.lockstep, whose joints are single hinges with tissue meeting in the
+   fold (lowpoly-characters/references/joints-and-motion.md); "measurements": a survey table for the body.* checks; "eyes": "glow"
    marks a pupil-less glowing eye (a hostile mob's, lowpoly-core/references/temperament.md), which skips the pupil-eye checks eye.body,
    eye.rim and eye.catchlight; the default is "pupil";
    "ref_parts": ["head", "wing"] names special parts that each need a reference with a matching "part" (refs.parts);
@@ -63,7 +66,7 @@ class UsageError(Exception):
     """a mistake in the command line or the inputs: reported as one line, exit code 2"""
 
 
-SPEC_VALUES = {'body_plan': ('quadruped', 'biped', 'bird', 'fish', 'lizard', 'arthropod', 'flyer'),
+SPEC_VALUES = {'body_plan': ('quadruped', 'biped', 'humanoid', 'bird', 'fish', 'lizard', 'arthropod', 'flyer'),
                'skin': ('fur', 'scales', 'plates', 'chitin', 'wet', 'feathers', 'cloth'),
                'feet': ('paw', 'clawed', 'long-toed', 'hoof', 'hand', 'shod', 'none'),
                'tier': ('large', 'medium', 'small', 'tiny', 'swarm', 'very-large', 'character'),

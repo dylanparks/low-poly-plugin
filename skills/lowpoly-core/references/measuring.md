@@ -134,7 +134,7 @@ horse's muzzle is dark skin under thin hair, and the build missed it (`lowpoly-a
    - membrane wings: a bat;
    - a dragon's body and skin: a crocodile or a monitor lizard;
    - a griffin: an eagle in front and a lion behind;
-   - a centaur: a horse, and a human for the torso.
+   - a centaur: a horse, and a human for the torso (the human part from `lowpoly-characters`).
 
 4. **Write a search list:** every subject against every view and close-up the reference table asks for, as concrete phrases
    in the subject's real name. Add the scientific name for anatomy, and the region for close-ups. Examples: "grey horse head

@@ -15,8 +15,10 @@ A plugin draft. Three skills so far:
   `references/races.md` for orcs, ogres, trolls, goblins, dwarves and elves from the real anatomy each borrows. Its case
   study is the first player character, a median man.
 
-The skills' measured ranges come from the shipped animal models of a late-1990s commercial RPG. Only measurements are used;
-no model, texture, file or name from that game is part of this plugin.
+The animal skills' measured ranges come from the shipped animal models of a late-1990s commercial RPG. The character
+skill's numbers come from anatomy (a public body survey, clinical and art-anatomy references, biomechanics papers); that
+game's human models were measured as era context only. Only measurements are used; no model, texture, file or name from
+that game is part of this plugin.
 
 ## Plans
 
@@ -32,7 +34,7 @@ reading JPEG references in `silhouette_measure.py`. `lp --help` has the full usa
 
 | Command | What it does |
 |---|---|
-| `lp check <model> [--spec spec.json] [--stage mesh\|rig\|texture\|motion\|all] [--out dir]` | Runs the tools that apply to the spec and judges 74 checks against `lib/lowpoly/targets.json`; writes `report.json`, `report.md` and each tool's raw output; exits 1 on a check at the "fail" level |
+| `lp check <model> [--spec spec.json] [--stage mesh\|rig\|texture\|motion\|all] [--out dir]` | Runs the tools that apply to the spec and judges 77 checks against `lib/lowpoly/targets.json`; writes `report.json`, `report.md` and each tool's raw output; exits 1 on a check at the "fail" level |
 | `lp waste <model>` | How the model spends its polygons: rendered vertices per position, each part's share of the triangles against its share of the surface, mirrored construction, and every edge that could be collapsed with almost no change. Run on the untextured blockout (gate 1) |
 | `lp contract <spec.json> [--out brief.md]` | Resolves a style contract: the shared profiles in `lib/lowpoly/profiles/` (style, muzzle and eye kinds, species, colour, scale, temperament) layered under the model's own parts, palette and rules; prints the brief every part builder works from (`skills/lowpoly-core/references/contracts.md`) |
 | `lp preview <model> [--clip c] [--phase p] [--out dir] [--refs refs.json]` | Six fixed views (3/4 front, 3/4 rear, side, front, rear, top) shaded as the viewer shades them, with a ground line and scale bar; `preview.html` to turn it round and play clips; with `--refs`, `compare.html` sets each view beside its references |
@@ -42,8 +44,10 @@ reading JPEG references in `silhouette_measure.py`. `lp --help` has the full usa
 | `lp export-viewer <dir> <id> <out.gltf>` | Converts a model from the viewer format the tools were first written for |
 
 The spec (`lp --help`) says what the model is, so only the checks that apply run: body plan (a `flyer` skips the standing
-checks), skin, feet, tier, eye (`"eyes": "glow"` for a pupil-less glow), open edges by design (`"cards"`), the references
-(`"refs"`, `"ref_parts"`) and `"hero": true`, which makes the reference checks fail instead of warn.
+checks; a `humanoid`, a person or humanoid race, skips the animal leg rules, while a `biped`, a two-legged animal, keeps
+them), skin, feet, tier, eye (`"eyes": "glow"` for a pupil-less glow), open edges by design (`"cards"`), the references
+(`"refs"`, `"ref_parts"`), a survey table for a body (`"measurements"`) and `"hero": true`, which makes the reference
+checks fail instead of warn.
 
 ## Library
 
@@ -68,15 +72,18 @@ checks), skin, feet, tier, eye (`"eyes": "glow"` for a pupil-less glow), open ed
 | References | `measure_overlay.py` (behind `lp overlay`), `ref_overlay.py` (draws a side view over a reference), `silhouette_measure.py` (dense outline measurements from a dead-on reference image) |
 | Mesh and motion | `self_cross.py` (parts passing through each other, `--where`), `visible_area.py`, `thin_triangles.py`, `edge_angles.py`, `limb_widths.py`, `foot_study.py`, `stand_study.py`, `rig_study.py`, `topo_study.py` (behind `lp waste`: rendered vertices, triangle shares by part, mirrored construction, edges that shape nothing), `jaw_study.py` (the gape in every clip, modelled or painted teeth), `rear_study.py` (the haunch outline from behind: bulge, notch, corner), `leg_bend_study.py` (joints bent backwards, joint rings pinching, skin stretching along the legs, paired legs in lockstep, in every clip) |
 | Texture | `uv_study.py`, `uv_reuse.py`, `body_study.py`, `skin_study.py`, `region_detail.py`, `eye_study.py`, `nose_study.py`, `ear_study.py`, `head_detail.py`, `foot_detail.py` |
+| Characters | `body_measure.py` (a humanoid measured as a person against a survey table; behind `lp check`'s body.* checks), `character_view.py` (the character viewer: tone and morph options, clip blend spaces, orbit, pan and zoom; reads `<model>.character.json`) |
 
 ## Checks, by stage
 
 - **Mesh:** budget per tier, closed skin (minus declared cards), loose pieces, slivers, feet, thighs, the overlay against the
-  references, and the reference set itself (`refs.views`, `refs.parts`, `refs.detail`: every view and named part has a
-  measurable, dense reference).
+  references, the reference set itself (`refs.views`, `refs.parts`, `refs.detail`: every view and named part has a
+  measurable, dense reference), and a humanoid's body against its survey table (`body.*`).
 - **Rig:** bones, blended corners.
 - **Texture:** seams, stretch, coat layers (fur) or skin type, eyes, nose, limb detail and brightness.
-- **Motion:** the walk's duty and lift, standing balance and planted feet that don't slide (not for flyers), parts crossing in any frame of any clip.
+- **Motion:** the walk's duty and lift, standing balance and planted feet that don't slide (not for flyers), parts crossing
+  in any frame of any clip (a blend-space variant clip judged on its own morph body), joints bent backwards, and the animal
+  leg rules (not for humanoids).
 
 ## Still to do
 
@@ -89,21 +96,13 @@ checks), skin, feet, tier, eye (`"eyes": "glow"` for a pupil-less glow), open ed
 ## Not done yet
 
 - **Examples.** The case studies' build scripts (`examples/`) are not bundled yet.
-- **Other skills.** Characters and outfits, on top of `lowpoly-core` (split out of the animal skill on 2026-11-23).
-- **Characters (planned, after the animal skill is settled).** The same process as the animals, for humanoids:
-  - **A character viewer,** forked from the animal viewer's UI, holding the shipped game's humanoid enemies and player
-    characters, which the animal viewer leaves out on purpose. The game's character models are measured the way its
-    animals were (budgets, topology, weights, textures).
-  - **Context that already exists:** the user's separate texture-gallery project (outside this plugin) already reads the
-    game's character meshes, a shared humanoid skeleton per body type, every armour and weapon piece as a skinned part
-    fitted to that skeleton, and the item slots, and it has a character viewer that dresses a body in those pieces. Its
-    readers and data are the starting point for the character viewer and the measurements.
-  - **What carries over:** the whole pipeline (`lp check`, `lp preview`, `lp overlay`, `lp bake-springs`, `rig_parts.py`
-    with a humanoid profile), the reference and measurement method, and the QA rules.
-  - **What's new:** outfits on top of the body (layers just outside the skin, pieces that bend with the joints, swappable
-    slots that fit one body, body parts hidden under a piece), faces and hands at a low budget, attached weapons and
-    shields, a larger clip set. The folded bird wing of the agent trial is the same layering problem in miniature: clearance
-    where a layer lies on the body, a closed seam where it joins it.
+- **Outfits and equipment for characters** (the body, face, hands, hair and joints are in `skills/lowpoly-characters/`):
+  outfits on top of the body (layers just outside the skin, pieces that bend with the joints, swappable slots that fit one
+  body, body parts hidden under a piece), attached weapons and shields with their grip poses, and a larger clip set. The
+  folded bird wing of the agent trial is the same layering problem in miniature: clearance where a layer lies on the body,
+  a closed seam where it joins it.
+- **A humanoid race built from the base.** `skills/lowpoly-characters/references/races.md` gives the method and the
+  anatomy each race borrows; none has been built yet, and some of its numbers are marked unverified.
 
 ## Tests
 
@@ -141,3 +140,8 @@ checks), skin, feet, tier, eye (`"eyes": "glow"` for a pupil-less glow), open ed
   lessons are the "Horns", "Crests, spines and frills", "Overlapping armour" and "Long necks" modules in
   `skills/lowpoly-animals/references/parts.md`, the heavy legs and plantigrade feet in `limbs.md` and `feet.md`, and the
   aggressive stance and rearing in `skills/lowpoly-core/references/temperament.md`.
+- **The player character (2026-11-26 to 27):** a median man from a body survey, with thin and muscular morph targets,
+  skin-tone and hair-colour options, and idle, run and attack clips, reviewed round by round in the character viewer. It
+  is the `lowpoly-characters` skill's case study (`skills/lowpoly-characters/references/case-study-human-male.md`), and
+  drove the character tier, the `humanoid` body plan, the body.* checks, `body_measure.py`, `character_view.py`, the
+  helper bones where soft tissue meets, and judging variant clips on their own morph body.

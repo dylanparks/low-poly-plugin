@@ -53,7 +53,8 @@ animals**.
    carriage, tail root.
 3. Record a range across the poses, then choose a value inside it for the bind pose, noting which pose each value
    leans toward.
-4. Verify with an overlay (below, or `lib/lowpoly/tools/ref_overlay.py`), not by eye in a 3D view.
+4. Verify with an overlay (`lp overlay`: `lowpoly-core/references/measuring.md`; or `lib/lowpoly/tools/ref_overlay.py`),
+   not by eye in a 3D view.
 
 ## Housecat, from two side photos
 

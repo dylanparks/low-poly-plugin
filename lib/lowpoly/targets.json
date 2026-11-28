@@ -97,9 +97,9 @@
    ],
    "bones": [
     24,
-    40
+    44
    ],
-   "note": "a human or humanoid character the camera follows: a face, hands and joints that read as human, and its hair as a separate piece, need more than an animal of the same size (the reference game's hero, era context, 355 vertices and 706 triangles with its head, hands and boots as separate pieces; the plugin's first player character 669 and 1322 with modelled hair). lowpoly-characters SKILL.md, Budget"
+   "note": "a human or humanoid character the camera follows: a face, hands and joints that read as human, and its hair as a separate piece, need more than an animal of the same size (the reference game's hero, era context, 355 vertices and 706 triangles with its head, hands and boots as separate pieces; the plugin's first player character 707 and 1398 with modelled hair and ears). Bones: a 32-bone skeleton (three thumb bones and two finger bones a hand, a weapon mount) plus ten helper bones where soft tissue meets in a fold (knees, elbows, armpits). lowpoly-characters SKILL.md, 2. Budget and parts"
   }
  },
  "checks": [
@@ -111,7 +111,7 @@
    "level": "fail",
    "spec_max": "cards",
    "note": "one continuous skin; cards (open edges) only where the body plan uses them: the spec's \"cards\" gives how many open edges the design has (a membrane wing's free outline), and only that many pass",
-   "ref": "lowpoly-core §3, rule 1"
+   "ref": "lowpoly-core §3, rules 1 and 5"
   },
   {
    "id": "mesh.loose",
@@ -184,7 +184,7 @@
    "max": 10,
    "level": "warn",
    "note": "the thinnest triangle in the bind pose; matters most where the camera looks (the head of a very large animal)",
-   "ref": "lowpoly-animals/references/heads.md"
+   "ref": "lowpoly-core §3, Clean triangles; lowpoly-animals/references/heads.md"
   },
   {
    "id": "rear.bulge",
@@ -501,7 +501,7 @@
    "measure": "motion.crossings_max",
    "max": 40,
    "level": "warn",
-   "note": "triangles of the main skin crossing others in the worst frame of any clip: a wing or limb through itself, another part or the body (lp self_cross names the bones). Approved builds reach 0-32 at joint creases (fox 5, crocodile 12, housecat 19, T. rex 32 with the jaw open); a folded membrane wing cutting through itself showed 351",
+   "note": "triangles of the main skin crossing others in the worst frame of any clip: a wing or limb through itself, another part or the body (self_cross.py --where names the bones). Approved builds reach 0-32 at joint creases (fox 5, crocodile 12, housecat 19, T. rex 32 with the jaw open); a folded membrane wing cutting through itself showed 351",
    "ref": "lowpoly-core/references/common-failures.md"
   },
   {
@@ -514,7 +514,7 @@
    "ref": "lowpoly-animals/references/parts.md, Wing on a quadruped"
   },
   {
-   "id": "motion.leg_rings", "excludes": {"body_plan": ["biped"]},
+   "id": "motion.leg_rings", "excludes": {"body_plan": ["humanoid"]},
    "stage": "motion",
    "measure": "legs.ring_min",
    "min": 0.9,
@@ -523,7 +523,7 @@
    "ref": "lowpoly-animals/references/limbs.md, Legs that bend"
   },
   {
-   "id": "motion.leg_stretch_min", "excludes": {"body_plan": ["biped"]},
+   "id": "motion.leg_stretch_min", "excludes": {"body_plan": ["humanoid"]},
    "stage": "motion",
    "measure": "legs.stretch_min",
    "min": 0.7,
@@ -550,7 +550,7 @@
    "ref": "lowpoly-animals/references/limbs.md, Legs that bend"
   },
   {
-   "id": "motion.lockstep", "excludes": {"body_plan": ["biped"]},
+   "id": "motion.lockstep", "excludes": {"body_plan": ["humanoid"]},
    "stage": "motion",
    "measure": "legs.lockstep_max",
    "max": 0.95,
@@ -1002,7 +1002,7 @@
    "max": 4.0,
    "level": "warn",
    "note": "the median difference, %, between the model and the spec's measurement table (a survey's medians: heights, breadths, depths, girths, lengths) measured as an anthropometrist measures (body_measure.py). The first player character 2.1% over 32 measures",
-   "ref": "lowpoly-characters SKILL.md, Measure it as a person"
+   "ref": "lowpoly-characters/references/body.md, Measure it as a person"
   },
   {
    "id": "body.past",
@@ -1011,7 +1011,7 @@
    "max": 3,
    "level": "warn",
    "note": "measures past their limits (6%, girths over clothes 8%): a boot over the foot adds its length, so a few may stand past with a reason",
-   "ref": "lowpoly-characters SKILL.md, Measure it as a person"
+   "ref": "lowpoly-characters/references/body.md, Measure it as a person"
   },
   {
    "id": "body.worst",
@@ -1020,7 +1020,7 @@
    "max": 15.0,
    "level": "warn",
    "note": "the worst measure's difference, %: past 15% a part reads as the wrong person (a first build's thigh was 45% short)",
-   "ref": "lowpoly-characters SKILL.md, Measure it as a person"
+   "ref": "lowpoly-characters/references/body.md, Measure it as a person"
   },
   {
    "id": "refs.parts",

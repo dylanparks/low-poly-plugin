@@ -14,8 +14,8 @@
 | Mouth | about 0.054 across | measured on the build |
 | Face length / cheekbone width | the golden ratio is a secondary check only: real attractive faces mostly don't match 1.618 | Maxillofac Plast Reconstr Surg 2018 |
 
-The first build's features sat 1.5 cm high and its chin short (a forehead third a third of the others); lowering each
-face ring's front, not the skull's back, fixed it.
+The first build's features sat 1.5 cm high, its hairline low and its chin short (the forehead third came to a third of
+the others); lowering each face ring's front, not the skull's back, and raising the hairline fixed it.
 
 ## The profile
 
@@ -81,19 +81,21 @@ the cheek: under about 15 degrees. The nasolabial fold is painted, lightly; a de
 | Length | 64.2 ± 4.5 mm (5th-95th 57-72) | ANSUR II |
 | Breadth | 36.1 ± 3.0 mm, about 56% of the length | ANSUR II |
 | Protrusion (mastoid to the most lateral point) | 23.2 ± 3.0 mm | ANSUR II |
-| Helix to mastoid | 10-12 mm top, 16-18 middle, 20-22 lobe | Nazarian 2011; Ali 2017 |
+| Helix to mastoid (the otoplasty norms) | 10-12 mm top, 16-18 middle, 20-22 lobe: measured to the mastoid, behind and below the ear where the head is narrower, so the lobe is not the part furthest from the midline | Nazarian 2011; Ali 2017 |
 | Concha depth | about 15 mm | Ali 2017 |
 | Height | the top at the brow's outer end, the lobe at the nose's tip | Proko; Nazarian; Ali |
 | Front to back | the tragus about one ear's length (55-70 mm) behind the eye socket's outer rim, at the back of the jaw | Naumann 2007; Proko |
 | Tilt | about 20 degrees back from vertical (15-30) | Nazarian; Ali |
 | Flare from the head | 20-30 degrees | Nazarian; Naumann |
-| Across the ears | about 18.5-19.5 cm on a 15.4 cm head | survey arithmetic |
+| Across the ears | about 18.5-19.5 cm on a 15.4 cm head (head breadth is taken above the ears; they stand 1.5-2 cm past it a side; the first build 18.8) | estimate from the survey; the build |
 
 - **Build it as a cupped shell, its own piece.** A seven-point helix outline, a point on the concha's floor (4 mm off the
   skin against a rim 12-23 mm off: a bowl about 15 mm deep), and the back running to two root points just under the skin,
   high and low behind the concha. The shell meets the head along a base about 4 cm long. One sunk point made a stalk.
-- **Seen from the front, a C widest in its upper half**, the lobe tucked toward the jaw. With the most standoff low, the
-  ears hung like fangs; too little, and they hid behind the cheeks.
+- **Seen from the front, a C widest in its upper half**, the lobe tucked toward the jaw. Square off the skin under each
+  rim point, the first build stands 13 mm at the top, 20-22 at the back's upper half and middle, 20 at the lower back and
+  12 at the lobe: 8.9, 9.4, 9.2, 8.6 and 8.3 cm from the midline. With the most standoff low, the ears hung like fangs;
+  too little, and they hid behind the cheeks.
 - **Measure the skin under it on the built mesh.** A guessed skin width under the lobe (7.2 cm where the skin was 6.6)
   stood the lower ear 29 mm off the head.
 - **Lit as part of the head.** Blend the ear's normals with the head's nearest skin (fully at the root, about half over
@@ -106,7 +108,7 @@ the cheek: under about 15 degrees. The nasolabial fold is painted, lightly; a de
 ## Eyes, brows and mouth: paint
 
 **Brows (masculine).**
-- **Placement.** On the bony rim above the eye, not above it. Heavy, nearly straight, peaking two-thirds out over the
+- **Placement.** On the bony rim over the eye socket, not above the rim (a woman's sits a few millimetres above it). Heavy, nearly straight, peaking two-thirds out over the
   iris's outer edge (a peak toward the nose reads as surprise).
 - **Ends.** The head starts over the nose's wing and the inner eye corner; the tail ends on the line from the wing through
   the outer eye corner.
@@ -116,6 +118,8 @@ the cheek: under about 15 degrees. The nasolabial fold is painted, lightly; a de
   dark skin.
 
 **Eyes.**
+- **Life size.** A person's eye is painted at its real size. The animal rule of painting an eye 1.5-2 times its size
+  (`lowpoly-animals/references/eyes.md`) is for a side-facing eye read from far off, and doesn't apply to a face.
 - **The opening.** About 10 mm tall and 31 long. The iris (11.6 mm) sits a little high, so the upper lid covers its top:
   relaxed and slightly hooded. A 14 mm opening showed the whole iris, a stare.
 - **The white.** Never pure white: greyer at the corners, in the lid's shadow.

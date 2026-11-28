@@ -15,9 +15,10 @@
 - **Half rings, front midline to back, each a superellipse** with a half-width, a front depth, a back depth, a centre and
   a squareness. The first build's rings: hip, glute, pelvis, waist, abdomen, ribs, chest, axilla, shoulder, trapezius,
   neck base, neck: 12 rings of 7 points.
-- **Squareness by region.** Waist and hips about 1.35 (a rounded diamond), the ribs 1.5, the chest 2.0, the axilla 1.9.
-  The shoulder ring 2.2: from above, a man's shoulder top is a rounded rectangle, the deltoid's end 11-12 cm deep. At 1.35
-  the shoulder came to a point from above, at 1.9 an almond. The trapezius 1.8, the neck base and neck about 1.
+- **Squareness by region** (1 an ellipse, higher squarer: SKILL.md §3). Waist and hips about 1.35, the ribs 1.5, the
+  chest 2.0, the axilla 1.9. The shoulder ring 2.2: from above, a man's shoulder top is a rounded rectangle, the
+  deltoid's end 11-12 cm deep. At 1.35 the wide, shallow ring read as pointed from above, at 1.9 as an almond. The
+  trapezius 1.8, the neck base and neck about 1 (round).
 - **The arm's hole** is the side of the torso between the axilla and shoulder rings. The hole's floor follows the arm about
   half; its front and back points sit 2.5 cm below its middle, so the armpit's folds (the pectoral in front, the lat behind)
   slope from the torso down onto the arm. On 35% the folds stayed on the torso: a shelf. Lowering them 4 cm stretched the
@@ -33,15 +34,17 @@ One parameter, from -1 (very thin) through 0 (the survey's median) to +1 (a body
 the model is the median with two morph targets, and the viewer's slider blends them.
 
 What each region does, and what the first build found:
-- **Very thin.** The ribcage is bone: the chest keeps 93-94% of its width and loses depth. At 86% it pulled away from the
-  arms and opened a slot down from the armpit. The arm's root and upper arm keep 78% and 72%: a thin man's deltoid still
-  caps the joint.
+- **Very thin.** The ribcage is bone: the chest keeps 93% of its width and the axilla 98%, and they lose depth instead
+  (about 80%). At 86% the chest pulled away from the arms and opened a slot down from the armpit. The arm's root and upper
+  arm keep 78% of their girth: a thin man's deltoid still caps the joint (at 66% and 62% the root pulled in off the
+  armpit).
 - **Bodybuilder.**
   - **Chest and back.** The chest deepens. The lats widen the axilla.
   - **Upper back.** The trapezius climbs the neck and thickens with the muscles between the shoulder blades into a hump,
     each ring's back behind the one above. It never grows wider than the shoulder ring below it.
-  - **Shoulder and arm.** The shoulder grows 1.62 times and the upper arm 1.65. At 1.80-1.86 the arms sank into the
-    torso's sides as they hung: 50-59 crossings.
+  - **Shoulder and arm.** The deltoid's ring grows 1.44 times and the upper arm 1.65; the torso's side 1.30 at the
+    axilla and 1.20 at the chest. Grown further (1.80, 1.86, 1.40 and 1.26) the upper arms sank into the torso's sides as
+    they hung: 50-59 crossings, judged on the muscular body.
   - **Neck.** It grows at the back (the trapezius) and at the front corners (the sternocleidomastoids). The throat stays
     where the larynx and hyoid hold it, so the line under the chin keeps about 4 cm and the cervicomental angle 105-120.
     Grown 32-40% at the front, the throat came 2 cm forward and the chin all but vanished from the side. Squared up
@@ -64,6 +67,18 @@ What each region does, and what the first build found:
   48.5 cm). The gastrocnemius' medial head is larger and reaches lower: the ring's back-medial points come back 4 mm.
 - **Seen from the front** a leg is fullest at about mid-thigh, the knee narrower than the thigh (`lp check`'s
   limbs.hind_peak and limbs.hind_knee).
+
+## Clothes, boots and feet
+
+- **Clothes are the skin's surface.** A shirt, trousers and boots are painted on the one skin and shaped into its rings
+  (a belt's ridge, a rolled cuff, a boot's top); they are not separate layers. The body is measured over them, so girths
+  may run 8% over the survey's. Layered outfits and swappable pieces are not covered yet.
+- **Where cloth ends and skin shows** (the neck, the forearms under rolled sleeves, the hands) is a mask edge in the
+  paint: the skin-tone option recolours only the bare skin's texels (`texture.md`).
+- **The foot** (`"feet": "shod"`): an ankle ring, a mid-foot ring and a flat sole at the ground, the heel behind the
+  ankle; a foot bone at the ankle and a toe bone at the ball, so the heel can rise over the ball in a stride. The ball's
+  ring is split between the two; the toe's tip is on the toe bone alone. A boot adds to the survey's foot length and
+  breadth, which is what body.past allows for.
 
 ## The armpit with the arm down
 

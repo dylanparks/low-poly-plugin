@@ -5,14 +5,13 @@ builder and reviewed in the character viewer from every side, with three body ty
 morph targets, a skin-tone and a hair-colour option, and idle, run and attack clips.
 
 **End state:**
-- **Budget.** 707 vertices, 1398 triangles, 42 bones (the tier is 720 / 1400 / 40).
+- **Budget.** 707 vertices, 1398 triangles, 42 bones (the tier is 720 / 1400 / 44).
 - **Checks.** `lp check` passes: body median 2.3%, worst 11.8%.
 - **The warnings that remain, each explained:**
   - the hair's deliberate asymmetry (mesh.mirror, mesh.sides);
   - contact in the fist and the folds (motion.crossings);
   - the skin crushed inside the knee's fold (motion.leg_stretch_max);
-  - slivers, waste, a few measures past their limits (body.past);
-  - the helper bones (mesh.bones).
+  - slivers, waste, a few measures past their limits (body.past).
 
 The reviewer's findings, in the order they came, each with its cause and fix. Most are general; the section each became
 is named.
@@ -22,7 +21,7 @@ is named.
 | A spike at the trapezius | a ring set deeper than the one below | each ring's back behind the one above | body.md |
 | Hair like a circus tent, then wood planks | a cone over the top; stripes without flow | rebuilt from a reference cut; painted along a flow field | texture.md |
 | Hair symmetric | mirrored with the body | an asymmetry pass after the mirror, a full-wrap chart | SKILL.md §3 |
-| Hair helmet-like, edges goopy | a uniform 2-3 cm standoff; one sawtooth all round | 4 mm at the edges, 1 cm on the sides, the volume on top; edges by region | texture.md |
+| Hair helmet-like, edges goopy | a uniform 2-3 cm standoff; one sawtooth all round | the edge a few mm off the skin (2.5, 5 at the nape), about 1 cm on the sides, the volume on top; edges by region | texture.md |
 | Features high, chin short | rings placed by eye | the thirds, the fifths, the survey's nasion-menton | head-and-face.md |
 | Profile: weak chin, no lips, a deep dip | too few midline points | the profile's own points, against clinical angles | head-and-face.md |
 | A band across the cheek | lower-face rows wrapped round the head | rows local to the mouth's barrel | head-and-face.md |

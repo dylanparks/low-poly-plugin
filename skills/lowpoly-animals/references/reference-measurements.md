@@ -18,7 +18,7 @@ rat, a spiny beast and a drake), measured the same way.
 | Bear | 223 | 273 | 442 | 26 | 59% | 256 × 256 | 1.81 × 2.97 | 1 / closed |
 | Mule (and a lame variant) | 219 | 283–295 | 436 | 33 | 57% | 256 × 128 | 1.73 × 2.90 | |
 | Mule with pack loads | 301–448 | 428–719 | 580–829 | 33 | 27–44% | 256 × 256 | up to 2.22 × 2.90 | the mule plus rigid baggage |
-| Sleeping Dog | 208 | 265 | 412 | 38 | 74% | 256 × 128 | 0.33 × 0.91 | |
+| Dog, sleeping | 208 | 265 | 412 | 38 | 74% | 256 × 128 | 0.33 × 0.91 | |
 | Dog | 199 | 255 | 394 | 33 | 76% | 256 × 128 | 0.64 × 1.28 | |
 | Deer | 171 | 231 | 338 | 39 | 48% | 256 × 128 | 1.54 × 1.71 | |
 | Chicken | 146 | 176 | 288 | 18 | 28% | 128 × 128 | 0.49 × 0.52 | 1 / closed |
@@ -28,7 +28,7 @@ rat, a spiny beast and a drake), measured the same way.
 | Raven | 50 | 69 | 96 | 8 | 26% | 256 × 128 | 0.10 × 0.38 | 1 / closed (wings are flat slabs) |
 | Seagull | 35 | 101 | 68 | 9 | 0% | 256 × 128 | 0.38 × 0.65 | 1 / closed, rigid segments |
 | Bat | 25 | 25 | 46 | 7 | 32% | 64 × 32 | 0.02 × 0.15 | 1 / closed |
-| Baby Spider | 24 | 24 | 8 | 4 | 0% | 32 × 64 | 0.03 × 0.20 | 8 / all (triangle cards) |
+| Spider, small | 24 | 24 | 8 | 4 | 0% | 32 × 64 | 0.03 × 0.20 | 8 / all (triangle cards) |
 | Fish | 18 | 18 | 34 | 3 | 56% | 128 × 64 | 0.13 × 0.31 | 1 / closed |
 | Bird | 17 | 17 | 16 | 12 | 29% | 64 × 64 | 0.15 × 0.20 | 1 / 16 of 32 (cards) |
 | Butterfly | 15 | 30 | 26 | 5 | 7% | 32 × 32 | 0.05 × 0.13 | 1 / closed |
