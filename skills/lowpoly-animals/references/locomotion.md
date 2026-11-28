@@ -2,6 +2,12 @@
 
 The detail behind SKILL.md §7. Read it before animating a four-legged walk.
 
+The legs are half of a gait. The spine, the chest and the head move too (the hips and the chest each rise and fall,
+offset from each other, and the head is a third mass offset again), an attack runs from the hind legs forward through
+the spine to the head and paws, and an idle never holds still: `lowpoly-core/references/motion-principles.md` has the
+rules, measured ranges for a horse's head, withers and pelvis, and the liveliness checks (`lp check` motion.sync,
+motion.static, motion.gait_bounce and the rest).
+
 **Quadruped walk, measured.** Use the range for the animal's group, never one animal. The deer is the outlier.
 
 | | Dog, bear, cow, pig | Deer (light high-stepper) |

@@ -153,7 +153,9 @@ paints made to agree on the ring where the seam sits.
 
 ## 7. Animation
 
-In `references/joints-and-motion.md`. Every body type gets its own variants of the clips where mass changes the pose (the
+The rules that make a clip read as alive, the order to build one in and the liveliness checks are in
+`lowpoly-core/references/motion-principles.md`: read it before writing a clip. What is particular to a character is in
+`references/joints-and-motion.md`. Every body type gets its own variants of the clips where mass changes the pose (the
 idle's arms, the run's arm swing and the calf), blended by the body-type option as a blend space; the checks judge each
 variant on its own morph body. A run's feet keep one ground speed (planted, nothing slides), and the game must move the
 character at the clip's speed.

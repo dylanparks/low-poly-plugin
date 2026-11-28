@@ -223,13 +223,21 @@ The pelt, density, lighting, continuity and the engine's lights are lowpoly-core
 
 ## 7. Animation
 
+Read `lowpoly-core/references/motion-principles.md` before writing a clip: the rules that make motion read as alive
+(nothing arriving all at once, force from the ground outward, weight shifting before a foot lifts, a head steadied by
+the neck, no mirrored twins), the order to build a clip in, and the liveliness checks. On an animal the usual fault is
+legs cycling under a rigid spine, chest and head: the hips, the chest and the head each rise and fall on their own
+timing, and an attack runs from the hind legs through the spine to the head and forepaws.
+
 **Clips in the measured models** (from their names):
 - **Everyone:** default stand, idle fidgets (graze, look around, scratch, several variants), walk, run, die.
 - **Some animals:** attack, sit down and up, lie down and up, fly, glide.
 
 Walk cycle length scales with size: pig 0.67 s, dog 0.75 s, bear 1.33 s, cow and deer 1.5 s.
 
-**Idle:** keep it small: breathing, the tail, ear flicks, head turns. Feet stay planted.
+**Idle:** keep it small, and keep it everywhere: breathing through the ribs and spine, a slow shift of weight over the
+planted feet, the tail, ear flicks, head turns. Feet stay planted (the legs turn back against whatever sways above
+them); a body with only its head and tail moving reads as a statue (`lp check` motion.static).
 
 **Legged locomotion: planted feet, not swinging sticks** (details in `references/locomotion.md`):
 - **The cycle:** each foot stays planted while the body moves over it, rolls at push-off as its posture allows (§3, rule 5),
