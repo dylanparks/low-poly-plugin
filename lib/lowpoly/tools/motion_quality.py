@@ -154,7 +154,7 @@ def yaw_roll_pitch(q):
 def kind_of(name):
     if name in KINDS: return KINDS[name]
     n = name.lower()
-    if re.search(r'stand|idle|breath|rest|sleep|sit|graze|perch|hover', n): return 'idle'
+    if re.search(r'stand|idle|breath|rest|sleep|sit|graze|perch|hover|spar|guard|stance|ready', n): return 'idle'
     if re.search(r'walk|run|trot|gallop|canter|jog|sprint|fly|flap|glide|swim|crawl|slither|stalk|prowl', n): return 'gait'
     return 'action'
 

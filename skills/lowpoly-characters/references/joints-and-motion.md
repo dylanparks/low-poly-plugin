@@ -78,9 +78,14 @@ it. Judged on the average body, a thin idle's arms cut into the median hips that
 
 ## The run
 
-- **The pelvis and chest work against each other.** The pelvis turns about 11 degrees and tilts about 11 (the swing
-  side's hip drops); the chest turns the other way and carries the arm swing; the body rises and falls 4% of its
-  height; the head pitches against the bounce. The arm, elbow and hand each run a little later than the chest.
+- **The pelvis and chest work against each other.** The pelvis turns about 19 degrees and tilts about 11 (the swing
+  side's hip drops); the chest turns the other way, about 31 degrees, and carries the arm swing; the body rises and
+  falls 5% of its height; the head pitches against the bounce and barely turns (2 degrees). The arm, elbow and hand
+  each run a little later than the chest.
+- **The arms pump.** The elbow closes to about 107 degrees as the fist comes up to the chest in front and opens to
+  65 on the back swing. A first run swung the arms with the elbow nearly fixed (a 20 degree range) and the hands low:
+  accurate enough, and lifeless. A second pass took the turn and the pump to the top of what runners measure; the
+  reference game's run goes further still (twice the bounce), which on these proportions would bound.
 - **The feet's track** is 5.5 cm either side of the midline, the swing foot 2 cm wider, and 7.7 cm on the muscular
   build: at the 2-4 cm measured on runners the swing foot passed through the standing shin.
 - **Planted means no sliding.** Whatever is on the ground (heel, flat foot, ball) moves at one ground speed. The stance
@@ -113,24 +118,65 @@ it. Judged on the average body, a thin idle's arms cut into the median hips that
 
 ## Blend spaces for body types
 
-Where mass changes the pose (the idle's arms, the run's arms and calf), build a variant per body type (`stand_thin`,
-`stand_muscular`, `run_thin`, `run_muscular`). The character file's `"clip_blends"` names each clip's variants and the
-option that drives them. The viewer, and the game, blends them bone by bone by the option's value (a 1D blend space) and
-hides the variants from the clip list.
+Where mass changes the pose, build a variant per body type (`stand_thin`, `stand_muscular`, `run_thin`,
+`run_muscular`, and the same for the stance and each attack). The character file's `"clip_blends"` names each clip's
+variants and the option that drives them. The viewer, and the game, blends them bone by bone by the option's value (a
+1D blend space) and hides the variants from the clip list.
 
-## An attack
+Every clip with the arms near the body needs them, not only the idle and the run. In a guard or a strike the
+difference is small and in the arms alone, so the move stays the same move: the first build's muscular guard carries
+the upper arms 7 degrees further from the ribs, opens the elbows 7 degrees (a big biceps and forearm meet sooner, so
+the drawn-back hand closes to about 117 degrees where the others reach 127-132) and turns the upper arm in 6 degrees;
+the thin build tucks 2 degrees closer. The feet, legs, trunk, head and timing are untouched. Write the offsets once (a
+table per build) and apply them to every fighting arm pose, so a new attack gets its variants for free.
 
-The first build's punch (an unarmed right cross, 1 s):
-- **Stance.** The weight goes over the right foot first, then the left foot steps 14 cm forward as the fists come up by
-  the chin (the lead hand first), knees soft.
-- **Wind-up.** A short turn back onto the rear leg.
-- **Drive.** The rear foot pivots on its ball with the heel rising, and the pelvis, spine, chest, shoulder and elbow
-  turn through one after another, 0.02-0.035 s apart, the arm driving straight at chest height. The pelvis travels
-  5 cm forward over the front foot.
+## A combat stance, and the attack from it
+
+Moves start from the pose they belong to. A fighter does not punch from hanging arms: the character has a combat-ready
+stance clip (the first build's `spar`), and each attack's first and last frames are that clip's first frame, so the game
+goes stance, attack, stance with no blend through the idle. The character file names it:
+`"clip_stances": {"attack": "spar"}`. Build the stance as a function that takes what a move adds to it (the turn, the
+travel, a step, a pivot), and the attack as those additions, so the two cannot drift apart.
+
+**Build the stance to a reference of that stance**, as a body is built to a survey: photographs of a fighter in it from
+the front, the side and three-quarters, and what its teachers say of the feet and the weight. The first build's first
+stance was made from an idea of a guard and came out square-on with the feet a step apart: a man waiting, not a
+fighter. Compared with a photograph of a side-on fighting stance it was wrong in every part.
+
+The first build's stance (`spar`, a 2 s loop), side-on, the left side leading. A second pass measured the reference
+game's unarmed fighting stance and moved further the same way: longer, more side-on, the feet on one line.
+- **Feet.** On one line to the opponent, the ankles 59 cm apart (the reference game's 67 cm on a 1.72 m figure; taught
+  as one and a half to two shoulder widths). The lead foot turned in about 16 degrees, the rear turned out about 95.
+  Weight on the balls of the feet, the rear heel off the ground.
+- **Legs.** Both knees bent (about 40 and 55 degrees), each pointing where its foot points; the pelvis 8.5 cm lower.
+- **Body.** Bladed and upright: the hips turned 68 degrees from the opponent and the shoulders 63 (the reference
+  game's 70 and 61), the lead shoulder toward them. The head turned back over that shoulder to face them. Leaning
+  forward read as a hunch.
+- **Guard.** The lead fist 36 cm out in front, a little below shoulder height, its elbow bent about 110 degrees; the
+  rear fist in front of the chest, elbow about 100. With both forearms level at chest height and square-on it read as
+  a sleepwalker's arms.
+- **The weight shifts lightly between the back leg and the front,** once a second: the pelvis travels 8 cm, sits
+  1.4 cm lower on the back leg, and the hips open 7 degrees as it goes back (the reference game's idle: 7 cm, 1.8 cm,
+  7 degrees, once a second); the heels rise and settle with it, the chest a beat behind the pelvis, the fists riding
+  it. It reads as ready to step in or back.
+- **It never holds still.** One breath per loop, each fist drifting and clenching on its own timing. A fist held dead
+  still is 10 of the 31 bones not moving (`lp check` motion.static).
+
+The first build's punch (an unarmed right cross, 0.75 s, from the stance and back):
+- **Load.** A short turn back onto the rear leg as the lead foot lifts.
+- **Step.** The lead foot goes 12 cm forward and lands before the fist does.
+- **Drive.** The rear foot pivots about 60 degrees on its ball with the heel rising, and the pelvis, spine, chest,
+  shoulder and elbow turn through one after another, 0.02-0.035 s apart. **The whole body commits:** the hips turn 87
+  degrees and the shoulders 143 to bring the rear shoulder through, the pelvis travels 20 cm forward and drops 5 cm
+  onto the front leg, the head goes 26 cm with it. A first version turned 45 and 81 degrees and travelled 9 cm, and
+  read as a polite reach; the reference game's cross measures 101 and 147 degrees and 22 cm. The fists tighten for
+  the impact.
 - **The head** turns back against the trunk (the neck and head take out 0.45 and 0.40 of the turn, and part of the
-  lean), so the face stays on the target while the head travels with the body.
+  lean), so the face stays on the target while the head travels with the body. Keep its lag short in a fast turn (10-18 ms
+  here): at 30-45 ms the face swung 50 degrees off the target mid-punch.
+- **The guard hand** draws back to the chin, the upper arm after the chest and the forearm after it.
 - **Return.** A hold of two frames with a small overshoot; the elbow comes back first and the body unwinds behind it;
-  the left foot steps back as the arms come down and settle.
+  the lead foot steps back into the stance.
 
 Let the shoulder blade protract and lift a little with the punch (about 7 degrees forward and 3 up at the clavicle), and
 the arm turn the rest from there. Taken wholly at the shoulder joint, the turn over-stretched the armpit's skin.
