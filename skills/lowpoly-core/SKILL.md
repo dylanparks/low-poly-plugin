@@ -24,6 +24,7 @@ model, texture or file of that game is part of this skill. Where a rule rests on
 | `references/measuring.md` | turning the request into search subjects (colour words, fantasy parts), the overlay, `lp overlay`, using the reference set, filling gaps from the wider web, dead-on views measured densely, every view needing a reference, re-measuring after a change |
 | `references/texture-method.md` | continuity and seams, the engine's lights, texel density, faces the projection stretches, limb detail on large models, pale surfaces painted as form |
 | `references/temperament.md` | docile against hostile: what makes a model read as threatening (eyes, mouth, silhouette, motion) |
+| `references/motion-principles.md` | clips that read as alive: the rules (overlap, force from the ground, weight before the feet, the head, twins), the build order, numbers for idles, gaits and strikes, the liveliness checks |
 | `references/common-failures.md` | failures that are not about one kind of model, and the habits that catch them |
 | `references/contracts.md` | style contracts: shared profiles (style, muzzle and eye kinds, species, colour), parts with budgets, `lp contract`, the parts.* checks |
 
@@ -306,6 +307,14 @@ The gaits and clip sets of animals are in `lowpoly-animals` §7. These hold for 
 - **Secondary motion** (tails, ears, hair, feathers, a mane) as baked spring bones: `lp bake-springs`, with stiffness, drag,
   gravity, colliders, the ground and settings per clip (`lowpoly-animals/references/locomotion.md`).
 - **Idle and hover clips need variance:** a few overlapping cycles of different lengths, not one nod repeated.
+- **Every clip moves as a body with weight** (`references/motion-principles.md`; read it before writing a clip). A clip
+  can pass everything above and still look like a machine: every bone driven by one curve, so all of it starts and
+  arrives together. Build from the ground up (the feet's plan, the pelvis's travel and turn, the legs solved to the feet,
+  then the spine, head and arms each a little later than what carries them), with weight shifted before a foot lifts,
+  a head steadied by the neck, an overshoot and settle after a fast move, and left and right on their own timing
+  (`lib/lowpoly/animate.py`). `lp check` warns on the measurable signs (`motion_quality.py`): motion.sync, motion.order,
+  motion.static, motion.hold, motion.twin, motion.head_follow, motion.head_fixed, motion.head_travel, motion.feet_shift,
+  motion.action_slide, motion.gait_bounce and, for humanoids, motion.pelvis_yaw, motion.pelvis_roll and motion.counter.
 
 ## 7. Checklist (before calling it done)
 
@@ -328,6 +337,9 @@ The gaits and clip sets of animals are in `lowpoly-animals` §7. These hold for 
 - [ ] Every clip checked for crossings (each one a crease or a contact, none a part through a part); standing clips
       balanced; motion compared with reference frames (§6).
 - [ ] No joint bent backwards, no joint ring pinched or band of skin stretched, paired limbs independent in action clips (§6).
+- [ ] Every clip built from the ground up and viewed as a contact sheet and in motion: nothing arriving all at once, the
+      weight shifting before the feet, the head following the trunk, no twins, no dead hold; each liveliness warning
+      fixed or explained (§6, `references/motion-principles.md`).
 - [ ] Seen at game distance from a 3/4 angle, the subject is obvious without labels.
 
 ## Common failures

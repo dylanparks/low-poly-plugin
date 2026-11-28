@@ -35,7 +35,8 @@ spec.json (all optional) says what the model is, so that only the checks that ap
    "feet": "paw|clawed|long-toed|hoof|hand|shod|none", "tier": "large|medium|small|tiny|swarm|very-large|character",
    "eye": {"u": 307, "v": 34, "half_width": 4, "half_height": 3}, "walk_clip": "walk",
    "standing_clips": ["idle", "stand"], "refs": "refs.json", "cards": 16}   (standing_clips default: the idle clip and any
-   clip named idle or stand; refs, relative to the spec: the overlay's landmarks, judged at the mesh stage; cards: how many
+   clip named idle or stand; "clip_kinds": {"prowl": "gait", "roar": "action", "doze": "idle"} says what a clip is for the
+   motion.* liveliness checks when its name does not (default: read from the name); refs, relative to the spec: the overlay's landmarks, judged at the mesh stage; cards: how many
    open edges the design has on purpose, such as a membrane wing's free outline, so mesh.closed passes at that many and
    fails on one more. body_plan flyer skips the standing checks: the feet's ground metrics and motion.balance; body_plan
    humanoid (a person or a humanoid race; biped is a two-legged animal such as a theropod) skips the animal leg rules
@@ -73,7 +74,7 @@ SPEC_VALUES = {'body_plan': ('quadruped', 'biped', 'humanoid', 'bird', 'fish', '
                'eyes': ('pupil', 'glow'),
                'muzzle': ('leather-pad', 'soft-equine', 'muffle', 'small-bare', 'disc', 'split-lip', 'lipless', 'beak', 'primate'),
                'eye_shape': ('side-almond', 'forward')}
-SPEC_KEYS = set(SPEC_VALUES) | {'eye', 'walk_clip', 'standing_clips', 'name', 'refs', 'cards', 'hero', 'ref_parts', 'measurements'} | contract.CONTRACT_KEYS
+SPEC_KEYS = set(SPEC_VALUES) | {'eye', 'walk_clip', 'standing_clips', 'clip_kinds', 'name', 'refs', 'cards', 'hero', 'ref_parts', 'measurements'} | contract.CONTRACT_KEYS
 STAGES = ('mesh', 'rig', 'texture', 'motion', 'all')
 
 
@@ -100,7 +101,7 @@ def read_spec(path):
     return spec, notes
 
 
-STAGE_TOOLS = {'mesh': ['mesh', 'topo', 'feet', 'thin', 'limbs', 'rear', 'overlay', 'body'], 'rig': ['mesh', 'rig'], 'motion': ['rig', 'stand', 'cross', 'legs'],
+STAGE_TOOLS = {'mesh': ['mesh', 'topo', 'feet', 'thin', 'limbs', 'rear', 'overlay', 'body'], 'rig': ['mesh', 'rig'], 'motion': ['rig', 'stand', 'cross', 'legs', 'life'],
                'texture': ['uv', 'body', 'skin', 'eye', 'nose', 'regions', 'parts']}
 
 
@@ -352,6 +353,54 @@ def measure_cross(model):
     return m, t
 
 
+def measure_life(model, A, spec, out):
+    """whether the clips move as a body with weight does (lowpoly/tools/motion_quality.py): parts that all peak in the same
+    instant, a chain that does not run from the hips outward, bones that never move, a head fixed to the trunk, feet that
+    never shift or that slide, a dead hold, mirrored limbs, and a gait without the body's rise and fall or, on a humanoid,
+    the pelvis's turn and the shoulders' turn against it. Each measure is the worst clip of its kind, with that clip named"""
+    kinds = {c: 'idle' for c in (spec.get('standing_clips') or [])}
+    if spec.get('walk_clip'): kinds[spec['walk_clip']] = 'gait'
+    kinds.update(spec.get('clip_kinds') or {})
+    a = [model]
+    if kinds:
+        kp = os.path.join(out, 'clip_kinds.json'); json.dump(kinds, open(kp, 'w', encoding='utf-8')); a += ['--kinds', kp]
+    t = run_tool('motion_quality', *a)
+    f = lambda x: None if x == 'nan' else float(x)
+    keys = ('sync', 'order', 'static', 'head_travel', 'head_turn', 'trunk_turn', 'mass_x', 'mass_y', 'mass_z', 'feet_travel', 'feet_turn',
+            'hold', 'twin', 'loop', 'pelvis_yaw', 'pelvis_roll', 'counter', 'head_pitch', 'trunk_pitch', 'slide')
+    rows = []
+    for l in re.findall(r'^clip \S+ \[\w+\]: sync .*$', t, re.M):
+        g = re.match(r'clip (\S+) \[(\w+)\]: (.*)', l)
+        vals = [f(x) for x in re.findall(r'-?\d+\.?\d*|nan', g.group(3))]
+        if len(vals) == len(keys): rows.append(dict(zip(keys, vals), clip=g.group(1), kind=g.group(2)))
+    m = {}
+
+    def worst(name, key, pick, kinds_, val=None):
+        c = [(val(r) if val else r[key], r['clip']) for r in rows if r['kind'] in kinds_]
+        c = [x for x in c if x[0] is not None]
+        if c:
+            w = pick(c, key=lambda x: x[0]); m['life.' + name] = round(w[0], 2); m['life.%s_clip' % name] = w[1]
+
+    follow = lambda r: r['head_turn'] / r['trunk_turn'] if r['head_turn'] is not None and (r['trunk_turn'] or 0) > 10 else None
+    worst('sync_max', 'sync', max, ('action', 'gait'))
+    worst('order_min', 'order', min, ('action',))
+    worst('static_max', 'static', max, ('idle', 'gait', 'action'))
+    worst('hold_max', 'hold', max, ('idle', 'gait', 'action'))
+    worst('twin_max', 'twin', max, ('idle', 'action'))
+    worst('action_head_travel_min', 'head_travel', min, ('action',))
+    # the head against the upper trunk, where the trunk turns enough to tell: 0 a head fixed in space, 1 a head fixed to the chest
+    worst('head_follow_min', None, min, ('action',), follow)
+    worst('head_follow_max', None, max, ('action',), follow)
+    # feet that never shift under a body that travels
+    worst('action_feet_min', None, min, ('action',), lambda r: r['feet_travel'] if max(r['mass_x'], r['mass_z']) > 3 else None)
+    worst('action_slide_max', 'slide', max, ('action',))
+    worst('gait_bounce_min', 'mass_y', min, ('gait',))
+    worst('gait_pelvis_yaw_min', 'pelvis_yaw', min, ('gait',))
+    worst('gait_pelvis_roll_min', 'pelvis_roll', min, ('gait',))
+    worst('gait_counter_max', 'counter', max, ('gait',))
+    return m, t
+
+
 GAIT = re.compile(r'walk|trot|run|gallop|canter|bound|hop|swim|fly|crawl', re.I)
 
 
@@ -578,6 +627,7 @@ def check(model, spec_path=None, stage='all', out=None):
     if 'stand' in want and A.get('anims'): take('stand', measure_stand, model, tag, spec.get('standing_clips'))
     if 'cross' in want: take('cross', measure_cross, model)
     if 'legs' in want and A.get('anims'): take('legs', measure_legs, model, A, spec)
+    if 'life' in want and A.get('anims'): take('life', measure_life, model, A, spec, out)
     if 'uv' in want: take('uv', measure_uv, model, tag)
     if 'regions' in want: take('regions', measure_regions, model)
     skin = spec.get('skin', 'fur')                       # an unknown skin (a typo) runs neither study: its checks are not run

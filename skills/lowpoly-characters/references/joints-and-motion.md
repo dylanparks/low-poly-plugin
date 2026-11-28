@@ -41,8 +41,21 @@ passing through another part deep into its volume.
 Each blend-space variant clip is judged on its own body: `self_cross` applies the variant's morph target while it poses
 it. Judged on the average body, a thin idle's arms cut into the median hips that the thin body doesn't have.
 
+## Motion that reads as alive
+
+`lowpoly-core/references/motion-principles.md` has the rules, the build order and the checks. On a character:
+- **The legs are solved, not posed.** The feet's places are written first (planted, pivoting on the ball, stepping);
+  the pelvis then shifts, turns and tilts, and each leg is solved from its hip to its foot
+  (`animate.limb_rotations`), the knee pointing between where the pelvis and the foot face.
+- **The helper bones follow the solved joints.** The calf, hamstring, biceps, flexor and armpit helpers are moved from
+  the joint angles after the pose is solved, so every clip gets them.
+- **Each body type is checked after a motion change.** A narrower run track or a lower arm that clears the average
+  body cut into the muscular one (the thighs, the lats).
+
 ## The idle
 
+- **It never stops.** One breath per 4 s running belly, chest, shoulders; the pelvis swaying 11 mm over the feet with a
+  little roll and turn, the legs solved to the planted feet; each arm, hand and finger group on its own phase.
 - **Relaxed standing arms** (upright CT study):
   - **Elbows** bent about 15 degrees (13-18).
   - **Forearm** turned so the palm faces the thigh.
@@ -65,6 +78,11 @@ it. Judged on the average body, a thin idle's arms cut into the median hips that
 
 ## The run
 
+- **The pelvis and chest work against each other.** The pelvis turns about 11 degrees and tilts about 11 (the swing
+  side's hip drops); the chest turns the other way and carries the arm swing; the body rises and falls 4% of its
+  height; the head pitches against the bounce. The arm, elbow and hand each run a little later than the chest.
+- **The feet's track** is 5.5 cm either side of the midline, the swing foot 2 cm wider, and 7.7 cm on the muscular
+  build: at the 2-4 cm measured on runners the swing foot passed through the standing shin.
 - **Planted means no sliding.** Whatever is on the ground (heel, flat foot, ball) moves at one ground speed. The stance
   swept 56 cm in 0.26 s, about 2.2 m/s: the game must move the character at the clip's speed.
 - **Swing retraction.** The foot swings just past its landing point and is pulled back, landing already moving at ground
@@ -103,10 +121,16 @@ hides the variants from the clip list.
 ## An attack
 
 The first build's punch (an unarmed right cross, 1 s):
-- **Guard.** Fists up by the chin, knees soft.
-- **Wind-up and drive.** A short turn back, then the hips, trunk and shoulder turn through as the arm drives straight at
-  chest height and the rear heel rises.
-- **Return.** The arm snaps back to guard, then down to the stand.
+- **Stance.** The weight goes over the right foot first, then the left foot steps 14 cm forward as the fists come up by
+  the chin (the lead hand first), knees soft.
+- **Wind-up.** A short turn back onto the rear leg.
+- **Drive.** The rear foot pivots on its ball with the heel rising, and the pelvis, spine, chest, shoulder and elbow
+  turn through one after another, 0.02-0.035 s apart, the arm driving straight at chest height. The pelvis travels
+  5 cm forward over the front foot.
+- **The head** turns back against the trunk (the neck and head take out 0.45 and 0.40 of the turn, and part of the
+  lean), so the face stays on the target while the head travels with the body.
+- **Return.** A hold of two frames with a small overshoot; the elbow comes back first and the body unwinds behind it;
+  the left foot steps back as the arms come down and settle.
 
 Let the shoulder blade protract and lift a little with the punch (about 7 degrees forward and 3 up at the clavicle), and
 the arm turn the rest from there. Taken wholly at the shoulder joint, the turn over-stretched the armpit's skin.

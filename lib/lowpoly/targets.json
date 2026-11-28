@@ -514,7 +514,12 @@
    "ref": "lowpoly-animals/references/parts.md, Wing on a quadruped"
   },
   {
-   "id": "motion.leg_rings", "excludes": {"body_plan": ["humanoid"]},
+   "id": "motion.leg_rings",
+   "excludes": {
+    "body_plan": [
+     "humanoid"
+    ]
+   },
    "stage": "motion",
    "measure": "legs.ring_min",
    "min": 0.9,
@@ -523,7 +528,12 @@
    "ref": "lowpoly-animals/references/limbs.md, Legs that bend"
   },
   {
-   "id": "motion.leg_stretch_min", "excludes": {"body_plan": ["humanoid"]},
+   "id": "motion.leg_stretch_min",
+   "excludes": {
+    "body_plan": [
+     "humanoid"
+    ]
+   },
    "stage": "motion",
    "measure": "legs.stretch_min",
    "min": 0.7,
@@ -550,7 +560,12 @@
    "ref": "lowpoly-animals/references/limbs.md, Legs that bend"
   },
   {
-   "id": "motion.lockstep", "excludes": {"body_plan": ["humanoid"]},
+   "id": "motion.lockstep",
+   "excludes": {
+    "body_plan": [
+     "humanoid"
+    ]
+   },
    "stage": "motion",
    "measure": "legs.lockstep_max",
    "max": 0.95,
@@ -624,6 +639,147 @@
    "level": "warn",
    "note": "how far the skin goes below the ground in the worst frame of any clip, % of the height (a sole's blended weights sink a hair; a tail, belly or claw through the ground does not belong): the pangolin's tail sank 5.5 cm (18%) in its idle and walk while every other check passed, its balance counting only the feet as contact",
    "ref": "lowpoly-core/references/common-failures.md"
+  },
+  {
+   "id": "motion.sync",
+   "stage": "motion",
+   "measure": "life.sync_max",
+   "max": 0.5,
+   "level": "warn",
+   "note": "the share of a clip's moving parts (a hand or a foot counts once; a gait's legs are left out) whose fastest moment falls within 12 ms of three others, the worst action or gait clip (motion_quality.py): everything arriving in one instant is the robot's signature. A first punch and run built on one phase curve read 1.00; rebuilt with each segment a few hundredths of a second after the one before, 0.35",
+   "ref": "lowpoly-core/references/motion-principles.md"
+  },
+  {
+   "id": "motion.order",
+   "stage": "motion",
+   "measure": "life.order_min",
+   "min": 0.6,
+   "level": "warn",
+   "note": "along each chain from the pelvis to a hand and to the head, the share of neighbouring bones whose fastest moments come in order, the nearer bone first, the worst action clip (not judged on fewer than three pairs): a strike is driven from the ground and the hips outward. The rebuilt punch 1.00",
+   "ref": "lowpoly-core/references/motion-principles.md"
+  },
+  {
+   "id": "motion.static",
+   "stage": "motion",
+   "measure": "life.static_max",
+   "max": 0.25,
+   "level": "warn",
+   "note": "the share of skinned bones that never turn half a degree, the worst clip: a body at rest still breathes, shifts and settles, and a gait moves the spine and the head. A first humanoid idle 0.63 (only the chest breathed); rebuilt 0.19. A mountain lion's walk with a rigid spine and head 0.29",
+   "ref": "lowpoly-core/references/motion-principles.md"
+  },
+  {
+   "id": "motion.hold",
+   "stage": "motion",
+   "measure": "life.hold_max",
+   "max": 0.15,
+   "level": "warn",
+   "note": "the longest stretch, seconds, in which nothing moves at all: a held pose keeps drifting (a moving hold)",
+   "ref": "lowpoly-core/references/motion-principles.md"
+  },
+  {
+   "id": "motion.twin",
+   "stage": "motion",
+   "measure": "life.twin_max",
+   "max": 0.85,
+   "level": "warn",
+   "note": "how alike the left and right limbs move as mirror images in an idle or action clip (1: mirrored exactly, in the same instant). A first idle 1.00; with each arm on its own phase 0.43",
+   "ref": "lowpoly-core/references/motion-principles.md"
+  },
+  {
+   "id": "motion.head_follow",
+   "stage": "motion",
+   "measure": "life.head_follow_min",
+   "min": 0.2,
+   "level": "warn",
+   "note": "the head's turn in the world against the upper trunk's, in action clips whose trunk turns more than 10 degrees, the lowest: the head is carried by the trunk and steadied by the neck, neither fixed in space nor bolted to the chest. A first punch 0.1 (34 degrees of trunk under a head that did not move); rebuilt 0.59",
+   "ref": "lowpoly-core/references/motion-principles.md"
+  },
+  {
+   "id": "motion.head_fixed",
+   "stage": "motion",
+   "measure": "life.head_follow_max",
+   "max": 0.95,
+   "level": "warn",
+   "note": "the same ratio, the highest: at 1 the neck does nothing and the head swings with the chest",
+   "ref": "lowpoly-core/references/motion-principles.md"
+  },
+  {
+   "id": "motion.head_travel",
+   "stage": "motion",
+   "measure": "life.action_head_travel_min",
+   "min": 1.5,
+   "level": "warn",
+   "note": "how far the head's joint travels in an action clip, % of the height, the least: the head goes where the weight goes. The rebuilt punch 11",
+   "ref": "lowpoly-core/references/motion-principles.md"
+  },
+  {
+   "id": "motion.feet_shift",
+   "stage": "motion",
+   "measure": "life.action_feet_min",
+   "min": 1.0,
+   "level": "warn",
+   "note": "how far a foot's joint travels in an action clip whose mass travels more than 3% of the height sideways or fore and aft, the least: feet step, pivot or rise as the weight moves over them",
+   "ref": "lowpoly-core/references/motion-principles.md"
+  },
+  {
+   "id": "motion.action_slide",
+   "stage": "motion",
+   "measure": "life.action_slide_max",
+   "max": 1.5,
+   "level": "warn",
+   "note": "how far the lowest foot bone slides while it stays on the ground in an action clip, % of the height: a planted foot pivots on the spot; it does not skate. A first punch's feet swung with the pelvis; rebuilt 0.5. A pounce that drags its paws back to the start reads high (a mountain lion's 17.8)",
+   "ref": "lowpoly-core/references/motion-principles.md"
+  },
+  {
+   "id": "motion.gait_bounce",
+   "stage": "motion",
+   "measure": "life.gait_bounce_min",
+   "min": 0.8,
+   "level": "warn",
+   "note": "how far the skin's mean point rises and falls over a gait, % of the height, the least: the body falls onto each step and is pushed off it. A human run at 2.5 m/s about 4.4-5.2 (77-91 mm), walking about 2-3; a mountain lion's walk 1.2",
+   "ref": "lowpoly-core/references/motion-principles.md"
+  },
+  {
+   "id": "motion.pelvis_yaw",
+   "stage": "motion",
+   "measure": "life.gait_pelvis_yaw_min",
+   "min": 4,
+   "level": "warn",
+   "applies": {
+    "body_plan": [
+     "humanoid"
+    ]
+   },
+   "note": "the pelvis's turn about the vertical over a gait, degrees, the least (measured running about 14): a first run 0",
+   "ref": "lowpoly-core/references/motion-principles.md"
+  },
+  {
+   "id": "motion.pelvis_roll",
+   "stage": "motion",
+   "measure": "life.gait_pelvis_roll_min",
+   "min": 3,
+   "level": "warn",
+   "applies": {
+    "body_plan": [
+     "humanoid"
+    ]
+   },
+   "note": "the pelvis's side tilt over a gait, degrees, the least (measured running about 14): the swing side's hip drops. A first run 0",
+   "ref": "lowpoly-core/references/motion-principles.md"
+  },
+  {
+   "id": "motion.counter",
+   "stage": "motion",
+   "measure": "life.gait_counter_max",
+   "max": -0.5,
+   "level": "warn",
+   "applies": {
+    "body_plan": [
+     "humanoid"
+    ]
+   },
+   "note": "the correlation between the pelvis's turn and the upper trunk's turn against it over a gait: the shoulders turn opposite to the hips (-1), carrying the arm swing. The rebuilt run -0.98",
+   "ref": "lowpoly-core/references/motion-principles.md"
   },
   {
    "id": "texture.limb_detail",
