@@ -85,6 +85,21 @@
     20,
     40
    ]
+  },
+  "character": {
+   "vertices": [
+    400,
+    720
+   ],
+   "triangles": [
+    760,
+    1400
+   ],
+   "bones": [
+    24,
+    40
+   ],
+   "note": "a human or humanoid character the camera follows: a face, hands and joints that read as human, and its hair as a separate piece, need more than an animal of the same size (the reference game's hero, era context, 355 vertices and 706 triangles with its head, hands and boots as separate pieces; the plugin's first player character 669 and 1322 with modelled hair). lowpoly-characters SKILL.md, Budget"
   }
  },
  "checks": [
@@ -232,7 +247,8 @@
     "tier": [
      "very-large",
      "tiny",
-     "swarm"
+     "swarm",
+     "character"
     ]
    },
    "note": "the head skin's triangles per square metre over the body's (torso, neck, tail). Separate pieces such as a hostile mob's modelled teeth are left out (counted on their own line). A first mountain lion ran 7.0, with too few triangles on its haunches; rebuilt from its references, 3.8. Not judged on a very large animal, whose head earns geometry",
@@ -498,7 +514,7 @@
    "ref": "lowpoly-animals/references/parts.md, Wing on a quadruped"
   },
   {
-   "id": "motion.leg_rings",
+   "id": "motion.leg_rings", "excludes": {"body_plan": ["biped"]},
    "stage": "motion",
    "measure": "legs.ring_min",
    "min": 0.9,
@@ -507,7 +523,7 @@
    "ref": "lowpoly-animals/references/limbs.md, Legs that bend"
   },
   {
-   "id": "motion.leg_stretch_min",
+   "id": "motion.leg_stretch_min", "excludes": {"body_plan": ["biped"]},
    "stage": "motion",
    "measure": "legs.stretch_min",
    "min": 0.7,
@@ -534,7 +550,7 @@
    "ref": "lowpoly-animals/references/limbs.md, Legs that bend"
   },
   {
-   "id": "motion.lockstep",
+   "id": "motion.lockstep", "excludes": {"body_plan": ["biped"]},
    "stage": "motion",
    "measure": "legs.lockstep_max",
    "max": 0.95,
@@ -961,7 +977,10 @@
    "level": "warn",
    "hero_level": "fail",
    "note": "views without a measurable reference (side, front or rear, top): a reference counts when it has 2+ landmarks, an outline or by-eye \"measured\" ratios; no refs.json counts as all three missing. Fails when the spec says \"hero\": true",
-   "ref": "lowpoly-core §1, Step zero; lowpoly-core/references/measuring.md"
+   "ref": "lowpoly-core §1, Step zero; lowpoly-core/references/measuring.md",
+   "unless": [
+    "measurements"
+   ]
   },
   {
    "id": "refs.detail",
@@ -971,7 +990,37 @@
    "level": "warn",
    "hero_level": "fail",
    "note": "measurements in the thinnest of the side, front-or-rear and top views (landmarks + outline points + measured ratios + profile stations): a few ratios read by eye leave the shape to be guessed; silhouette_measure.py reads 16-24 stations from a dead-on view",
-   "ref": "lowpoly-core/references/measuring.md, Quality over quantity"
+   "ref": "lowpoly-core/references/measuring.md, Quality over quantity",
+   "unless": [
+    "measurements"
+   ]
+  },
+  {
+   "id": "body.median",
+   "stage": "mesh",
+   "measure": "body.median_diff_pct",
+   "max": 4.0,
+   "level": "warn",
+   "note": "the median difference, %, between the model and the spec's measurement table (a survey's medians: heights, breadths, depths, girths, lengths) measured as an anthropometrist measures (body_measure.py). The first player character 2.1% over 32 measures",
+   "ref": "lowpoly-characters SKILL.md, Measure it as a person"
+  },
+  {
+   "id": "body.past",
+   "stage": "mesh",
+   "measure": "body.past",
+   "max": 3,
+   "level": "warn",
+   "note": "measures past their limits (6%, girths over clothes 8%): a boot over the foot adds its length, so a few may stand past with a reason",
+   "ref": "lowpoly-characters SKILL.md, Measure it as a person"
+  },
+  {
+   "id": "body.worst",
+   "stage": "mesh",
+   "measure": "body.worst_pct",
+   "max": 15.0,
+   "level": "warn",
+   "note": "the worst measure's difference, %: past 15% a part reads as the wrong person (a first build's thigh was 45% short)",
+   "ref": "lowpoly-characters SKILL.md, Measure it as a person"
   },
   {
    "id": "refs.parts",

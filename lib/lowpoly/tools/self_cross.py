@@ -84,8 +84,38 @@ def frame_x(P, main_only):
 
 if PIECES:
     BIND_X = {ij for ij in frame_x(posed(None, 0.0)[0], False) if not (MAIN[ij[0]] and MAIN[ij[1]])}
+
+
+# a clip made for one body (a character's blend-space variant: the thin idle, the muscular run) is judged on that body:
+# its morph target applied at full weight while it is posed. <model>.character.json names them: each "clip_blends" entry's
+# below/above clip plays on its option's below/above morph (the thin idle on the thin body; on the median body its arms,
+# brought in to a thin body's hips, cut into the median hips)
+def _variant_bodies():
+    import json, base64, struct
+    cfg_p = os.path.splitext(os.path.abspath(model))[0] + '.character.json'
+    if not os.path.exists(cfg_p): return {}
+    cfg = json.load(open(cfg_p, encoding='utf-8')); opts = {o.get('id'): o for o in cfg.get('options', [])}
+    morphs = {}
+    for m in (A.get('subs') or [{}])[0].get('morphs') or []:
+        d = m.get('d')
+        if isinstance(d, str): raw = base64.b64decode(d); d = list(struct.unpack('<%df' % (len(raw) // 4), raw))
+        morphs[m.get('name')] = d
+    out = {}
+    for bl in cfg.get('clip_blends', []):
+        o = opts.get(bl.get('option'), {})
+        for side in ('below', 'above'):
+            if bl.get(side) and o.get(side) in morphs: out[bl[side]] = (o[side], morphs[o[side]])
+    return out
+VARIANT = _variant_bodies()
+_V0 = list(V)
+def _body(delta):
+    for ci, (pos, ws) in enumerate(_V0):
+        V[ci] = ((pos[0] + delta[ci * 3], pos[1] + delta[ci * 3 + 1], pos[2] + delta[ci * 3 + 2]), ws) if delta else (pos, ws)
+
+
 for clip in clips:
     if clip != 'bind' and clip not in A.get('anims', {}): print('clip %s not in the model' % clip); continue
+    _body(VARIANT[clip][1] if clip in VARIANT and len(VARIANT[clip][1]) == 3 * len(_V0) else None)
     frames = [0.0] if clip == 'bind' else [k / N for k in range(N)]; rows = []; prow = []
     for ph in frames:
         P, _ = posed(None if clip == 'bind' else clip, ph)
@@ -110,8 +140,9 @@ for clip in clips:
         prow = prow2
     n, ph, pairs, spots = max(rows, key=lambda r: r[0])
     top = ', '.join('%s %d' % kv for kv in sorted(pairs.items(), key=lambda kv: -kv[1])[:5]) or 'none'
-    print('clip %s worst %d crossings at phase %.3f; frames with more than 12: %d of %d; pairs: %s'
-          % (clip, n, ph, sum(1 for r in rows if r[0] > 12), len(rows), top))
+    print('clip %s worst %d crossings at phase %.3f; frames with more than 12: %d of %d; pairs: %s%s'
+          % (clip, n, ph, sum(1 for r in rows if r[0] > 12), len(rows), top,
+             ('; on the %s body' % VARIANT[clip][0]) if clip in VARIANT else ''))
     for k2, ti, tj, at in (spots if WHERE else []):
         print('    %-28s tri %s x tri %s at %s' % (k2, tuple(ti), tuple(tj), at))
     if PIECES and prow:

@@ -107,12 +107,26 @@ print('mirror: triangles left %d right %d | left triangles sharing a right trian
 edges = defaultdict(list)
 for fi, t in enumerate(TP):
     for a, b in ((t[0], t[1]), (t[1], t[2]), (t[2], t[0])): edges[(min(a, b), max(a, b))].append(fi)
-planes = defaultdict(list)
-for t in TP:
-    n = cross(sub(P[t[1]], P[t[0]]), sub(P[t[2]], P[t[0]])); l = math.sqrt(n[0] ** 2 + n[1] ** 2 + n[2] ** 2)
-    if l < 1e-12: continue
-    n = (n[0] / l, n[1] / l, n[2] / l); d = -(n[0] * P[t[0]][0] + n[1] * P[t[0]][1] + n[2] * P[t[0]][2])
-    for v in t: planes[v].append((n, d))
+def planes_of(PS):
+    pl = defaultdict(list)
+    for t in TP:
+        n = cross(sub(PS[t[1]], PS[t[0]]), sub(PS[t[2]], PS[t[0]])); l = math.sqrt(n[0] ** 2 + n[1] ** 2 + n[2] ** 2)
+        if l < 1e-12: continue
+        n = (n[0] / l, n[1] / l, n[2] / l); d = -(n[0] * PS[t[0]][0] + n[1] * PS[t[0]][1] + n[2] * PS[t[0]][2])
+        for v in t: pl[v].append((n, d))
+    return pl
+
+
+# every shape the model takes: the bind pose and each morph target (a body type, a face). An edge that shapes nothing in
+# the median body can make the biceps of a bodybuilder; it is waste only if it shapes nothing in any of them
+SHAPES = [P]
+for s_ in A['subs'][:1]:
+    for mo in s_.get('morphs', []):
+        dl = struct.unpack('<%df' % (len(base64.b64decode(mo['d'])) // 4), base64.b64decode(mo['d']))
+        PS = list(P)
+        for i in range(min(len(C), len(dl) // 3)): PS[vi[i]] = (C[i][0] + dl[3 * i], C[i][1] + dl[3 * i + 1], C[i][2] + dl[3 * i + 2])
+        SHAPES.append(PS)
+PLANES = [planes_of(PS) for PS in SHAPES]
 
 
 def rms(pt, pls):
@@ -128,9 +142,11 @@ cand = []
 for (a, b), fs in edges.items():
     if len(fs) != 2: continue                                   # an open or over-shared edge is not a collapse candidate
     if wdiff(a, b) > 0.5: continue                              # a joint needs it: its ends ride different bones
-    pls = planes[a] + planes[b]
-    mid = tuple((P[a][k] + P[b][k]) / 2 for k in range(3))
-    e = min(rms(P[a], pls), rms(P[b], pls), rms(mid, pls))
+    e = 0.0
+    for PS, pl in zip(SHAPES, PLANES):
+        pls = pl[a] + pl[b]
+        mid = tuple((PS[a][k] + PS[b][k]) / 2 for k in range(3))
+        e = max(e, min(rms(PS[a], pls), rms(PS[b], pls), rms(mid, pls)))
     if e < LIMIT: cand.append((e, a, b))
 cand.sort(); used = set(); waste = []
 for e, a, b in cand:                                             # independent collapses only: no vertex counted twice
@@ -138,6 +154,7 @@ for e, a, b in cand:                                             # independent c
     used |= {a, b}; waste.append((e, a, b))
 wt = 2 * len(waste)
 bypart = Counter(VP[a] for _, a, b in waste)
+if len(SHAPES) > 1: print('waste judged over %d shapes: the bind pose and %d morph targets' % (len(SHAPES), len(SHAPES) - 1))
 print('waste: %d edges collapse with under %.1f mm of change (0.2%% of the height) = %d triangles, %.1f%% of the model%s'
       % (len(waste), LIMIT * 1000, wt, 100.0 * wt / max(1, len(TP)), (' | by part: ' + ', '.join('%s %d' % kv for kv in bypart.most_common())) if waste else ''))
 if LIST:

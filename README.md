@@ -1,6 +1,6 @@
 # lowpoly-modeling (draft)
 
-A plugin draft. Two skills so far:
+A plugin draft. Three skills so far:
 
 - `skills/lowpoly-core/`: the method every low-poly model shares: the reference set and measuring against it in every view,
   budgets, one-skin topology, rigs and weights, the texture method (seams, density, stretched faces, the engine's lights),
@@ -9,6 +9,11 @@ A plugin draft. Two skills so far:
   and skins, gaits. `references/parts.md` indexes the body parts the builds have solved (wings, beaks, jaws, feet, tails,
   manes, skins) as modules, the groundwork for composite and fantasy animals assembled from real parts;
   `references/reptile-skin.md` is the standard for a reptile's hide.
+- `skills/lowpoly-characters/`: humans and humanoid races built on the human base: measuring a body against a survey, the
+  torso and limbs from muscle, body types as morph targets and blend spaces, the head's planes, ears, eyes and mouth,
+  hands and thumbs, joints that fold with soft tissue meeting, a character's charts and recolour options, hair, and
+  `references/races.md` for orcs, ogres, trolls, goblins, dwarves and elves from the real anatomy each borrows. Its case
+  study is the first player character, a median man.
 
 The skills' measured ranges come from the shipped animal models of a late-1990s commercial RPG. Only measurements are used;
 no model, texture, file or name from that game is part of this plugin.

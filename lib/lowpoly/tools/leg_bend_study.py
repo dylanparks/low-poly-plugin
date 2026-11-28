@@ -63,31 +63,47 @@ def side_of(a, b, c, normal):
 
 
 LEGS = []
-for L in R['limbs']:
-    chain, i = [L['root']], L['root']
+# the limbs: the legs the rig stands on, and the arms: side branches off the midline (a biped's or a primate's arms, a
+# winged animal's wings) with three or more bones, not already a leg
+LIMBS = [(L['root'], L['ankle'], set(L['bones']), 'leg') for L in R['limbs']]
+in_leg = set().union(*(L[2] for L in LIMBS)) if LIMBS else set()
+for b in range(nb):
+    p = par[b]
+    if p is None or p < 0 or p == b or b in in_leg or abs(J0[b][0]) < 0.01 * H or abs(J0[p][0]) >= 0.01 * H: continue
+    if len(sub(b)) >= 4: LIMBS.append((b, None, set(sub(b)), 'arm'))
+for root, ankle, bones_, kind in LIMBS:
+    chain, i = [root], root
     while kids[i]:
-        i = min(kids[i], key=lambda k: min(J0[b][1] for b in sub(k))); chain.append(i)
-    k_ankle = chain.index(L['ankle']) if L['ankle'] in chain else len(chain) - 2
+        if kind == 'leg': i = min(kids[i], key=lambda k: min(J0[b][1] for b in sub(k)))
+        else: i = max(kids[i], key=lambda k: max(math.dist(J0[b], J0[root]) for b in sub(k)))   # toward the hand
+        chain.append(i)
+    k_ankle = chain.index(ankle) if ankle in chain else len(chain) - 2
     joints = []
     for k in range(1, len(chain) - 1):
         a, b, c = J0[chain[k - 1]], J0[chain[k]], J0[chain[k + 1]]
         ang = angle_at(a, b, c)
-        hinge = (k < k_ankle and ang < 170) or (k == k_ankle and ang < 150)
+        # a hinge between two long bones (a knee, an elbow: both at least a tenth of the height) that stands straight in
+        # the bind pose bends one way all the same: that way is read from the clips (where most of its bent frames fall)
+        long_ = math.dist(a, b) >= 0.10 * H and math.dist(b, c) >= 0.10 * H
+        if kind == 'leg': hinge = long_ or (k < k_ankle and ang < 170) or (k == k_ankle and ang < 150)
+        else: hinge = long_
+        straight = hinge and ang >= 170
         # the bending plane: the leg's own, through the three joints (a straight joint takes the side-view plane)
         u = [a[q] - b[q] for q in range(3)]; v = [c[q] - b[q] for q in range(3)]
         nrm = (u[1] * v[2] - u[2] * v[1], u[2] * v[0] - u[0] * v[2], u[0] * v[1] - u[1] * v[0])
         if math.sqrt(sum(x * x for x in nrm)) < 1e-9: nrm = (1.0, 0.0, 0.0)
-        joints.append({'k': k, 'bone': chain[k], 'hinge': hinge, 'bind': ang, 'normal': nrm})
-    bones = set(L['bones'])
-    vs = [i for i in range(len(C)) if sum(w for b, w in WS[i] if b in bones) >= 0.5]
-    LEGS.append({'root': L['root'], 'chain': chain, 'joints': joints, 'verts': vs, 'name': names[L['root']]})
+        joints.append({'k': k, 'bone': chain[k], 'hinge': hinge, 'bind': ang, 'normal': nrm, 'straight': straight})
+    vs = [i for i in range(len(C)) if sum(w for b, w in WS[i] if b in bones_) >= 0.5]
+    LEGS.append({'root': root, 'chain': chain, 'joints': joints, 'verts': vs, 'name': names[root], 'kind': kind})
 
 key = lambda i: (round(C[i][0], 4), round(C[i][1], 4), round(C[i][2], 4))
 for L in LEGS:
     g = {}
     for i in L['verts']:
         top = sorted(WS[i], key=lambda bw: -bw[1])
-        ring = names[top[0][0]] if len(top) < 2 or top[1][1] < 0.25 else '+'.join(sorted((names[top[0][0]], names[top[1][0]])))
+        # a ring is the skin carried the same way: by the same bones in the same shares (two rings blended 70/30 and 30/70
+        # across one joint are two rings, not one that seems to pinch as the joint folds them together)
+        ring = names[top[0][0]] if len(top) < 2 or top[1][1] < 0.15 else '%s %.0f%%+%s' % (names[top[0][0]], 100 * round(top[0][1], 1), names[top[1][0]])
         g.setdefault(ring, {})[key(i)] = i
     L['rings'] = {r: list(d.values()) for r, d in g.items() if len(d) >= 3}
     vs = set(L['verts']); es = set()
@@ -134,8 +150,24 @@ W0 = world(r0, p0)
 bind_ring = {(li, r): ring_size([skin(i, W0) for i in ids]) for li, L in enumerate(LEGS) for r, ids in L['rings'].items()}
 bind_side = {(li, j['k']): side_of(*(W0[L['chain'][j['k'] + d]][1] for d in (-1, 0, 1)), j['normal'])
              for li, L in enumerate(LEGS) for j in L['joints']}
-print('== %s: %d legs (%s); hinges judged for hyperextension: %s' % (
-    A.get('name'), len(LEGS), ', '.join(L['name'] for L in LEGS),
+# a hinge straight in the bind pose: its bending side is the side most of its clearly bent frames (under 165) fall on
+for li, L in enumerate(LEGS):
+    for j in L['joints']:
+        if not j['straight']: continue
+        votes = 0.0
+        for clip, src in A['anims'].items():
+            keys = decode_clip(src, nb)
+            for f in range(25):
+                u = f / 24
+                W = world([sample(keys[i][0], u, 4) or r0[i] for i in range(nb)], [sample(keys[i][1], u, 3) or p0[i] for i in range(nb)])
+                a, b, c = (W[L['chain'][j['k'] + d]][1] for d in (-1, 0, 1))
+                if angle_at(a, b, c) < 165:
+                    nrm = qrot(qmul(W[L['chain'][j['k']]][0], qconj(W0[L['chain'][j['k']]][0])), j['normal'])
+                    votes += 1 if side_of(a, b, c, nrm) > 0 else -1
+        if votes == 0: j['hinge'] = False
+        else: bind_side[(li, j['k'])] = 1.0 if votes > 0 else -1.0
+print('== %s: %d limbs (%s); hinges judged for hyperextension: %s' % (
+    A.get('name'), len(LEGS), ', '.join('%s (%s)' % (L['name'], L['kind']) for L in LEGS),
     ', '.join('%s %.0f' % (names[j['bone']], j['bind']) for L in LEGS for j in L['joints'] if j['hinge']) or 'none'))
 summary = []
 for clip, src in A['anims'].items():

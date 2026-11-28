@@ -31,8 +31,8 @@
       overlay.json, a picture per reference and overlay.html (over the photo). The refs.json format: lp overlay --help.
 
 spec.json (all optional) says what the model is, so that only the checks that apply to it run:
-  {"body_plan": "quadruped|biped|bird|fish|lizard|arthropod|flyer", "skin": "fur|scales|plates|chitin|wet|feathers",
-   "feet": "paw|clawed|long-toed|hoof|hand|none", "tier": "large|medium|small|tiny|swarm|very-large",
+  {"body_plan": "quadruped|biped|bird|fish|lizard|arthropod|flyer", "skin": "fur|scales|plates|chitin|wet|feathers|cloth",
+   "feet": "paw|clawed|long-toed|hoof|hand|shod|none", "tier": "large|medium|small|tiny|swarm|very-large|character",
    "eye": {"u": 307, "v": 34, "half_width": 4, "half_height": 3}, "walk_clip": "walk",
    "standing_clips": ["idle", "stand"], "refs": "refs.json", "cards": 16}   (standing_clips default: the idle clip and any
    clip named idle or stand; refs, relative to the spec: the overlay's landmarks, judged at the mesh stage; cards: how many
@@ -64,13 +64,13 @@ class UsageError(Exception):
 
 
 SPEC_VALUES = {'body_plan': ('quadruped', 'biped', 'bird', 'fish', 'lizard', 'arthropod', 'flyer'),
-               'skin': ('fur', 'scales', 'plates', 'chitin', 'wet', 'feathers'),
-               'feet': ('paw', 'clawed', 'long-toed', 'hoof', 'hand', 'none'),
-               'tier': ('large', 'medium', 'small', 'tiny', 'swarm', 'very-large'),
+               'skin': ('fur', 'scales', 'plates', 'chitin', 'wet', 'feathers', 'cloth'),
+               'feet': ('paw', 'clawed', 'long-toed', 'hoof', 'hand', 'shod', 'none'),
+               'tier': ('large', 'medium', 'small', 'tiny', 'swarm', 'very-large', 'character'),
                'eyes': ('pupil', 'glow'),
                'muzzle': ('leather-pad', 'soft-equine', 'muffle', 'small-bare', 'disc', 'split-lip', 'lipless', 'beak', 'primate'),
                'eye_shape': ('side-almond', 'forward')}
-SPEC_KEYS = set(SPEC_VALUES) | {'eye', 'walk_clip', 'standing_clips', 'name', 'refs', 'cards', 'hero', 'ref_parts'} | contract.CONTRACT_KEYS
+SPEC_KEYS = set(SPEC_VALUES) | {'eye', 'walk_clip', 'standing_clips', 'name', 'refs', 'cards', 'hero', 'ref_parts', 'measurements'} | contract.CONTRACT_KEYS
 STAGES = ('mesh', 'rig', 'texture', 'motion', 'all')
 
 
@@ -97,7 +97,7 @@ def read_spec(path):
     return spec, notes
 
 
-STAGE_TOOLS = {'mesh': ['mesh', 'topo', 'feet', 'thin', 'limbs', 'rear', 'overlay'], 'rig': ['mesh', 'rig'], 'motion': ['rig', 'stand', 'cross', 'legs'],
+STAGE_TOOLS = {'mesh': ['mesh', 'topo', 'feet', 'thin', 'limbs', 'rear', 'overlay', 'body'], 'rig': ['mesh', 'rig'], 'motion': ['rig', 'stand', 'cross', 'legs'],
                'texture': ['uv', 'body', 'skin', 'eye', 'nose', 'regions', 'parts']}
 
 
@@ -372,6 +372,16 @@ def measure_legs(model, A, spec):
     return m, t
 
 
+def measure_body_table(model, table, bones=None):
+    """a humanoid measured as an anthropometrist measures a person (lowpoly/tools/body_measure.py) against the spec's
+    measurement table (a survey's medians): the median difference, the measures past their limits and the worst"""
+    t = run_tool('body_measure', model, table, *([bones] if bones else []))
+    r = re.search(r'body: (\d+) measures, median difference ([\d.]+)%, (\d+) past the limits, worst ([\d.]+)%', t)
+    if not r: return {}, t
+    return {'body.measures': int(r.group(1)), 'body.median_diff_pct': float(r.group(2)), 'body.past': int(r.group(3)),
+            'body.worst_pct': float(r.group(4))}, t
+
+
 def measure_regions(model):
     """painted detail on the limbs: the flattest leg, arm or wing region's fine + mid contrast, and the darkest one's brightness"""
     t = run_tool('region_detail', model)
@@ -490,6 +500,8 @@ def applies(check, spec):
         if spec.get(k) not in allowed: return 'needs %s in %s (spec says %s)' % (k, '/'.join(allowed), spec.get(k, 'nothing'))
     for k, barred in (check.get('excludes') or {}).items():          # runs for every value but these (and without a spec)
         if spec.get(k) in barred: return 'not for %s %s' % (k, spec[k])
+    for k in check.get('unless') or ():                              # another reference stands in (a measurement table)
+        if spec.get(k): return 'the "%s" in the spec stands in' % k
     return None
 
 
@@ -543,6 +555,9 @@ def check(model, spec_path=None, stage='all', out=None):
     if 'thin' in want: take('thin', measure_thin, model, tag)
     if 'limbs' in want: take('limbs', measure_limbs, model, tag)
     if 'rear' in want and spec.get('body_plan', 'quadruped') == 'quadruped': take('rear', measure_rear, model, A, spec.get('walk_clip'))
+    if 'body' in want and spec.get('measurements'):
+        mt = spec['measurements'] if os.path.isabs(spec['measurements']) else os.path.join(os.path.dirname(os.path.abspath(spec_path)), spec['measurements'])
+        take('body', measure_body_table, model, mt)
     if 'overlay' in want:
         rp = None
         if spec.get('refs'):
@@ -564,7 +579,7 @@ def check(model, spec_path=None, stage='all', out=None):
     if 'regions' in want: take('regions', measure_regions, model)
     skin = spec.get('skin', 'fur')                       # an unknown skin (a typo) runs neither study: its checks are not run
     if 'body' in want and skin == 'fur': take('body', measure_body, model, out, tag)
-    if 'skin' in want and skin != 'fur' and skin in SPEC_VALUES['skin']: take('skin', measure_skin, model, out, tag)
+    if 'skin' in want and skin not in ('fur', 'cloth') and skin in SPEC_VALUES['skin']: take('skin', measure_skin, model, out, tag)
     if 'eye' in want:
         if spec.get('eye'): take('eye', measure_eye, model, out, tag, spec['eye'])
         else: notes.append('eye checks skipped: no "eye" texel position in the spec')
