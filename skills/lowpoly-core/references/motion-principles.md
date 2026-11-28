@@ -18,7 +18,7 @@ The first humanoid's clips were each driven by one phase curve: every bone a mul
 | Run | the legs cycled under a pelvis that neither turned nor tilted; the arms swung from a still chest | sync 1.00; pelvis yaw 0, roll 0 |
 | Idle | only the chest breathed; both arms were mirror images | 63% of the bones never moved; twin 1.00 |
 
-Rebuilt by the rules below: the punch reads sync 0.35, order 1.00, head turn 18 degrees under a trunk turning 30, with
+Rebuilt by the rules below: the punch reads sync 0.35, order 0.89, head turn 25 degrees under a trunk turning 125, with
 a step and a pivoting rear foot; the run sync 0.36, pelvis yaw 11 and roll 11 degrees, shoulders against hips -0.98; the
 idle 19% still, twin 0.43. **[ours]**
 
@@ -128,20 +128,28 @@ sum two periods where a cycle would otherwise repeat exactly.
 
 ### Action (a strike)
 
-| Quantity | Measured (rear-hand straight punch) | First humanoid punch (1.0 s clip) |
+| Quantity | Measured (rear-hand straight punch) | First humanoid punch (0.75 s, from its stance) |
 |---|---|---|
-| Fist's first move to contact | about 0.11 s | 0.085 s (shoulder from 0.42 s, elbow 0.455-0.505 s) |
-| Retraction to guard | 0.17-0.24 s (skilled quicker) | 0.15-0.17 s (elbow 0.555-0.70 s, shoulder 0.57-0.73 s) |
+| Fist's first move to contact | about 0.11 s | 0.085 s (shoulder from 0.24 s, elbow 0.275-0.325 s) |
+| Retraction to guard | 0.17-0.24 s (skilled quicker) | 0.15-0.16 s (elbow 0.375-0.52 s, shoulder 0.39-0.55 s) |
 | First move to back in guard | 0.40-0.45 s | 0.31 s, after a hold of 0.05 s at full reach |
 | Fist speed at contact | about 8 m/s | |
 | Load at contact | front foot about 60%, rear 40% | pelvis 5 cm forward over the front foot |
 | Share of the force | rear leg 38%, trunk turn 37%, arm 24% | |
 
+- **Start from the stance the move belongs to.** A model that fights has a combat-ready stance clip (a guard, a
+  crouch, a bristling stand), and each attack's first and last frames are that clip's first, not the idle's: a punch
+  thrown from hanging arms spends a third of its time getting ready. The stance is an idle and is judged as one.
+  Build it to photographs of that stance and compare the render with them from the same angle: a stance made from an
+  idea of one came out square-on and narrow.
 - **Phases:** stance, weight onto the rear foot and a short step of the lead foot, a small wind back, the drive (rear
   foot pivots on its ball, heel rising; pelvis, spine, chest, shoulder, elbow in turn), contact, overshoot and settle,
   retraction (the elbow first), recovery to the idle.
 - **The lead foot lands and braces** before contact; the pelvis turns over it. **[measured, qualitative]**
 - **The guard hand stays at the face**; the body does not fall past the front foot. **[craft]**
+- **Commit the whole body.** A strike that only turns the trunk a little and reaches reads as timid. The reference
+  game's unarmed cross turns the hips about 100 degrees and the shoulders about 150, carries the pelvis 22 cm forward
+  and drops it 10 cm (on a 1.72 m figure); the first humanoid's now measures 87, 143, 20 and 5. **[ours, style]**
 - **Game timing:** a player's light attack 0.1-0.2 s of wind-up and 0.7-1.2 s in all; enemy attacks signal for at
   least 0.34 s and hold the end pose 0.17 s or more, so they can be read. **[craft]**
 - **Not found in any source read:** the pelvis's and trunk's rotation in degrees, the lags between segments in
@@ -168,7 +176,7 @@ sum two periods where a cycle would otherwise repeat exactly.
 
 `lp check --stage motion` runs `motion_quality.py` over every clip and judges the worst clip of each kind. All are
 warnings: each one is a place to look, and a clip may break one on purpose (a stiff golem, a statue's idle). A clip's
-kind is read from its name (idle, stand, rest, sleep...; walk, run, trot, fly, swim...; anything else is an action);
+kind is read from its name (idle, stand, rest, sleep, spar, guard, stance...; walk, run, trot, fly, swim...; anything else is an action);
 the spec's `standing_clips`, `walk_clip` and `"clip_kinds": {"prowl": "gait"}` override it.
 
 | Check | Measure | Range | Clips |
